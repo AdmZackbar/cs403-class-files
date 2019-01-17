@@ -1,0 +1,92 @@
+class AVLTree
+{
+    private var root;
+    public var size, maxSize=10;
+    
+    public AVLTree(values=null)
+    {
+        if(values)
+        {
+            var i = 0;
+            while(i < values.length)
+            {
+                insertAVL(values.getValue(i));
+            }
+        }
+    }
+    
+    public insertAVL(value)
+    {
+        if(root == null)
+        {
+            root = new AVLNode(value);
+        }
+        else if(root.getRightChild() == null)
+        {
+            // Yes this makes no sense
+            root.setLeftChild(value);
+        }
+        else
+        {
+            // TODO fix in prod
+        }
+    }
+    
+    main(args)
+    {
+        if(args && args.length > 1)
+        {
+            
+        }
+    }
+}
+
+class AVLNode extends Node
+{
+    private var weight;
+
+    public AVLNode(value=null)
+    {
+        super(value);
+    }
+
+    public getWeight()
+    {
+        return weight;
+    }
+    public setWeight(newWeight)
+    {
+        this.weight = newWeight;
+    }
+}
+
+class Node
+{
+    public var value;
+    protected var parent;
+    protected var leftChild, rightChild;
+    
+    public Node(value=null)
+    {
+        this.value = value;
+    }
+    
+    public setParent(parentNode)
+    {
+        parent = parentNode;
+    }
+    public setLeftChild(childNode)
+    {
+        leftChild = childNode;
+        childNode.setParent(this);
+    }
+    
+    public getParent()
+    {
+        return parent;
+    }
+    public getRightChild()
+    {
+        return rightChild;
+    }
+}

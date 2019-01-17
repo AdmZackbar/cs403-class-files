@@ -1,0 +1,104 @@
+program : classDef
+        | classDef program
+
+classDef : CLASS classHeader OBRACE optClassStatements CBRACE
+
+classHeader : ID
+            | ID EXTENDS ID
+
+optClassStatements : classStatments
+                   | EMPTY
+
+classStatements : classStatement
+                | classStatement classStatements
+
+classStatement : accessMod VAR varList SEMICOLON
+               | accessMod FUNCTION ID OPAREN optParamList CPAREN block
+
+accessMod : PUBLIC
+          | PRIVATE
+          | PROTECTED
+          | EMPTY
+
+varList : varDef
+        : varDef COMMA varList
+
+varDef : ID
+       | ID ASSIGN expr
+
+expr : unary
+     | unary op expr
+
+unary : idExpr
+      | INTEGER
+      | REAL
+      | BOOLEAN
+      | CHAR
+      | STRING
+      | uop unary
+      | OPAREN expr CPAREN
+      | NULL
+      | THIS
+      | NEW ID OPAREN optExprList CPAREN
+
+idExpr : ID
+       | ID postVar
+       | ID OPAREN optExprList CPAREN
+
+postVar : PLUSPLUS
+       | MINUSMINUS
+
+optExprList : exprList
+            | EMPTY
+
+exprList : expr
+         | expr COMMA exprList
+
+uop : UMINUS
+    | PLUSPLUS
+    | MINUSMINUS
+
+op : PLUS
+   | MINUS
+   | TIMES
+   | DIVIDE
+   | MODULUS
+   | EXPONANT
+   | DOT
+   | LESS_THAN              // <
+   | GREATER_THAN           // >
+   | LESS_THAN_EQUAL        // <=
+   | GREATER_THAN_EQUAL     // >=
+   | EQUALS                 // ==
+   | LOGICAL_AND            // &&
+   | LOGICAL_OR             // ||
+   | BINARY_AND             // &
+   | BINARY_OR              // |
+
+optParamList : paramList
+             | EMPTY
+
+paramList : param
+          | param COMMA paramList
+
+param : ID
+      | ID ASSIGN unary
+
+block : OBRACE optStatements CBRACE
+
+optStatements : statements
+              | EMPTY
+
+statements : statement
+           | statement statements
+
+statement : expr SEMICOLON
+          | VAR varList SEMICOLON
+          | IF OPAREN expr CPAREN block optElse
+          | WHILE OPAREN expr CPAREN block
+          | RETURN expr SEMICOLON
+          | DEFINE ID OPAREN optParamList CPAREN block
+
+optElse : ELSE block
+        | ELSE ifStatement
+        | EMPTY
