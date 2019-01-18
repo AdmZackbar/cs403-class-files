@@ -24,7 +24,7 @@ varList : varDef
         : varDef COMMA varList
 
 varDef : ID
-       | ID ASSIGN expr
+       | ID EQUALS expr
 
 expr : unary
      | unary op expr
@@ -44,6 +44,7 @@ unary : idExpr
 idExpr : ID
        | ID postVar
        | ID OPAREN optExprList CPAREN
+       | ID OBRACKET INTEGER CBRACKET
 
 postVar : PLUSPLUS
        | MINUSMINUS
@@ -58,7 +59,8 @@ uop : UMINUS
     | PLUSPLUS
     | MINUSMINUS
 
-op : PLUS
+op : EQUALS
+   | PLUS
    | MINUS
    | TIMES
    | DIVIDE
@@ -69,7 +71,7 @@ op : PLUS
    | GREATER_THAN           // >
    | LESS_THAN_EQUAL        // <=
    | GREATER_THAN_EQUAL     // >=
-   | EQUALS                 // ==
+   | EQUALSEQUALS           // ==
    | LOGICAL_AND            // &&
    | LOGICAL_OR             // ||
    | BINARY_AND             // &
@@ -82,7 +84,7 @@ paramList : param
           | param COMMA paramList
 
 param : ID
-      | ID ASSIGN unary
+      | ID EQUALS unary
 
 block : OBRACE optStatements CBRACE
 
@@ -97,7 +99,7 @@ statement : expr SEMICOLON
           | IF OPAREN expr CPAREN block optElse
           | WHILE OPAREN expr CPAREN block
           | RETURN expr SEMICOLON
-          | DEFINE ID OPAREN optParamList CPAREN block
+          | FUNCTION ID OPAREN optParamList CPAREN block
 
 optElse : ELSE block
         | ELSE ifStatement
