@@ -1,17 +1,22 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <assert.h>
+#include "lexer.h"
 #include "scanner.h"
 #include "lexeme.h"
 #include "types.h"
 #include "stringBuffer.h"
 
-static LEXEME *lex(FILE *fp);
+struct lexer
+{
+    FILE *fp;
+};
+
 static LEXEME *lexNumber(FILE *fp, int ch);
 static LEXEME *lexString(FILE *fp);
 static LEXEME *lexWord(FILE *fp, int ch);
 static LEXEME *lexID(char *word);
-
 static int wordIs(char *reserved, char *word, int wordLength);
 
 int main(int argc, char **argv)
@@ -23,21 +28,15 @@ int main(int argc, char **argv)
         return -1;
     }
     
-    FILE *fp = fopen(argv[1], "rw");
+    LEXER *lexer = newLEXER(argv[1]);
     
-    if (!fp)
-    {
-        printf("Could not open file %s\n", argv[1]);
-        return -2;
-    }
-    
-    LEXEME *lexeme = lex(fp);
+    LEXEME *lexeme = lex(lexer);
     while (lexeme != NULL && !isErrorLEXEME(lexeme))
     {
         printLEXEME(stdout, lexeme);
         printf("\n");
         
-        lexeme = lex(fp);
+        lexeme = lex(lexer);
     }
 
     if(isErrorLEXEME(lexeme))
@@ -49,11 +48,22 @@ int main(int argc, char **argv)
     return 0;
 }
 
-static LEXEME *lex(FILE *fp)
+LEXER *newLEXER(char *filename)
+{
+    LEXER *l = malloc(sizeof(LEXER));
+    assert(l != 0);
+    
+    l->fp = fopen(filename, "rw");
+    assert(l->fp != 0);
+    
+    return l;
+}
+
+LEXEME *lex(LEXER *lexer)
 {
     int ch;
 
-    ch = readChar(fp);
+    ch = readChar(lexer->fp);
     
     if (ch == EOF)
         return NULL;
@@ -70,11 +80,11 @@ static LEXEME *lex(FILE *fp)
     if (ch == ']')
         return newLEXEME(CBRACKET);
     if (isdigit(ch) || ch == '.')
-        return lexNumber(fp, ch);
+        return lexNumber(lexer->fp, ch);
     if (ch == '"')
-        return lexString(fp);
+        return lexString(lexer->fp);
     if (isalpha(ch))
-        return lexWord(fp, ch);
+        return lexWord(lexer->fp, ch);
     
     return newLEXEMEerror(PARSE_ERROR, ch);
 }

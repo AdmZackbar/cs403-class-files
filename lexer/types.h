@@ -44,6 +44,7 @@ extern char *MINUSMINUS;
 
 // Other
 extern char *ID;
+extern char *END_OF_FILE;
 extern char *PARSE_ERROR;
 extern char *BAD_NUM;
 

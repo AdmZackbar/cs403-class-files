@@ -43,5 +43,6 @@ char *MINUSMINUS = "--";
 
 // Other
 char *ID = "identifier";
+char *END_OF_FILE = "EOF";
 char *PARSE_ERROR = "parsing error";
 char *BAD_NUM = "incorrect number expression";

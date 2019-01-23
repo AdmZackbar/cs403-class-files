@@ -7,6 +7,7 @@
 struct lexeme
 {
     char *type;
+    int lineNum;
     int iVal;
     double rVal;
     char *sVal;
