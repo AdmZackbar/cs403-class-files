@@ -6,6 +6,11 @@ extern char *INTEGER;
 extern char *REAL;
 extern char *STRING;
 
+// Reserved
+extern char *VAR;
+extern char *FUNCTION;
+extern char *DEFINE;
+
 // Punctuation
 extern char *OBRACE;
 extern char *CBRACE;
@@ -38,6 +43,8 @@ extern char *PLUSPLUS;
 extern char *MINUSMINUS;
 
 // Other
+extern char *ID;
 extern char *PARSE_ERROR;
+extern char *BAD_NUM;
 
 #endif

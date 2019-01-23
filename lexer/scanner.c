@@ -3,6 +3,9 @@
 #include "scanner.h"
 
 static void skipWhitespace(FILE *fp);
+static void skipLineComment(FILE *fp);
+static void skipBlockComment(FILE *fp);
+static int isNewLine(FILE *fp, int ch);
 
 char readChar(FILE *fp)
 {
@@ -66,10 +69,10 @@ static void skipLineComment(FILE *fp)
 }
 
 /*
- * Reads in and ignores all characters until the string "*/" is found.
- * The end string(*/) is consumed at the end.
+ * Reads in and ignores all characters until the end string is found.
+ * The end string is consumed at the end.
  */
-static void skipLineComment(FILE *fp)
+static void skipBlockComment(FILE *fp)
 {
     int ch = fgetc(fp);
     while(ch != EOF)

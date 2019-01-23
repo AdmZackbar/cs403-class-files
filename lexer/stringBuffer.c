@@ -34,8 +34,16 @@ void addCharBUFFER(STRING_BUFFER *buffer, int ch)
         buffer->store = realloc(buffer->store, sizeof(char)*buffer->size);
         assert(buffer->store != 0);
     }
-    buffer->store[length++] = ch;
+    buffer->store[buffer->length++] = ch;
 }
+
+int getLengthBUFFER(STRING_BUFFER *buffer)
+{
+    assert(buffer != 0);
+
+    return buffer->length;
+}
+
 /*
  * Cleans up the string in the buffer by reallocating the size, null terminating
  * the string, and freeing up the buffer. As it sounds, the buffer itself is
@@ -49,7 +57,7 @@ char *returnStringBUFFER(STRING_BUFFER *buffer)
     
     string = realloc(string, sizeof(char)*(buffer->length+1));
     assert(string != 0);
-    string[length] = '\0';
+    string[buffer->length] = '\0';
     
     free(buffer);
     return string;

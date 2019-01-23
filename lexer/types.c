@@ -5,6 +5,11 @@ char *INTEGER = "integer";
 char *REAL = "real";
 char *STRING = "string";
 
+// Resevered
+char *VAR = "var";
+char *FUNCTION = "function";
+char *DEFINE = "define";
+
 // Punctuation
 char *OBRACE = "{";
 char *CBRACE = "}";
@@ -37,4 +42,6 @@ char *PLUSPLUS = "++";
 char *MINUSMINUS = "--";
 
 // Other
+char *ID = "identifier";
 char *PARSE_ERROR = "parsing error";
+char *BAD_NUM = "incorrect number expression";

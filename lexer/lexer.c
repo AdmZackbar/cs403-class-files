@@ -1,8 +1,18 @@
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include "scanner.h"
 #include "lexeme.h"
 #include "types.h"
+#include "stringBuffer.h"
 
 static LEXEME *lex(FILE *fp);
+static LEXEME *lexNumber(FILE *fp, int ch);
+static LEXEME *lexString(FILE *fp);
+static LEXEME *lexWord(FILE *fp, int ch);
+static LEXEME *lexID(char *word);
+
+static int wordIs(char *reserved, char *word, int wordLength);
 
 int main(int argc, char **argv)
 {
@@ -22,12 +32,18 @@ int main(int argc, char **argv)
     }
     
     LEXEME *lexeme = lex(fp);
-    while (lexeme != NULL)
+    while (lexeme != NULL && !isErrorLEXEME(lexeme))
     {
         printLEXEME(stdout, lexeme);
         printf("\n");
         
         lexeme = lex(fp);
+    }
+
+    if(isErrorLEXEME(lexeme))
+    {
+        printLEXEME(stdout, lexeme);
+        return -3;
     }
 
     return 0;
@@ -58,7 +74,7 @@ static LEXEME *lex(FILE *fp)
     if (ch == '"')
         return lexString(fp);
     if (isalpha(ch))
-        return lexReserved(fp, ch);
+        return lexWord(fp, ch);
     
     return newLEXEMEerror(PARSE_ERROR, ch);
 }
@@ -68,19 +84,19 @@ static LEXEME *lexNumber(FILE *fp, int ch)
     STRING_BUFFER *buffer = newSTRINGBUFFER();
     int isReal = 0;
     
-    while(ch != EOF && (isdigit(ch) || ch == '.')
+    while(ch != EOF && (isdigit(ch) || ch == '.'))
     {
-        buffer.addCharBUFFER(buffer, ch);
+        addCharBUFFER(buffer, ch);
         if(ch == '.' && isReal)
-            return newLEXEME(BAD_NUM, buffer.getStringBUFFER());
+            return newLEXEMEvalue(BAD_NUM, returnStringBUFFER(buffer));
         if(ch == '.')
             isReal = 1;
         ch = readChar(fp);
     }
     pushbackChar(fp, ch);
     if(isReal)
-        return newLEXEME(REAL, atof(returnStringBUFFER(buffer)));
-    return newLEXEME(INT, atoi(returnStringBUFFER(buffer)));
+        return newLEXEMEdouble(REAL, atof(returnStringBUFFER(buffer)));
+    return newLEXEMEint(INTEGER, atoi(returnStringBUFFER(buffer)));
 }
 
 static LEXEME *lexString(FILE *fp)
@@ -94,25 +110,41 @@ static LEXEME *lexString(FILE *fp)
         ch = readChar(fp);
     }
     
-    return newLEXEME(STRING, returnStringBUFFER(buffer));
+    return newLEXEMEvalue(STRING, returnStringBUFFER(buffer));
 }
 
-static LEXEME *lexReserved(FILE *fp, int ch)
+static LEXEME *lexWord(FILE *fp, int ch)
 {
     STRING_BUFFER *buffer = newSTRINGBUFFER();
     
-    if (ch == 'v')
-}
-
-static LEXEME *lexID(FILE *fp, int ch)
-{
-    STRING_BUFFER *buffer = newSTRINGBUFFER();
-    
-    while(isalpha(ch) || isdigit(ch) || ch == '_' || ch == '-')
+    while(!isspace(ch))
     {
         addCharBUFFER(buffer, ch);
         ch = readChar(fp);
     }
+
+    int wordSize = getLengthBUFFER(buffer);
+    char *word = returnStringBUFFER(buffer);
+    if(wordIs(VAR, word, wordSize))
+        return newLEXEME(VAR);
+    if(wordIs(FUNCTION, word, wordSize))
+        return newLEXEME(FUNCTION);
+    if(wordIs(DEFINE, word, wordSize))
+        return newLEXEME(DEFINE);
     
-    return newLEXEME(ID, returnStringBUFFER(buffer));
+    return lexID(word);
+}
+
+static LEXEME *lexID(char *word)
+{
+    return newLEXEMEvalue(ID, word);
+}
+
+static int wordIs(char *reserved, char *word, int wordLength)
+{
+    for(int i=0; i<wordLength; i++)
+    {
+        word[i] = tolower(word[i]);
+    }
+    return !strcmp(reserved, word);
 }
