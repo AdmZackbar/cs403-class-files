@@ -37,4 +37,7 @@ extern char *UMINUS;
 extern char *PLUSPLUS;
 extern char *MINUSMINUS;
 
+// Other
+extern char *PARSE_ERROR;
+
 #endif

@@ -67,15 +67,15 @@ op : EQUALS
    | MODULUS
    | EXPONANT
    | DOT
-   | LESS_THAN              // <
-   | GREATER_THAN           // >
-   | LESS_THAN_EQUAL        // <=
-   | GREATER_THAN_EQUAL     // >=
-   | EQUALSEQUALS           // ==
-   | LOGICAL_AND            // &&
-   | LOGICAL_OR             // ||
-   | BINARY_AND             // &
-   | BINARY_OR              // |
+   | LESS_THAN
+   | GREATER_THAN
+   | LESS_THAN_EQUAL
+   | GREATER_THAN_EQUAL
+   | EQUALSEQUALS
+   | LOGICAL_AND
+   | LOGICAL_OR
+   | BINARY_AND
+   | BINARY_OR
 
 optParamList : paramList
              | EMPTY
@@ -98,8 +98,9 @@ statement : expr SEMICOLON
           | VAR varList SEMICOLON
           | IF OPAREN expr CPAREN block optElse
           | WHILE OPAREN expr CPAREN block
+          | DO block WHILE OPAREN expr CPAREN SEMICOLON
           | RETURN expr SEMICOLON
-          | FUNCTION ID OPAREN optParamList CPAREN block
+          | DEFINE ID OPAREN optParamList CPAREN block
 
 optElse : ELSE block
         | ELSE ifStatement

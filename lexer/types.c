@@ -35,3 +35,6 @@ char *BINARY_OR = "|";
 char *UMINUS = "-";
 char *PLUSPLUS = "++";
 char *MINUSMINUS = "--";
+
+// Other
+char *PARSE_ERROR = "parsing error";

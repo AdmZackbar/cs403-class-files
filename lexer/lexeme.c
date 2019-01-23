@@ -19,7 +19,20 @@ LEXEME *newLEXEME(char *type)
     return l;
 }
 
+LEXEME *newLEXEMEerror(char *type, int ch)
+{
+    LEXEME *l = newLEXEME(type);
+    l->sVal = malloc(sizeof(char));
+    l->sVal[0] = ch;
+    return l;
+}
+
 char *getTypeLEXEME(LEXEME *lexeme)
 {
     return lexeme->type;
+}
+
+void printLEXEME(FILE *fp, LEXEME *lexeme)
+{
+    fprintf(fp, lexeme->type);
 }

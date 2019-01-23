@@ -1,0 +1,56 @@
+#include <stdlib.h>
+#include <assert.h>
+#include "stringBuffer.h"
+
+struct stringBuffer
+{
+    char *store;
+    int size, length;
+};
+
+STRING_BUFFER *newSTRINGBUFFER()
+{
+    STRING_BUFFER *buffer = malloc(sizeof(STRING_BUFFER));
+    assert(buffer != 0);
+    
+    buffer->size = 80;
+    buffer->length = 0;
+    buffer->store = malloc(sizeof(char)*buffer->size);
+    assert(buffer->store != 0);
+    
+    return buffer;
+}
+/*
+ * Adds a character to the buffer, increasing the memory of the buffer as
+ * necessary.
+ */
+void addCharBUFFER(STRING_BUFFER *buffer, int ch)
+{
+    assert(buffer != 0);
+    
+    if(buffer->length >= buffer->size)
+    {
+        buffer->size *= 2;
+        buffer->store = realloc(buffer->store, sizeof(char)*buffer->size);
+        assert(buffer->store != 0);
+    }
+    buffer->store[length++] = ch;
+}
+/*
+ * Cleans up the string in the buffer by reallocating the size, null terminating
+ * the string, and freeing up the buffer. As it sounds, the buffer itself is
+ * destroyed in the process of this function.
+ */
+char *returnStringBUFFER(STRING_BUFFER *buffer)
+{
+    assert(buffer != 0);
+    
+    char *string = buffer->store;
+    
+    string = realloc(string, sizeof(char)*(buffer->length+1));
+    assert(string != 0);
+    string[length] = '\0';
+    
+    free(buffer);
+    return string;
+}
