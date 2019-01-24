@@ -10,8 +10,22 @@ extern char *STRING;
 extern char *VAR;
 extern char *FUNCTION;
 extern char *DEFINE;
+extern char *CLASS;
+extern char *PUBLIC;
+extern char *PRIVATE;
+extern char *PROTECTED;
+extern char *NULL_WORD;
+extern char *THIS;
+extern char *NEW;
+extern char *IF;
+extern char *ELSE;
+extern char *WHILE;
+extern char *DO;
+extern char *RETURN;
 
 // Punctuation
+extern char *SEMICOLON;
+extern char *COMMA;
 extern char *OBRACE;
 extern char *CBRACE;
 extern char *OPAREN;

@@ -31,18 +31,12 @@ int main(int argc, char **argv)
     LEXER *lexer = newLEXER(argv[1]);
     
     LEXEME *lexeme = lex(lexer);
-    while (lexeme != NULL && !isErrorLEXEME(lexeme))
+    while (getTypeLEXEME(lexeme) != END_OF_FILE)
     {
         printLEXEME(stdout, lexeme);
         printf("\n");
         
         lexeme = lex(lexer);
-    }
-
-    if(isErrorLEXEME(lexeme))
-    {
-        printLEXEME(stdout, lexeme);
-        return -3;
     }
 
     return 0;
@@ -66,7 +60,11 @@ LEXEME *lex(LEXER *lexer)
     ch = readChar(lexer->fp);
     
     if (ch == EOF)
-        return NULL;
+        return newLEXEME(END_OF_FILE);
+    if (ch == ';')
+        return newLEXEME(SEMICOLON);
+    if (ch == ',')
+        return newLEXEME(COMMA);
     if (ch == '{')
         return newLEXEME(OBRACE);
     if (ch == '}')
@@ -86,7 +84,10 @@ LEXEME *lex(LEXER *lexer)
     if (isalpha(ch))
         return lexWord(lexer->fp, ch);
     
-    return newLEXEMEerror(PARSE_ERROR, ch);
+    char *errorChar = malloc(sizeof(char) * 2);
+    errorChar[0] = ch;
+    errorChar[1] = '\0';
+    return newLEXEMEstring(PARSE_ERROR, errorChar);
 }
 
 static LEXEME *lexNumber(FILE *fp, int ch)
@@ -98,15 +99,15 @@ static LEXEME *lexNumber(FILE *fp, int ch)
     {
         addCharBUFFER(buffer, ch);
         if(ch == '.' && isReal)
-            return newLEXEMEvalue(BAD_NUM, returnStringBUFFER(buffer));
+            return newLEXEMEstring(BAD_NUM, returnStringBUFFER(buffer));
         if(ch == '.')
             isReal = 1;
         ch = readChar(fp);
     }
     pushbackChar(fp, ch);
     if(isReal)
-        return newLEXEMEdouble(REAL, atof(returnStringBUFFER(buffer)));
-    return newLEXEMEint(INTEGER, atoi(returnStringBUFFER(buffer)));
+        return newLEXEMEdouble(atof(returnStringBUFFER(buffer)));
+    return newLEXEMEint(atoi(returnStringBUFFER(buffer)));
 }
 
 static LEXEME *lexString(FILE *fp)
@@ -120,7 +121,7 @@ static LEXEME *lexString(FILE *fp)
         ch = readChar(fp);
     }
     
-    return newLEXEMEvalue(STRING, returnStringBUFFER(buffer));
+    return newLEXEMEstring(STRING, returnStringBUFFER(buffer));
 }
 
 static LEXEME *lexWord(FILE *fp, int ch)
@@ -141,13 +142,37 @@ static LEXEME *lexWord(FILE *fp, int ch)
         return newLEXEME(FUNCTION);
     if(wordIs(DEFINE, word, wordSize))
         return newLEXEME(DEFINE);
+    if(wordIs(CLASS, word, wordSize))
+        return newLEXEME(CLASS);
+    if(wordIs(PUBLIC, word, wordSize))
+        return newLEXEME(PUBLIC);
+    if(wordIs(PRIVATE, word, wordSize))
+        return newLEXEME(PRIVATE);
+    if(wordIs(PROTECTED, word, wordSize))
+        return newLEXEME(PROTECTED);
+    if(wordIs(NULL_WORD, word, wordSize))
+        return newLEXEME(NULL_WORD);
+    if(wordIs(THIS, word, wordSize))
+        return newLEXEME(THIS);
+    if(wordIs(NEW, word, wordSize))
+        return newLEXEME(NEW);
+    if(wordIs(IF, word, wordSize))
+        return newLEXEME(IF);
+    if(wordIs(ELSE, word, wordSize))
+        return newLEXEME(ELSE);
+    if(wordIs(WHILE, word, wordSize))
+        return newLEXEME(WHILE);
+    if(wordIs(DO, word, wordSize))
+        return newLEXEME(DO);
+    if(wordIs(RETURN, word, wordSize))
+        return newLEXEME(RETURN);
     
     return lexID(word);
 }
 
 static LEXEME *lexID(char *word)
 {
-    return newLEXEMEvalue(ID, word);
+    return newLEXEMEstring(ID, word);
 }
 
 static int wordIs(char *reserved, char *word, int wordLength)

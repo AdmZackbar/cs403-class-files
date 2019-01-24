@@ -22,30 +22,23 @@ LEXEME *newLEXEME(char *type)
     return l;
 }
 
-LEXEME *newLEXEMEvalue(char *type, void *value)
+LEXEME *newLEXEMEstring(char *type, char *value)
 {
     LEXEME *l = newLEXEME(type);
+    l->sVal = value;
     return l;
 }
 
-LEXEME *newLEXEMEdouble(char *type, double value)
+LEXEME *newLEXEMEdouble(double value)
 {
-    LEXEME *l = newLEXEME(type);
+    LEXEME *l = newLEXEME(REAL);
     l->rVal = value;
     return l;
 }
-LEXEME *newLEXEMEint(char *type, int value)
+LEXEME *newLEXEMEint(int value)
 {
-    LEXEME *l = newLEXEME(type);
+    LEXEME *l = newLEXEME(INTEGER);
     l->iVal = value;
-    return l;
-}
-
-LEXEME *newLEXEMEerror(char *type, int ch)
-{
-    LEXEME *l = newLEXEME(type);
-    l->sVal = malloc(sizeof(char));
-    l->sVal[0] = ch;
     return l;
 }
 
