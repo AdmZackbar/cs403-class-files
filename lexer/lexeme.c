@@ -13,31 +13,33 @@ struct lexeme
     char *sVal;
 };
 
-LEXEME *newLEXEME(char *type)
+LEXEME *newLEXEME(char *type, int lineNum)
 {
     LEXEME *l = malloc(sizeof(LEXEME));
     assert(l != 0);
 
     l->type = type;
+    l->lineNum = lineNum;
+    l->sVal = NULL;
     return l;
 }
 
-LEXEME *newLEXEMEstring(char *type, char *value)
+LEXEME *newLEXEMEstring(char *type, char *value, int lineNum)
 {
-    LEXEME *l = newLEXEME(type);
+    LEXEME *l = newLEXEME(type, lineNum);
     l->sVal = value;
     return l;
 }
 
-LEXEME *newLEXEMEdouble(double value)
+LEXEME *newLEXEMEdouble(double value, int lineNum)
 {
-    LEXEME *l = newLEXEME(REAL);
+    LEXEME *l = newLEXEME(REAL, lineNum);
     l->rVal = value;
     return l;
 }
-LEXEME *newLEXEMEint(int value)
+LEXEME *newLEXEMEint(int value, int lineNum)
 {
-    LEXEME *l = newLEXEME(INTEGER);
+    LEXEME *l = newLEXEME(INTEGER, lineNum);
     l->iVal = value;
     return l;
 }
@@ -47,6 +49,11 @@ char *getTypeLEXEME(LEXEME *lexeme)
     return lexeme->type;
 }
 
+int getLineNumLEXEME(LEXEME *lexeme)
+{
+    return lexeme->lineNum;
+}
+
 int isErrorLEXEME(LEXEME *lexeme)
 {
     return lexeme->type == PARSE_ERROR || lexeme->type == BAD_NUM;
@@ -54,5 +61,5 @@ int isErrorLEXEME(LEXEME *lexeme)
 
 void printLEXEME(FILE *fp, LEXEME *lexeme)
 {
-    fprintf(fp, "%s", lexeme->type);
+    fprintf(fp, "%s - line %d", lexeme->type, lexeme->lineNum);
 }

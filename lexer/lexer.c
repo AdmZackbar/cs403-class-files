@@ -11,11 +11,12 @@
 struct lexer
 {
     FILE *fp;
+    int lineNum;
 };
 
-static LEXEME *lexNumber(FILE *fp, int ch);
-static LEXEME *lexString(FILE *fp);
-static LEXEME *lexWord(FILE *fp, int ch);
+static LEXEME *lexNumber(LEXER *lexer, int ch);
+static LEXEME *lexString(LEXER *lexer);
+static LEXEME *lexWord(LEXER *lexer, int ch);
 static LEXEME *lexID(char *word);
 static int wordIs(char *reserved, char *word, int wordLength);
 
@@ -49,6 +50,7 @@ LEXER *newLEXER(char *filename)
     
     l->fp = fopen(filename, "rw");
     assert(l->fp != 0);
+    l->lineNum = 1;
     
     return l;
 }
@@ -57,26 +59,26 @@ LEXEME *lex(LEXER *lexer)
 {
     int ch;
 
-    ch = readChar(lexer->fp);
+    ch = readChar(lexer->fp, &lexer->lineNum);
     
     if (ch == EOF)
-        return newLEXEME(END_OF_FILE);
+        return newLEXEME(END_OF_FILE, lexer->lineNum);
     if (ch == ';')
-        return newLEXEME(SEMICOLON);
+        return newLEXEME(SEMICOLON, lexer->lineNum);
     if (ch == ',')
-        return newLEXEME(COMMA);
+        return newLEXEME(COMMA, lexer->lineNum);
     if (ch == '{')
-        return newLEXEME(OBRACE);
+        return newLEXEME(OBRACE, lexer->lineNum);
     if (ch == '}')
-        return newLEXEME(CBRACE);
+        return newLEXEME(CBRACE, lexer->lineNum);
     if (ch == '(')
-        return newLEXEME(OPAREN);
+        return newLEXEME(OPAREN, lexer->lineNum);
     if (ch == ')')
-        return newLEXEME(CPAREN);
+        return newLEXEME(CPAREN, lexer->lineNum);
     if (ch == '[')
-        return newLEXEME(OBRACKET);
+        return newLEXEME(OBRACKET, lexer->lineNum);
     if (ch == ']')
-        return newLEXEME(CBRACKET);
+        return newLEXEME(CBRACKET, lexer->lineNum);
     if (isdigit(ch) || ch == '.')
         return lexNumber(lexer->fp, ch);
     if (ch == '"')
@@ -87,10 +89,10 @@ LEXEME *lex(LEXER *lexer)
     char *errorChar = malloc(sizeof(char) * 2);
     errorChar[0] = ch;
     errorChar[1] = '\0';
-    return newLEXEMEstring(PARSE_ERROR, errorChar);
+    return newLEXEMEstring(PARSE_ERROR, errorChar, lexer->lineNum);
 }
 
-static LEXEME *lexNumber(FILE *fp, int ch)
+static LEXEME *lexNumber(LEXER *lexer, int ch)
 {
     STRING_BUFFER *buffer = newSTRINGBUFFER();
     int isReal = 0;
@@ -99,80 +101,80 @@ static LEXEME *lexNumber(FILE *fp, int ch)
     {
         addCharBUFFER(buffer, ch);
         if(ch == '.' && isReal)
-            return newLEXEMEstring(BAD_NUM, returnStringBUFFER(buffer));
+            return newLEXEMEstring(BAD_NUM, returnStringBUFFER(buffer), lexer->lineNum);
         if(ch == '.')
             isReal = 1;
-        ch = readChar(fp);
+        ch = readChar(lexer->fp, &lexer->lineNum);
     }
-    pushbackChar(fp, ch);
+    pushbackChar(lexer->fp, ch);
     if(isReal)
-        return newLEXEMEdouble(atof(returnStringBUFFER(buffer)));
-    return newLEXEMEint(atoi(returnStringBUFFER(buffer)));
+        return newLEXEMEdouble(atof(returnStringBUFFER(buffer)), lexer->lineNum);
+    return newLEXEMEint(atoi(returnStringBUFFER(buffer)), lexer->lineNum);
 }
 
-static LEXEME *lexString(FILE *fp)
+static LEXEME *lexString(LEXER *lexer)
 {
     STRING_BUFFER *buffer = newSTRINGBUFFER();
     
-    int ch = readChar(fp);
+    int ch = readChar(lexer->fp, &lexer->lineNum);
     while(ch != EOF && ch != '"')
     {
         addCharBUFFER(buffer, ch);
-        ch = readChar(fp);
+        ch = readChar(lexer->fp, &lexer->lineNum);
     }
     
-    return newLEXEMEstring(STRING, returnStringBUFFER(buffer));
+    return newLEXEMEstring(STRING, returnStringBUFFER(buffer), lexer->lineNum);
 }
 
-static LEXEME *lexWord(FILE *fp, int ch)
+static LEXEME *lexWord(LEXER *lexer, int ch)
 {
     STRING_BUFFER *buffer = newSTRINGBUFFER();
     
-    while(!isspace(ch))
+    while(ch != EOF && !isspace(ch))
     {
         addCharBUFFER(buffer, ch);
-        ch = readChar(fp);
+        ch = readChar(lexer->fp, &lexer->lineNum);
     }
 
     int wordSize = getLengthBUFFER(buffer);
     char *word = returnStringBUFFER(buffer);
     if(wordIs(VAR, word, wordSize))
-        return newLEXEME(VAR);
+        return newLEXEME(VAR, lexer->lineNum);
     if(wordIs(FUNCTION, word, wordSize))
-        return newLEXEME(FUNCTION);
+        return newLEXEME(FUNCTION, lexer->lineNum);
     if(wordIs(DEFINE, word, wordSize))
-        return newLEXEME(DEFINE);
+        return newLEXEME(DEFINE, lexer->lineNum);
     if(wordIs(CLASS, word, wordSize))
-        return newLEXEME(CLASS);
+        return newLEXEME(CLASS, lexer->lineNum);
     if(wordIs(PUBLIC, word, wordSize))
-        return newLEXEME(PUBLIC);
+        return newLEXEME(PUBLIC, lexer->lineNum);
     if(wordIs(PRIVATE, word, wordSize))
-        return newLEXEME(PRIVATE);
+        return newLEXEME(PRIVATE, lexer->lineNum);
     if(wordIs(PROTECTED, word, wordSize))
-        return newLEXEME(PROTECTED);
+        return newLEXEME(PROTECTED, lexer->lineNum);
     if(wordIs(NULL_WORD, word, wordSize))
-        return newLEXEME(NULL_WORD);
+        return newLEXEME(NULL_WORD, lexer->lineNum);
     if(wordIs(THIS, word, wordSize))
-        return newLEXEME(THIS);
+        return newLEXEME(THIS, lexer->lineNum);
     if(wordIs(NEW, word, wordSize))
-        return newLEXEME(NEW);
+        return newLEXEME(NEW, lexer->lineNum);
     if(wordIs(IF, word, wordSize))
-        return newLEXEME(IF);
+        return newLEXEME(IF, lexer->lineNum);
     if(wordIs(ELSE, word, wordSize))
-        return newLEXEME(ELSE);
+        return newLEXEME(ELSE, lexer->lineNum);
     if(wordIs(WHILE, word, wordSize))
-        return newLEXEME(WHILE);
+        return newLEXEME(WHILE, lexer->lineNum);
     if(wordIs(DO, word, wordSize))
-        return newLEXEME(DO);
+        return newLEXEME(DO, lexer->lineNum);
     if(wordIs(RETURN, word, wordSize))
-        return newLEXEME(RETURN);
+        return newLEXEME(RETURN, lexer->lineNum);
     
-    return lexID(word);
+    return lexID(word, lexer->lineNum);
 }
 
-static LEXEME *lexID(char *word)
+static LEXEME *lexID(char *word, int lineNum)
 {
-    return newLEXEMEstring(ID, word);
+    return newLEXEMEstring(ID, word, lineNum);
 }
 
 static int wordIs(char *reserved, char *word, int wordLength)

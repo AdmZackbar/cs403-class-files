@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-extern char readChar(FILE *fp);
+extern char readChar(FILE *fp, int *lineNum);
 
 extern void pushbackChar(FILE *fp, int ch);
 

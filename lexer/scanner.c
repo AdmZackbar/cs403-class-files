@@ -2,14 +2,14 @@
 #include <ctype.h>  // For isspace
 #include "scanner.h"
 
-static void skipWhitespace(FILE *fp);
+static int skipWhitespace(FILE *fp);
 static void skipLineComment(FILE *fp);
-static void skipBlockComment(FILE *fp);
+static int skipBlockComment(FILE *fp);
 static int isNewLine(FILE *fp, int ch);
 
-char readChar(FILE *fp)
+char readChar(FILE *fp, int *lineNum)
 {
-    skipWhitespace(fp);
+    *lineNum += skipWhitespace(fp);
 
     return fgetc(fp);
 }
@@ -24,37 +24,40 @@ void pushbackChar(FILE *fp, int ch)
  * If the character is part of a comment, it too is ignored. This process
  * ends with the finding of a character that is not in a comment.
  */
-static void skipWhitespace(FILE *fp)
+static int skipWhitespace(FILE *fp)
 {
-    int ch;
+    int ch, numNewLines = 0;
 
     //Read characters until non-whitespace is found
     while((ch = fgetc(fp)) != EOF && isspace(ch))
-        continue;
+    {
+        if (ch == '\n')
+            numNewLines++;
+    }
     
     if (ch == '/')
     {
         ch = fgetc(fp);
-        if(ch == '/')    // is a line comment
+        if(ch == '/') // is a line comment
         {
             skipLineComment(fp);
-            skipWhitespace(fp);
+            return 1 + numNewLines + skipWhitespace(fp);
         }
-        else if (ch == '*')    // is a block comment
+        else if (ch == '*') // is a block comment
         {
-            skipBlockComment(fp);
-            skipWhitespace(fp);
+            numNewLines += skipBlockComment(fp);
+            return numNewLines + skipWhitespace(fp);
         }
-        else    // not a comment: need to re-add those characters
-        {
-            ungetc(ch, fp);
-            ungetc('/', fp);
-            return;    // return early since we are re-adding the character later
-        }
+        // not a comment: need to re-add those characters
+        ungetc(ch, fp);
+        ungetc('/', fp);
+        return numNewLines; // return early since we are re-adding the character later
     }
 
     if(ch != EOF)
         ungetc(ch,fp);
+        
+    return numNewLines;
 }
 
 /*
@@ -72,9 +75,9 @@ static void skipLineComment(FILE *fp)
  * Reads in and ignores all characters until the end string is found.
  * The end string is consumed at the end.
  */
-static void skipBlockComment(FILE *fp)
+static int skipBlockComment(FILE *fp)
 {
-    int ch = fgetc(fp);
+    int ch = fgetc(fp), numNewLines = 0;
     while(ch != EOF)
     {
         if (ch == '*')
@@ -83,8 +86,14 @@ static void skipBlockComment(FILE *fp)
             if (ch == '/')
                 break;
         }
+        else if (ch == '\n')
+        {
+            numNewLines++;
+        }
         ch = fgetc(fp);
     }
+    
+    return numNewLines;
 }
 
 /*

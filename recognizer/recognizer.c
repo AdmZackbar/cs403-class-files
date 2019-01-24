@@ -9,11 +9,60 @@ static LEXEME *advance();
 static int check(char *type);
 static LEXEME *match(char *type);
 static void recognize(char *filename);
+static void failParse(char *component);
 // Grammar helper functions
 static void program();
 static int programPending();
 static void classDef();
 static int classDefPending();
+static void classHeader();
+static int classHeaderPending();
+static void optClassStatements();
+static int optClassStatementsPending();
+static void classStatements();
+static int classStatementsPending();
+static void classStatement();
+static int classStatementPending();
+static void accessMod();
+static int accessModPending();
+static void varList();
+static int varListPending();
+static void varDef();
+static int varDefPending();
+static void expr();
+static int exprPending();
+static void unary();
+static int unaryPending();
+static void idExpr();
+static int idExprPending();
+static void postVar();
+static int postVarPending();
+static void optExprList();
+static int optExprListPending();
+static void exprList();
+static int exprListPending();
+static void uop();
+static int uopPending();
+static void op();
+static int opPending();
+static void optParamList();
+static int optParamListPending();
+static void paramList();
+static int paramListPending();
+static void param();
+static int paramPending();
+static void block();
+static int blockPending();
+static void optStatements();
+static int optStatementsPending();
+static void statements();
+static int statementsPending();
+static void statement();
+static int statementPending();
+static void optElse();
+static int optElsePending();
+static void else();
+static int elsePending();
 
 LEXER *lexer;
 LEXEME *current;
@@ -69,6 +118,11 @@ static void recognize(char *filename)
     // Check if everything has been properly parsed
     match(END_OF_FILE);
 }
+static void failParse(char *component)
+{
+    printf("Incorrect structure in grammar module %s\n", component);
+    exit(-404);
+}
 
 static void program()
 {
@@ -92,4 +146,442 @@ static void classDef()
 static int classDefPending()
 {
     return check(CLASS);
+}
+
+static void classHeader()
+{
+    match(ID);
+    if (check(EXTENDS))
+    {
+        advance();
+        match(ID);
+    }
+}
+static int classHeaderPending()
+{
+    return check(ID);
+}
+
+static void optClassStatements()
+{
+    if (classStatementsPending())
+        classStatements();
+}
+static int optClassStatementsPending()
+{
+    return 1;
+}
+
+static void classStatements()
+{
+    classStatement();
+    if (classStatementsPending())
+        classStatements();
+}
+static int classStatementsPending()
+{
+    return classStatementPending();
+}
+
+static void classStatement()
+{
+    accessMod();
+    if (check(VAR))
+    {
+        advance();
+        varList();
+        match(SEMICOLON);
+    }
+    else if (check(FUNCTION))
+    {
+        advance();
+        match(ID);
+        match(OPAREN);
+        optParamList();
+        match(CPAREN);
+        block();
+    }
+    else
+        failParse("class statement");
+}
+static int classStatementPending()
+{
+    return accessModPending();
+}
+
+static void accessMod()
+{
+    if (check(PUBLIC))
+        advance();
+    if (check(PRIVATE))
+        advance();
+    if (check(PROTECTED))
+        advance();
+}
+static int accessModPending()
+{
+    return 1;
+}
+
+static void varList()
+{
+    varDef();
+    if (check(COMMA))
+    {
+        advance();
+        varList();
+    }
+}
+static int varListPending()
+{
+    return varDefPending();
+}
+
+static void varDef()
+{
+    match(ID);
+    if (check(EQUALS))
+        expr();
+}
+static int varDefPending()
+{
+    return check(ID);
+}
+
+static void expr()
+{
+    unary();
+    if (opPending())
+        expr();
+}
+static int exprPending()
+{
+    return unaryPending();
+}
+
+static void unary()
+{
+    if (idExprPending())
+        idExpr();
+    else if (check(INTEGER))
+        advance();
+    else if (check(REAL))
+        advance();
+    else if (check(STRING))
+        advance();
+    else if (uopPending())
+        uop();
+    else if (check(OPAREN))
+    {
+        advance();
+        expr();
+        match(CPAREN);
+    }
+    else if (check(NULL_WORD))
+        advance();
+    else if (check(THIS))
+        advance();
+    else if (check(NEW))
+    {
+        advance();
+        match(ID);
+        match(OPAREN);
+        optExprList();
+        match(CPAREN);
+    }
+    else
+        failParse("unary");
+}
+static int unaryPending()
+{
+    return idExprPending() || check(INTEGER) || check(REAL) || check(STRING)
+            || uopPending() || check(OPAREN) || check(NULL_WORD) || check(THIS)
+            || check(NEW);
+}
+
+static void idExpr()
+{
+    match(ID);
+    if (postVarPending())
+        postVar();
+    else if (check(OPAREN))
+    {
+        advance();
+        optExprList();
+        match(CPAREN);
+    }
+    else if (check(OBRACKET))
+    {
+        advance();
+        match(INTEGER);
+        match(CBRACKET);
+    }
+}
+static int idExprPending()
+{
+    return check(ID);
+}
+
+static void postVar()
+{
+    if (check(PLUSPLUS))
+        advance();
+    else if (check(MINUSMINUS))
+        advance();
+    // TODO ERROR OUT
+}
+static int postVarPending()
+{
+    return check(PLUSPLUS) || check(MINUSMINUS);
+}
+
+static void optExprList()
+{
+    if (exprListPending())
+        exprList();
+}
+static int optExprListPending()
+{
+    return 1;
+}
+
+static void exprList()
+{
+    expr();
+    if (check(COMMA))
+    {
+        advance();
+        exprList();
+    }
+}
+static int exprListPending()
+{
+    return exprPending();
+}
+
+static void uop()
+{
+    if (check(UMINUS))
+        advance();
+    else if (check(PLUSPLUS))
+        advance();
+    else if (check(MINUSMINUS))
+        advance();
+    else
+        failParse("unary operator");
+}
+static int uopPending()
+{
+    return check(UMINUS) || check(PLUSPLUS) || check(MINUSMINUS);
+}
+
+static void op()
+{
+    if (check(EQUALS))
+        advance();
+    else if (check(PLUS))
+        advance();
+    else if (check(MINUS))
+        advance();
+    else if (check(TIMES))
+        advance();
+    else if (check(DIVIDE))
+        advance();
+    else if (check(MODULUS))
+        advance();
+    else if (check(EXPONANT))
+        advance();
+    else if (check(DOT))
+        advance();
+    else if (check(LESS_THAN))
+        advance();
+    else if (check(GREATER_THAN))
+        advance();
+    else if (check(LESS_THAN_EQUAL))
+        advance();
+    else if (check(GREATER_THAN_EQUAL))
+        advance();
+    else if (check(EQUALSEQUALS))
+        advance();
+    else if (check(LOGICAL_AND))
+        advance();
+    else if (check(LOGICAL_OR))
+        advance();
+    else if (check(BINARY_AND))
+        advance();
+    else if (check(BINARY_OR))
+        advance();
+    else
+        failParse("operator");
+}
+static int opPending()
+{
+    return check(EQUALS) || check(PLUS) || check(MINUS) || check(TIMES)
+        || check(DIVIDE) || check(MODULUS) || check(EXPONANT) || check(DOT)
+        || check(LESS_THAN) || check(GREATER_THAN) || check(LESS_THAN_EQUAL)
+        || check(GREATER_THAN_EQUAL) || check(EQUALSEQUALS) || check(LOGICAL_AND)
+        || check(LOGICAL_OR) || check(BINARY_AND) || check(BINARY_OR);
+}
+
+static void optParamList()
+{
+    if (paramListPending())
+        paramList();
+}
+static int optParamListPending()
+{
+    return 1;
+}
+
+static void paramList()
+{
+    param();
+    if (check(COMMA))
+        paramList();
+}
+static int paramListPending()
+{
+    return paramPending();
+}
+
+static void param()
+{
+    match(ID);
+    if (check(EQUALS))
+    {
+        advance();
+        expr();
+    }
+}
+static int paramPending()
+{
+    return check(ID);
+}
+
+static void block()
+{
+    match(OBRACE);
+    optStatements();
+    match(CBRACE);
+}
+static int blockPending()
+{
+    return check(OBRACE);
+}
+
+static void optStatements()
+{
+    if (statementsPending())
+        statements();
+}
+static int optStatementsPending()
+{
+    return 1;
+}
+
+static void statements()
+{
+    statement();
+    if (statementsPending())
+        statements();
+}
+static int statementsPending()
+{
+    return statementPending();
+}
+
+static void statement()
+{
+    if (exprPending())
+    {
+        expr();
+        match(SEMICOLON);
+    }
+    else if (check(VAR))
+    {
+        advance();
+        varList();
+        match(SEMICOLON);
+    }
+    else if (check(IF))
+    {
+        advance();
+        match(OPAREN);
+        expr();
+        match(CPAREN);
+        block();
+        optElse();
+    }
+    else if (check(WHILE))
+    {
+        advance();
+        match(OPAREN);
+        expr();
+        match(CPAREN);
+        block();
+    }
+    else if (check(DO))
+    {
+        advance();
+        block();
+        match(WHILE);
+        match(OPAREN);
+        expr();
+        match(CPAREN);
+        match(SEMICOLON);
+    }
+    else if (check(RETURN))
+    {
+        advance();
+        expr();
+        match(SEMICOLON);
+    }
+    else if (check(DEFINE))
+    {
+        advance();
+        match(ID);
+        match(OPAREN);
+        optParamList();
+        match(CPAREN);
+        block();
+    }
+    else
+        failParse("statement");
+}
+static int statementPending()
+{
+    return exprPending() || check(VAR) || check(IF) || check(WHILE) || check(DO)
+        || check(RETURN) || check(DEFINE);
+}
+
+static void optElse()
+{
+    if (elsePending())
+        else();
+}
+static int optElsePending()
+{
+    return 1;
+}
+
+static void else()
+{
+    match(ELSE);
+    if (blockPending())
+        block();
+    else if (check(IF))
+    {
+        advance();
+        match(OPAREN);
+        expr();
+        match(CPAREN);
+        block();
+        optElse();
+    }
+    else
+        failParse("else statement");
+}
+static int elsePending()
+{
+    return check(ELSE);
 }
