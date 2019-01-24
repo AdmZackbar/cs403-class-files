@@ -2,6 +2,14 @@
 #include <assert.h>
 #include "stringBuffer.h"
 
+/*
+ * Author:  Zach Wassynger
+ * Date:    1/22/2019
+ * Purpose: Part of the designer programming language project of CS 403.
+ *          Essentially a dynamic array for characters. It starts out with a fixed
+ *          size, then grows as needed.
+ */
+
 struct stringBuffer
 {
     char *store;

@@ -1,5 +1,13 @@
 #include "types.h"
 
+/*
+ * Author:  Zach Wassynger
+ * Date:    1/20/2019
+ * Purpose: Part of the designer programming language project of CS 403.
+ *          Simply a files of constants for ease of comparison.
+ *          This allows for the use of == between these strings.
+ */
+
 // Data primatives
 char *INTEGER = "integer";
 char *REAL = "real";

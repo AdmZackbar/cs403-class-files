@@ -4,6 +4,13 @@
 #include "lexeme.h"
 #include "types.h"
 
+/*
+ * Author:  Zach Wassynger
+ * Date:    1/20/2019
+ * Purpose: Part of the designer programming language project of CS 403.
+ *          Holds information about certain types of grammar objects.
+ */
+
 struct lexeme
 {
     char *type;

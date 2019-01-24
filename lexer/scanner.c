@@ -2,6 +2,14 @@
 #include <ctype.h>  // For isspace
 #include "scanner.h"
 
+/*
+ * Author:  Zach Wassynger
+ * Date:    1/22/2019
+ * Purpose: Part of the designer programming language project of CS 403.
+ *          Can read in a file one character at a time, skipping whitespace and
+ *          comments as needed.
+ */
+
 static int skipWhitespace(FILE *fp);
 static void skipLineComment(FILE *fp);
 static int skipBlockComment(FILE *fp);

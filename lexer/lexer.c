@@ -8,6 +8,13 @@
 #include "types.h"
 #include "stringBuffer.h"
 
+/*
+ * Author:  Zach Wassynger
+ * Date:    1/22/2019
+ * Purpose: Part of the designer programming language project of CS 403.
+ *          Scans a given file to determine its "lexemes".
+ */
+
 struct lexer
 {
     FILE *fp;
@@ -18,6 +25,7 @@ static LEXEME *lexNumber(LEXER *lexer, int ch);
 static LEXEME *lexString(LEXER *lexer);
 static LEXEME *lexWord(LEXER *lexer, int ch);
 static LEXEME *lexID(char *word);
+static int iswordch(int ch);
 static int wordIs(char *reserved, char *word, int wordLength);
 
 int main(int argc, char **argv)
@@ -130,7 +138,7 @@ static LEXEME *lexWord(LEXER *lexer, int ch)
 {
     STRING_BUFFER *buffer = newSTRINGBUFFER();
     
-    while(ch != EOF && !isspace(ch))
+    while(ch != EOF && iswordch(ch))
     {
         addCharBUFFER(buffer, ch);
         ch = readChar(lexer->fp, &lexer->lineNum);
@@ -175,6 +183,11 @@ static LEXEME *lexWord(LEXER *lexer, int ch)
 static LEXEME *lexID(char *word, int lineNum)
 {
     return newLEXEMEstring(ID, word, lineNum);
+}
+
+static int iswordch(int ch)
+{
+    return isalpha(ch) || ch == '_';
 }
 
 static int wordIs(char *reserved, char *word, int wordLength)
