@@ -6,6 +6,18 @@ FLAGS = -c
 scanner : $(OBJS)
 	gcc $(OBJS) -o scanner
 
+run : scanner
+	@echo Running test 1...
+	test1
+	@echo Running test 2...
+	test2
+	@echo Running test 3...
+	test3
+	@echo Running test 4...
+	test4
+	@echo Running test 5...
+	test5
+
 test1 : scanner
 	./scanner ./testfiles/program1.sea
 

@@ -1,0 +1,9 @@
+class DynamicArray
+{
+    var store = newArray();
+    var size;
+    function someStuff()
+    {
+        
+    }
+}

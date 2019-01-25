@@ -1,0 +1,37 @@
+class StraightFire
+{
+    var legends = newArray();
+    function StraightFire(legends = NULL)
+    {
+        if (legends != NULL)
+            this.legends = legends;
+    }
+
+    public function clone()
+    {
+        var clone = new StraightFire(this.legends);
+        return clone;
+    }
+}
+
+class PureFire extends StraightFire
+{
+    var spitFire;
+
+    public function SetSpitFire(spitFireFunc = NULL)
+    {
+        if (spitFireFunc != NULL)
+        {
+            spitFire = spitFireFunc;
+        }
+        else
+        {
+            define newSpitFire(duration, intensity)
+            {
+                // do something
+                return legends[0] * intensity + duration;
+            }
+            spitFire = newSpitFire;
+        }
+    }
+}
