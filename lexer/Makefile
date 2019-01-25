@@ -6,6 +6,21 @@ FLAGS = -c
 scanner : $(OBJS)
 	gcc $(OBJS) -o scanner
 
+test1 : scanner
+	./scanner ./testfiles/program1.sea
+
+test2 : scanner
+	./scanner ./testfiles/program2.sea
+
+test3 : scanner
+	./scanner ./testfiles/program3.sea
+
+test4 : scanner
+	./scanner ./testfiles/program4.sea
+
+test5 : scanner
+	./scanner ./testfiles/program5.sea
+
 stringBufferTest : stringBufferTest.c stringBuffer.c
 	gcc stringBufferTest.c stringBuffer.c -o stringBufferTest
 

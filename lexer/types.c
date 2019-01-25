@@ -18,6 +18,7 @@ char *VAR = "var";
 char *FUNCTION = "function";
 char *DEFINE = "define";
 char *CLASS = "class";
+char *EXTENDS = "extends";
 char *PUBLIC = "public";
 char *PRIVATE = "private";
 char *PROTECTED = "protected";

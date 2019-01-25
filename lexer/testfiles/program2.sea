@@ -1,0 +1,98 @@
+class AVLTree
+{
+    private var root;
+    public var size, maxSize=10;
+    
+    public function AVLTree(values=null)
+    {
+        if(values)
+        {
+            var i = 0;
+            while(i < values.length)
+            {
+                insertAVL(values.getValue(i));
+            }
+        }
+    }
+    
+    public function insertAVL(value)
+    {
+        if(root == null)
+        {
+            root = new AVLNode(value);
+        }
+        else if(root.getRightChild() == null)
+        {
+            // Yes this makes no sense
+            root.setLeftChild(value);
+        }
+        else
+        {
+            // TODO fix in prod
+        }
+    }
+    
+    function main(args)
+    {
+        var aFunction;
+        if(args && args.length > 1)
+        {
+            function localFunction(aVariable="hello")
+            {
+                return aVariable + "there";
+            }
+            aFunction = localFunction;
+            var temp = args[0];
+        }
+    }
+}
+
+class AVLNode extends Node
+{
+    private var weight;
+
+    public function AVLNode(value=null)
+    {
+        super(value);
+    }
+
+    public function getWeight()
+    {
+        return weight;
+    }
+    public function setWeight(newWeight)
+    {
+        this.weight = newWeight;
+    }
+}
+
+class Node
+{
+    public var value;
+    protected var parent;
+    protected var leftChild, rightChild;
+    
+    public function Node(value=null)
+    {
+        this.value = value;
+    }
+    
+    public function setParent(parentNode)
+    {
+        parent = parentNode;
+    }
+    public function setLeftChild(childNode)
+    {
+        leftChild = childNode;
+        childNode.setParent(this);
+    }
+    
+    public function getParent()
+    {
+        return parent;
+    }
+    public function getRightChild()
+    {
+        return rightChild;
+    }
+}

@@ -10,20 +10,20 @@
  *          comments as needed.
  */
 
-static int skipWhitespace(FILE *fp);
-static void skipLineComment(FILE *fp);
-static int skipBlockComment(FILE *fp);
-static int isNewLine(FILE *fp, int ch);
+static void checkComment(FILE *fp, int *lineNum);
+static void skipLineComment(FILE *fp, int *lineNum);
+static void skipBlockComment(FILE *fp, int *lineNum);
 
 char readChar(FILE *fp, int *lineNum)
 {
-    *lineNum += skipWhitespace(fp);
-
+    checkComment(fp, lineNum);
     return fgetc(fp);
 }
 
-void pushbackChar(FILE *fp, int ch)
+void pushbackChar(FILE *fp, int ch, int *lineNum)
 {
+    if (ch == '\n')
+        (*lineNum)--;
     ungetc(ch, fp);
 }
 
@@ -32,60 +32,62 @@ void pushbackChar(FILE *fp, int ch)
  * If the character is part of a comment, it too is ignored. This process
  * ends with the finding of a character that is not in a comment.
  */
-static int skipWhitespace(FILE *fp)
+void skipWhitespace(FILE *fp, int *lineNum)
 {
-    int ch, numNewLines = 0;
+    int ch;
 
     //Read characters until non-whitespace is found
     while((ch = fgetc(fp)) != EOF && isspace(ch))
     {
         if (ch == '\n')
-            numNewLines++;
+            (*lineNum)++;
     }
+
+    if(ch != EOF)
+        ungetc(ch,fp);
+}
+
+static void checkComment(FILE *fp, int *lineNum)
+{
+    int ch = fgetc(fp);
     
     if (ch == '/')
     {
         ch = fgetc(fp);
         if(ch == '/') // is a line comment
-        {
-            skipLineComment(fp);
-            return 1 + numNewLines + skipWhitespace(fp);
-        }
+            skipLineComment(fp, lineNum);
         else if (ch == '*') // is a block comment
+            skipBlockComment(fp, lineNum);
+        else
         {
-            numNewLines += skipBlockComment(fp);
-            return numNewLines + skipWhitespace(fp);
+            // not a comment: need to re-add those characters
+            ungetc(ch, fp);
+            ungetc('/', fp);
         }
-        // not a comment: need to re-add those characters
-        ungetc(ch, fp);
-        ungetc('/', fp);
-        return numNewLines; // return early since we are re-adding the character later
     }
-
-    if(ch != EOF)
-        ungetc(ch,fp);
-        
-    return numNewLines;
+    else if (ch != EOF)
+        ungetc(ch, fp);
 }
 
 /*
  * Reads in and ignores all the characters until a newline is found.
  * The newline character(s) is consumed at the end.
  */
-static void skipLineComment(FILE *fp)
+static void skipLineComment(FILE *fp, int *lineNum)
 {
     int ch = fgetc(fp);
-    while(!isNewLine(fp, ch))
+    while(ch != '\n')
         ch = fgetc(fp);
+    (*lineNum)++;
 }
 
 /*
  * Reads in and ignores all characters until the end string is found.
  * The end string is consumed at the end.
  */
-static int skipBlockComment(FILE *fp)
+static void skipBlockComment(FILE *fp, int *lineNum)
 {
-    int ch = fgetc(fp), numNewLines = 0;
+    int ch = fgetc(fp);
     while(ch != EOF)
     {
         if (ch == '*')
@@ -93,34 +95,11 @@ static int skipBlockComment(FILE *fp)
             ch = fgetc(fp);
             if (ch == '/')
                 break;
+            else if (ch == '\n')
+                (*lineNum)++;
         }
         else if (ch == '\n')
-        {
-            numNewLines++;
-        }
+            (*lineNum)++;
         ch = fgetc(fp);
     }
-    
-    return numNewLines;
-}
-
-/*
- * Checks if the given character is part of a newline. Checks for the
- * Windows newline(\r\n), the Linux newline(\n), and the OS X newline
- * (\r). Returns 1(true) if a newline is found, 0 if otherwise. The
- * passed in character is not re-added to the file under any
- * circumstances.
- */
-static int isNewLine(FILE *fp, int ch)
-{
-    if (ch == '\r')
-    {
-        ch = fgetc(fp);
-        if (ch != '\n')
-            ungetc(ch, fp);
-        return 1;
-    }
-    else if(ch == '\n')
-        return 1;
-    return 0;
 }
