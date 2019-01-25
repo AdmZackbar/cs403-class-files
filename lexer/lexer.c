@@ -179,6 +179,17 @@ LEXEME *lex(LEXER *lexer)
     }
     if (ch == '.')
         return newLEXEME(DOT, lexer->lineNum);
+    if (ch == '!')
+    {
+        ch = readChar(lexer->fp, &lexer->lineNum);
+        switch (ch)
+        {
+            case '=':   return newLEXEME(NOTEQUALS, lexer->lineNum);
+            default:
+                pushbackChar(lexer->fp, ch, &lexer->lineNum);
+                return newLEXEME(NOT, lexer->lineNum);
+        }
+    }
     if (isdigit(ch))
         return lexNumber(lexer, ch);
     if (ch == '"')
@@ -247,6 +258,8 @@ static LEXEME *lexWord(LEXER *lexer, int ch)
         return newLEXEME(DEFINE, lexer->lineNum);
     if (wordIs(CLASS, word))
         return newLEXEME(CLASS, lexer->lineNum);
+    if (wordIs(EXTENDS, word))
+        return newLEXEME(EXTENDS, lexer->lineNum);
     if (wordIs(PUBLIC, word))
         return newLEXEME(PUBLIC, lexer->lineNum);
     if (wordIs(PRIVATE, word))
@@ -291,10 +304,11 @@ static int wordIs(char *reserved, char *word)
 
 static char *strToLower(char *str, int strLen)
 {
-    char *word = malloc(sizeof(char) * strLen);
+    char *word = malloc(sizeof(char) * (strLen+1));
     for(int i=0; i<strLen; i++)
     {
         word[i] = tolower(str[i]);
     }
+    word[strLen] = '\0';
     return word;
 }

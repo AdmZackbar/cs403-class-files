@@ -79,7 +79,7 @@ static void skipLineComment(FILE *fp, int *lineNum)
     while(ch != '\n')
         ch = fgetc(fp);
     (*lineNum)++;
-    skipWhitespace();
+    skipWhitespace(fp, lineNum);
 }
 
 /*
@@ -103,5 +103,5 @@ static void skipBlockComment(FILE *fp, int *lineNum)
             (*lineNum)++;
         ch = fgetc(fp);
     }
-    skipWhitespace();
+    skipWhitespace(fp, lineNum);
 }

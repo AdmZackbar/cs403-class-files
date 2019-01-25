@@ -8,15 +8,15 @@ scanner : $(OBJS)
 
 run : scanner
 	@echo Running test 1...
-	test1
+	make test1
 	@echo Running test 2...
-	test2
+	make test2
 	@echo Running test 3...
-	test3
+	make test3
 	@echo Running test 4...
-	test4
+	make test4
 	@echo Running test 5...
-	test5
+	make test5
 
 test1 : scanner
 	./scanner ./testfiles/program1.sea
