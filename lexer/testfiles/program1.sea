@@ -1,0 +1,54 @@
+class ExampleOne
+{
+    private var variableOne;
+    protected var specialVar = 2;
+    public var openVar = "testing";
+    var defaultVar = 3.0;
+
+    public function temper(param1, param2=4+2)
+    {
+        variableOne = 5^(2+3) + param1 - param2;
+        define localFunc(someParam)
+        {
+            someParam++;
+            return someParam + 3;
+        }
+        return localFunc;
+    }
+
+    private function helperFunc()
+    {
+        var temp = 0, localArray = newArray(100);
+
+        while(temp < 100)
+        {
+            if (temp % 2)
+                defaultVar--;
+            localArray[temp++] = defaultVar;
+        }
+
+        if (specialVar < 0)
+            return NULL;
+        else
+            return this;
+    }
+
+    // What is this
+
+
+    var anotherVar;
+
+    /*
+     * testing block comment
+
+
+
+
+     */
+    var temp /* */ = /* */ 2;
+}
+
+class Testing extends ExampleOne
+{
+    
+}

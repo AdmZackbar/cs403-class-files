@@ -11,6 +11,7 @@ extern char *VAR;
 extern char *FUNCTION;
 extern char *DEFINE;
 extern char *CLASS;
+extern char *EXTENDS;
 extern char *PUBLIC;
 extern char *PRIVATE;
 extern char *PROTECTED;

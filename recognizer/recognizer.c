@@ -61,8 +61,8 @@ static void statement();
 static int statementPending();
 static void optElse();
 static int optElsePending();
-static void else();
-static int elsePending();
+static void elseStatement();
+static int elseStatementPending();
 
 LEXER *lexer;
 LEXEME *current;
@@ -76,7 +76,7 @@ int main(int argc, char **argv)
     return 0;
 }
 
-static char *parseFileArg(int argv, char **argv)
+static char *parseFileArg(int argc, char **argv)
 {
     if (argc != 2)
     {
@@ -556,15 +556,15 @@ static int statementPending()
 
 static void optElse()
 {
-    if (elsePending())
-        else();
+    if (elseStatementPending())
+        elseStatement();
 }
 static int optElsePending()
 {
     return 1;
 }
 
-static void else()
+static void elseStatement()
 {
     match(ELSE);
     if (blockPending())
@@ -581,7 +581,7 @@ static void else()
     else
         failParse("else statement");
 }
-static int elsePending()
+static int elseStatementPending()
 {
     return check(ELSE);
 }

@@ -69,4 +69,10 @@ int isErrorLEXEME(LEXEME *lexeme)
 void printLEXEME(FILE *fp, LEXEME *lexeme)
 {
     fprintf(fp, "%s - line %d", lexeme->type, lexeme->lineNum);
+    if (lexeme->type == INTEGER)
+        fprintf(fp, " - %d", lexeme->iVal);
+    else if (lexeme->type == REAL)
+        fprintf(fp, " - %f", lexeme->rVal);
+    else if (lexeme->sVal != NULL)
+        fprintf(fp, " - %s", lexeme->sVal);
 }

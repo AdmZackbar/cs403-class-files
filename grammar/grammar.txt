@@ -32,8 +32,6 @@ expr : unary
 unary : idExpr
       | INTEGER
       | REAL
-      | BOOLEAN
-      | CHAR
       | STRING
       | uop unary
       | OPAREN expr CPAREN
@@ -84,7 +82,7 @@ paramList : param
           | param COMMA paramList
 
 param : ID
-      | ID EQUALS unary
+      | ID EQUALS expr
 
 block : OBRACE optStatements CBRACE
 
@@ -102,6 +100,8 @@ statement : expr SEMICOLON
           | RETURN expr SEMICOLON
           | DEFINE ID OPAREN optParamList CPAREN block
 
-optElse : ELSE block
-        | ELSE ifStatement
+optElse : elseStatement
         | EMPTY
+
+elseStatement : ELSE block
+              | ELSE IF OPAREN expr CPAREN block optElse
