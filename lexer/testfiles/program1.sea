@@ -23,14 +23,20 @@ class ExampleOne
         while(temp < 100)
         {
             if (temp % 2)
+            {
                 defaultVar--;
+            }
             localArray[temp++] = defaultVar;
         }
 
         if (specialVar < 0)
+        {
             return NULL;
+        }
         else
+        {
             return this;
+        }
     }
 
     // What is this

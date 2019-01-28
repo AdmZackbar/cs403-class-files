@@ -42,7 +42,7 @@ unary : idExpr
 idExpr : ID
        | ID postVar
        | ID OPAREN optExprList CPAREN
-       | ID OBRACKET INTEGER CBRACKET
+       | ID OBRACKET expr CBRACKET
 
 postVar : PLUSPLUS
        | MINUSMINUS
@@ -56,6 +56,7 @@ exprList : expr
 uop : UMINUS
     | PLUSPLUS
     | MINUSMINUS
+    | NOT
 
 op : EQUALS
    | PLUS
@@ -70,6 +71,7 @@ op : EQUALS
    | LESS_THAN_EQUAL
    | GREATER_THAN_EQUAL
    | EQUALSEQUALS
+   | NOTEQUALS
    | LOGICAL_AND
    | LOGICAL_OR
    | BINARY_AND

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "lexer.h"
 #include "lexeme.h"
 #include "types.h"
@@ -103,7 +104,7 @@ static LEXEME *match(char *type)
     if(check(type))
         return advance();
         
-    printf("SYNTAX ERROR: expected %s got %s", type, getTypeLEXEME(current));
+    printf("SYNTAX ERROR: expected %s got %s - line %d\n", type, getTypeLEXEME(current), getLineNumLEXEME(current));
     exit(-2);
 }
 static void recognize(char *filename)
@@ -206,7 +207,7 @@ static void classStatement()
 }
 static int classStatementPending()
 {
-    return accessModPending();
+    return accessModPending() || check(VAR) || check(FUNCTION);
 }
 
 static void accessMod()
@@ -220,7 +221,7 @@ static void accessMod()
 }
 static int accessModPending()
 {
-    return 1;
+    return check(PUBLIC) || check(PRIVATE) || check(PROTECTED);
 }
 
 static void varList()
@@ -241,7 +242,10 @@ static void varDef()
 {
     match(ID);
     if (check(EQUALS))
+    {
+        advance();
         expr();
+    }
 }
 static int varDefPending()
 {
@@ -252,7 +256,10 @@ static void expr()
 {
     unary();
     if (opPending())
+    {
+        op();
         expr();
+    }
 }
 static int exprPending()
 {
@@ -270,7 +277,10 @@ static void unary()
     else if (check(STRING))
         advance();
     else if (uopPending())
+    {
         uop();
+        unary();
+    }
     else if (check(OPAREN))
     {
         advance();
@@ -313,7 +323,7 @@ static void idExpr()
     else if (check(OBRACKET))
     {
         advance();
-        match(INTEGER);
+        expr();
         match(CBRACKET);
     }
 }
@@ -342,7 +352,7 @@ static void optExprList()
 }
 static int optExprListPending()
 {
-    return 1;
+    return exprListPending();
 }
 
 static void exprList()
@@ -361,18 +371,20 @@ static int exprListPending()
 
 static void uop()
 {
-    if (check(UMINUS))
+    if (check(MINUS))
         advance();
     else if (check(PLUSPLUS))
         advance();
     else if (check(MINUSMINUS))
+        advance();
+    else if (check(NOT))
         advance();
     else
         failParse("unary operator");
 }
 static int uopPending()
 {
-    return check(UMINUS) || check(PLUSPLUS) || check(MINUSMINUS);
+    return check(MINUS) || check(PLUSPLUS) || check(MINUSMINUS) || check(NOT);
 }
 
 static void op()
@@ -403,6 +415,8 @@ static void op()
         advance();
     else if (check(EQUALSEQUALS))
         advance();
+    else if (check(NOTEQUALS))
+        advance();
     else if (check(LOGICAL_AND))
         advance();
     else if (check(LOGICAL_OR))
@@ -419,8 +433,8 @@ static int opPending()
     return check(EQUALS) || check(PLUS) || check(MINUS) || check(TIMES)
         || check(DIVIDE) || check(MODULUS) || check(EXPONANT) || check(DOT)
         || check(LESS_THAN) || check(GREATER_THAN) || check(LESS_THAN_EQUAL)
-        || check(GREATER_THAN_EQUAL) || check(EQUALSEQUALS) || check(LOGICAL_AND)
-        || check(LOGICAL_OR) || check(BINARY_AND) || check(BINARY_OR);
+        || check(GREATER_THAN_EQUAL) || check(EQUALSEQUALS) || check(NOTEQUALS)
+        || check(LOGICAL_AND) || check(LOGICAL_OR) || check(BINARY_AND) || check(BINARY_OR);
 }
 
 static void optParamList()
@@ -430,14 +444,17 @@ static void optParamList()
 }
 static int optParamListPending()
 {
-    return 1;
+    return paramListPending();
 }
 
 static void paramList()
 {
     param();
     if (check(COMMA))
+    {
+        advance();
         paramList();
+    }
 }
 static int paramListPending()
 {
@@ -476,7 +493,7 @@ static void optStatements()
 }
 static int optStatementsPending()
 {
-    return 1;
+    return statementsPending();
 }
 
 static void statements()
@@ -561,7 +578,7 @@ static void optElse()
 }
 static int optElsePending()
 {
-    return 1;
+    return elseStatementPending();
 }
 
 static void elseStatement()

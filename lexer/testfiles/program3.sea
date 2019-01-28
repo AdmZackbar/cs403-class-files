@@ -10,7 +10,7 @@ class DynamicArray
         } else if (var1 || var2) {
             return 0;
         } else if (var1 != !var2) {
-            retun 20;
+            return 20;
         } else {
             var temp1 = var1 & var2 | -size;
         }

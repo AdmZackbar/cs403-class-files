@@ -37,7 +37,7 @@ class AVLTree
         var aFunction;
         if(args && args.length > 1)
         {
-            function localFunction(aVariable="hello")
+            define localFunction(aVariable="hello")
             {
                 return aVariable + "there";
             }

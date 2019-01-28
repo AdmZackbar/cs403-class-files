@@ -29,36 +29,6 @@ static int iswordch(int ch);
 static int wordIs(char *reserved, char *word);
 static char *strToLower(char *str, int strLen);
 
-int main(int argc, char **argv)
-{
-    if (argc != 2)
-    {
-        printf("Incorrect number of parameters, expected 2, got %d.\n", argc);
-        printf("Correct usage: %s <filepath>\n", argv[0]);
-        return -1;
-    }
-    
-    LEXER *lexer = newLEXER(argv[1]);
-    
-    LEXEME *lexeme = lex(lexer);
-    while (getTypeLEXEME(lexeme) != END_OF_FILE && !isErrorLEXEME(lexeme))
-    {
-        printLEXEME(stdout, lexeme);
-        printf("\n");
-        
-        lexeme = lex(lexer);
-    }
-
-    if (isErrorLEXEME(lexeme))
-    {
-        printLEXEME(stdout, lexeme);
-        printf("\n");
-        return -2;
-    }
-
-    return 0;
-}
-
 LEXER *newLEXER(char *filename)
 {
     LEXER *l = malloc(sizeof(LEXER));
