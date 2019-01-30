@@ -73,6 +73,8 @@ int main(int argc, char **argv)
     char *filename = parseFileArg(argc, argv);
     
     recognize(filename);
+
+    printf("Legal\n");
     
     return 0;
 }
@@ -105,6 +107,7 @@ static LEXEME *match(char *type)
         return advance();
         
     printf("SYNTAX ERROR: expected %s got %s - line %d\n", type, getTypeLEXEME(current), getLineNumLEXEME(current));
+    printf("Illegal\n");
     exit(-2);
 }
 static void recognize(char *filename)
@@ -122,6 +125,7 @@ static void recognize(char *filename)
 static void failParse(char *component)
 {
     printf("Incorrect structure in grammar module %s\n", component);
+    printf("Illegal\n");
     exit(-404);
 }
 
