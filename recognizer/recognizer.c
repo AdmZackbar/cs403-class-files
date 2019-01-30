@@ -27,7 +27,7 @@ static int classStatementPending();
 static void accessMod();
 static int accessModPending();
 static void varList();
-static int varListPending();
+//static int varListPending();
 static void varDef();
 //static int varDefPending();
 static void expr();
@@ -251,10 +251,10 @@ static void varDef()
         expr();
     }
 }
-static int varDefPending()
-{
-    return check(ID);
-}
+//static int varDefPending()
+//{
+//    return check(ID);
+//}
 
 static void expr()
 {
