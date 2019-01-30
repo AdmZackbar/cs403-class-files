@@ -17,9 +17,9 @@ static int programPending();
 static void classDef();
 static int classDefPending();
 static void classHeader();
-static int classHeaderPending();
+//static int classHeaderPending();
 static void optClassStatements();
-static int optClassStatementsPending();
+//static int optClassStatementsPending();
 static void classStatements();
 static int classStatementsPending();
 static void classStatement();
@@ -29,7 +29,7 @@ static int accessModPending();
 static void varList();
 static int varListPending();
 static void varDef();
-static int varDefPending();
+//static int varDefPending();
 static void expr();
 static int exprPending();
 static void unary();
@@ -39,7 +39,7 @@ static int idExprPending();
 static void postVar();
 static int postVarPending();
 static void optExprList();
-static int optExprListPending();
+//static int optExprListPending();
 static void exprList();
 static int exprListPending();
 static void uop();
@@ -47,7 +47,7 @@ static int uopPending();
 static void op();
 static int opPending();
 static void optParamList();
-static int optParamListPending();
+//static int optParamListPending();
 static void paramList();
 static int paramListPending();
 static void param();
@@ -55,13 +55,13 @@ static int paramPending();
 static void block();
 static int blockPending();
 static void optStatements();
-static int optStatementsPending();
+//static int optStatementsPending();
 static void statements();
 static int statementsPending();
 static void statement();
 static int statementPending();
 static void optElse();
-static int optElsePending();
+//static int optElsePending();
 static void elseStatement();
 static int elseStatementPending();
 
@@ -162,20 +162,20 @@ static void classHeader()
         match(ID);
     }
 }
-static int classHeaderPending()
-{
-    return check(ID);
-}
+//static int classHeaderPending()
+//{
+//    return check(ID);
+//}
 
 static void optClassStatements()
 {
     if (classStatementsPending())
         classStatements();
 }
-static int optClassStatementsPending()
-{
-    return 1;
-}
+//static int optClassStatementsPending()
+//{
+//    return 1;
+//}
 
 static void classStatements()
 {
@@ -237,10 +237,10 @@ static void varList()
         varList();
     }
 }
-static int varListPending()
-{
-    return varDefPending();
-}
+//static int varListPending()
+//{
+//    return varDefPending();
+//}
 
 static void varDef()
 {
@@ -354,10 +354,10 @@ static void optExprList()
     if (exprListPending())
         exprList();
 }
-static int optExprListPending()
-{
-    return exprListPending();
-}
+//static int optExprListPending()
+//{
+//    return exprListPending();
+//}
 
 static void exprList()
 {
@@ -446,10 +446,10 @@ static void optParamList()
     if (paramListPending())
         paramList();
 }
-static int optParamListPending()
-{
-    return paramListPending();
-}
+//static int optParamListPending()
+//{
+//    return paramListPending();
+//}
 
 static void paramList()
 {
@@ -495,10 +495,10 @@ static void optStatements()
     if (statementsPending())
         statements();
 }
-static int optStatementsPending()
-{
-    return statementsPending();
-}
+//static int optStatementsPending()
+//{
+//    return statementsPending();
+//}
 
 static void statements()
 {
@@ -580,10 +580,10 @@ static void optElse()
     if (elseStatementPending())
         elseStatement();
 }
-static int optElsePending()
-{
-    return elseStatementPending();
-}
+//static int optElsePending()
+//{
+//    return elseStatementPending();
+//}
 
 static void elseStatement()
 {
