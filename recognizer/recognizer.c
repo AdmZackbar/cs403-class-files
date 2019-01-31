@@ -114,12 +114,12 @@ static LEXEME *recognize(char *filename)
     current = lex(lexer);
     
     // Highest level of program
-    LEXEME *program = program();
+    LEXEME *programLex = program();
     
     // Check if everything has been properly parsed
     match(END_OF_FILE);
     
-    return program;
+    return programLex;
 }
 static void failParse(char *component)
 {
@@ -142,7 +142,7 @@ static LEXEME *program()
     if(programPending())
         program = program();
     
-    return cons(PROGRAM, classLex, programLex);
+    return cons(PROG, classLex, programLex);
 }
 static int programPending()
 {
@@ -229,12 +229,12 @@ static LEXEME *classStatement()
         blockLex = block();
         
         functionInfo = cons(FUNCTION_INFO, functionName, functionParams);
-        statement = cons(FUNCTION_STATEMENT, functionInfo, Lexblock);
+        statement = cons(FUNCTION_STATEMENT, functionInfo, blockLex);
     }
     else
         failParse("class statement");
     
-    return cons(CLASS_STATEMENT, accessMod, statement);
+    return cons(CLASS_STATEMENT, accessModLex, statementLex);
 }
 static int classStatementPending()
 {
@@ -368,6 +368,7 @@ static LEXEME *unary()
         return cons(NEW_OBJECT, idLex, exprListLex);
     }
     failParse("unary");
+    return NULL;    // Unreachable - for compiler
 }
 static int unaryPending()
 {
@@ -395,7 +396,7 @@ static LEXEME *idExpr()
         return cons(ARRAY_LOOKUP, idLex, postIDLex);
     }
     
-    return cons(ID_EXPR, idLex, PostIDLex);
+    return cons(ID_EXPR, idLex, postIDLex);
 }
 static int idExprPending()
 {
@@ -408,6 +409,8 @@ static LEXEME *postVar()
         return advance();
     else if (check(MINUSMINUS))
         return advance();
+    
+    return NULL;
 }
 static int postVarPending()
 {
@@ -454,6 +457,7 @@ static LEXEME *uop()
     else if (check(NOT))
         return advance();
     failParse("unary operator");
+    return NULL;    // Unreachable - for compiler
 }
 static int uopPending()
 {
@@ -499,6 +503,7 @@ static LEXEME *op()
     else if (check(BINARY_OR))
         return advance();
     failParse("operator");
+    return NULL;    // Unreachable - for compiler
 }
 static int opPending()
 {
@@ -527,6 +532,7 @@ static LEXEME *optStatements()
 {
     if (statementsPending())
         return statements();
+    
     return NULL;
 }
 //static int optStatementsPending()
@@ -534,7 +540,7 @@ static LEXEME *optStatements()
 //    return statementsPending();
 //}
 
-static void statements()
+static LEXEME *statements()
 {
     LEXEME *statementLex, *statementsLex = NULL;
     statementLex = statement();
@@ -573,7 +579,7 @@ static LEXEME *statement()
         optElseLex = optElse();
         
         ifStatement = cons(IF_BODY, exprLex, blockLex);
-        statement = cons(IF_STATEMENT, ifStatement, optElseLex);
+        statementLex = cons(IF_STATEMENT, ifStatement, optElseLex);
     }
     else if (check(WHILE))
     {
@@ -584,7 +590,7 @@ static LEXEME *statement()
         match(CPAREN);
         blockLex = block();
         
-        statement = cons(WHILE_STATEMENT, exprLex, blockLex);
+        statementLex = cons(WHILE_STATEMENT, exprLex, blockLex);
     }
     else if (check(DO))
     {
@@ -597,7 +603,7 @@ static LEXEME *statement()
         match(CPAREN);
         match(SEMICOLON);
         
-        statement = cons(DO_WHILE_STATEMENT, blockLex, exprLex);
+        statementLex = cons(DO_WHILE_STATEMENT, blockLex, exprLex);
     }
     else if (check(RETURN))
     {
@@ -607,7 +613,7 @@ static LEXEME *statement()
             exprLex = expr();
         match(SEMICOLON);
         
-        statement = cons(RETURN_STATEMENT, exprLex, NULL);
+        statementLex = cons(RETURN_STATEMENT, exprLex, NULL);
     }
     else if (check(DEFINE))
     {
@@ -620,7 +626,7 @@ static LEXEME *statement()
         blockLex = block();
         
         header = cons(DEFINE_HEADER, idLex, params);
-        statement = cons(DEFINE_STATEMENT, header, blockLex);
+        statementLex = cons(DEFINE_STATEMENT, header, blockLex);
     }
     else
         failParse("statement");
@@ -651,7 +657,7 @@ static LEXEME *elseStatement()
     if (blockPending())
     {
         LEXEME *blockLex = block();
-        return cons(ELSE_STATEMENT, blockLex, NULL)
+        return cons(ELSE_STATEMENT, blockLex, NULL);
     }
     else if (check(IF))
     {
