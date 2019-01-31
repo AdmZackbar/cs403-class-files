@@ -8,6 +8,33 @@
  *          This allows for the use of == between these strings.
  */
 
+// Parse trees
+char *PROG = "program";
+char *CLASS_DEF = "class definition";
+char *CLASS_HEADER = "class header";
+char *CLASS_STATEMENTS = "class statements";
+char *CLASS_STATEMENT = "class statement";
+char *FUNCTION_STATEMENT = "function statement";
+char *FUNCTION_INFO = "function info";
+char *VAR_DECL = "variable declaration";
+char *VAR_LIST = "variable list";
+char *VAR_DEF = "variable definition";
+char *EXPR = "expression";
+char *EXPR_OP = "expression operation";
+char *ID_EXPR = "id expression";
+char *UNARY_DEF = "unary def";
+char *EXPR_LIST = "expr list";
+char *BLOCK = "block";
+char *STATEMENTS = "statements";
+char *IF_STATEMENT = "if statement";
+char *IF_BODY = "if body";
+char *ELSE_STATEMENT = "else statement";
+char *DEFINE_STATEMENT = "define statement";
+char *DEFINE_HEADER = "define header";
+char *WHILE_STATEMENT = "while statement";
+char *DO_WHILE_STATEMENT = "do-while statement";
+char *RETURN_STATEMENT = "return statement";
+
 // Data primatives
 char *INTEGER = "integer";
 char *REAL = "real";

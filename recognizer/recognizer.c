@@ -11,58 +11,55 @@ static int check(char *type);
 static LEXEME *match(char *type);
 static void recognize(char *filename);
 static void failParse(char *component);
+static LEXEME *cons(char *type, LEXEME *left, LEXEME *right);
 // Grammar helper functions
-static void program();
+static LEXEME *program();
 static int programPending();
-static void classDef();
+static LEXEME *classDef();
 static int classDefPending();
-static void classHeader();
+static LEXEME *classHeader();
 //static int classHeaderPending();
-static void optClassStatements();
+static LEXEME *optClassStatements();
 //static int optClassStatementsPending();
-static void classStatements();
+static LEXEME *classStatements();
 static int classStatementsPending();
-static void classStatement();
+static LEXEME *classStatement();
 static int classStatementPending();
-static void accessMod();
+static LEXEME *accessMod();
 static int accessModPending();
-static void varList();
-//static int varListPending();
-static void varDef();
-//static int varDefPending();
-static void expr();
+static LEXEME *optVarList();
+static int optVarListPending();
+static LEXEME *varList();
+static int varListPending();
+static LEXEME *varDef();
+static int varDefPending();
+static LEXEME *expr();
 static int exprPending();
-static void unary();
+static LEXEME *unary();
 static int unaryPending();
-static void idExpr();
+static LEXEME *idExpr();
 static int idExprPending();
-static void postVar();
+static LEXEME *postVar();
 static int postVarPending();
-static void optExprList();
+static LEXEME *optExprList();
 //static int optExprListPending();
-static void exprList();
+static LEXEME *exprList();
 static int exprListPending();
-static void uop();
+static LEXEME *uop();
 static int uopPending();
-static void op();
+static LEXEME *op();
 static int opPending();
-static void optParamList();
-//static int optParamListPending();
-static void paramList();
-static int paramListPending();
-static void param();
-static int paramPending();
-static void block();
+static LEXEME *block();
 static int blockPending();
-static void optStatements();
+static LEXEME *optStatements();
 //static int optStatementsPending();
-static void statements();
+static LEXEME *statements();
 static int statementsPending();
-static void statement();
+static LEXEME *statement();
 static int statementPending();
-static void optElse();
+static LEXEME *optElse();
 //static int optElsePending();
-static void elseStatement();
+static LEXEME *elseStatement();
 static int elseStatementPending();
 
 LEXER *lexer;
@@ -117,7 +114,7 @@ static void recognize(char *filename)
     current = lex(lexer);
     
     // Highest level of program
-    program();
+    LEXEME *program = program();
     
     // Check if everything has been properly parsed
     match(END_OF_FILE);
@@ -128,183 +125,247 @@ static void failParse(char *component)
     printf("Illegal\n");
     exit(-404);
 }
-
-static void program()
+static LEXEME *cons(char *type, LEXEME *left, LEXEME *right)
 {
-    classDef();
+    LEXEME *lexeme = newLEXEME(type, -1);   // TODO HANDLE LINE NUM
+    setLEXEMEleft(lexeme, left);
+    setLEXEMEright(lexeme, right);
+    return lexeme;
+}
+
+static LEXEME *program()
+{
+    LEXEME *class = classDef();
+    LEXEME *program = NULL;
     if(programPending())
-        program();
+        program = program();
+    
+    return cons(PROGRAM, class, program);
 }
 static int programPending()
 {
     return classDefPending();
 }
 
-static void classDef()
+static LEXEME *classDef()
 {
+    LEXEME *header, *statements;
     match(CLASS);
-    classHeader();
+    header = classHeader();
     match(OBRACE);
-    optClassStatements();
+    statements = optClassStatements();
     match(CBRACE);
+    
+    return cons(CLASS_DEF, header, statements);
 }
 static int classDefPending()
 {
     return check(CLASS);
 }
 
-static void classHeader()
+static LEXEME *classHeader()
 {
-    match(ID);
+    LEXEME *id, *extendsID = NULL;
+    id = match(ID);
     if (check(EXTENDS))
     {
         advance();
-        match(ID);
+        extendsID = match(ID);
     }
+    
+    return cons(CLASS_HEADER, id, extendsID);
 }
 //static int classHeaderPending()
 //{
 //    return check(ID);
 //}
 
-static void optClassStatements()
+static LEXEME *optClassStatements()
 {
     if (classStatementsPending())
-        classStatements();
+        return classStatements();
+    
+    return NULL;
 }
 //static int optClassStatementsPending()
 //{
 //    return 1;
 //}
 
-static void classStatements()
+static LEXEME *classStatements()
 {
-    classStatement();
+    LEXEME *statement, *statements = NULL;
+    statement = classStatement();
     if (classStatementsPending())
-        classStatements();
+        statements = classStatements();
+    
+    return cons(CLASS_STATEMENTS, statement, statements);
 }
 static int classStatementsPending()
 {
     return classStatementPending();
 }
 
-static void classStatement()
+static LEXEME *classStatement()
 {
-    accessMod();
+    LEXEME *accessMod, *statement;
+    accessMod = accessMod();
     if (check(VAR))
     {
         advance();
-        varList();
+        statement = varList();
         match(SEMICOLON);
     }
     else if (check(FUNCTION))
     {
+        LEXEME *functionInfo, *functionName, *functionParams, *block;
         advance();
-        match(ID);
+        functionName = match(ID);
         match(OPAREN);
-        optParamList();
+        functionParams = optVarList();
         match(CPAREN);
-        block();
+        block = block();
+        
+        functionInfo = cons(FUNCTION_INFO, functionName, functionParams);
+        statement = cons(FUNCTION_STATEMENT, functionInfo, block);
     }
     else
         failParse("class statement");
+    
+    return cons(CLASS_STATEMENT, accessMod, statement);
 }
 static int classStatementPending()
 {
     return accessModPending() || check(VAR) || check(FUNCTION);
 }
 
-static void accessMod()
+static LEXEME *accessMod()
 {
     if (check(PUBLIC))
-        advance();
+        return advance();
     if (check(PRIVATE))
-        advance();
+        return advance();
     if (check(PROTECTED))
-        advance();
+        return advance();
+    return NULL;
 }
 static int accessModPending()
 {
     return check(PUBLIC) || check(PRIVATE) || check(PROTECTED);
 }
 
-static void varList()
+static LEXEME *optVarList()
 {
-    varDef();
+    if(varListPending())
+        return varList();
+    
+    return NULL;
+}
+static int optVarListPending()
+{
+    return varListPending();
+}
+
+static LEXEME *varList()
+{
+    LEXEME *varDef, *varList = NULL;
+    varDef = varDef();
     if (check(COMMA))
     {
         advance();
-        varList();
+        varList = varList();
     }
+    
+    return cons(VAR_LIST, varDef, varList);
 }
-//static int varListPending()
-//{
-//    return varDefPending();
-//}
-
-static void varDef()
+static int varListPending()
 {
-    match(ID);
+    return varDefPending();
+}
+
+static LEXEME *varDef()
+{
+    LEXEME *id, *expr = NULL;
+    id = match(ID);
     if (check(EQUALS))
     {
         advance();
-        expr();
+        expr = expr();
     }
+    
+    return cons(VAR_DEF, id, expr);
 }
-//static int varDefPending()
-//{
-//    return check(ID);
-//}
-
-static void expr()
+static int varDefPending()
 {
-    unary();
+    return check(ID);
+}
+
+static LEXEME *expr()
+{
+    LEXEME *unary, *operation = NULL;
+    unary = unary();
     if (opPending())
     {
-        op();
-        expr();
+        LEXEME *op, *expr;
+        op = op();
+        expr = expr();
+        operation = cons(OPERATION, op, expr);
     }
+    
+    return cons(EXPRESSION, unary, operation);
 }
 static int exprPending()
 {
     return unaryPending();
 }
 
-static void unary()
+static LEXEME *unary()
 {
     if (idExprPending())
-        idExpr();
+    {
+        LEXEME *idExpr, *postVar;
+        idExpr = idExpr;
+        if (postVarPending())
+            postVar = postVar();
+        
+        return cons(UNARY_ID, idExpr, postVar);
+    }
     else if (check(INTEGER))
-        advance();
+        return advance();
     else if (check(REAL))
-        advance();
+        return advance();
     else if (check(STRING))
-        advance();
+        return advance();
     else if (uopPending())
     {
-        uop();
-        unary();
+        LEXEME *uop, *unary;
+        uop = uop();
+        unary = unary();
+        return cons(UNARY_OP, uop, unary);
     }
     else if (check(OPAREN))
     {
+        LEXEME *expr;
         advance();
-        expr();
+        expr = expr();
         match(CPAREN);
+        return cons(UNARY_PAREN, expr, NULL);
     }
     else if (check(NULL_WORD))
-        advance();
+        return advance();
     else if (check(THIS))
-        advance();
+        return advance();
     else if (check(NEW))
     {
+        LEXEME *id, *exprList;
         advance();
-        match(ID);
+        id = match(ID);
         match(OPAREN);
-        optExprList();
+        exprList = optExprList();
         match(CPAREN);
+        return cons(NEW_OBJECT, id, exprList);
     }
-    else
-        failParse("unary");
+    failParse("unary");
 }
 static int unaryPending()
 {
@@ -313,124 +374,129 @@ static int unaryPending()
             || check(NEW);
 }
 
-static void idExpr()
+static LEXEME *idExpr()
 {
-    match(ID);
-    if (postVarPending())
-        postVar();
-    else if (check(OPAREN))
+    LEXEME *id, *postID = NULL;
+    id = match(ID);
+    if (check(OPAREN))
     {
         advance();
-        optExprList();
+        postID = optExprList();
         match(CPAREN);
+        return cons(FUNCTION_CALL, id, postID);
     }
     else if (check(OBRACKET))
     {
         advance();
-        expr();
+        postID = expr();
         match(CBRACKET);
+        return cons(ARRAY_LOOKUP, id, postID);
     }
+    
+    return cons(ID_EXPR, id, PostID);
 }
 static int idExprPending()
 {
     return check(ID);
 }
 
-static void postVar()
+static LEXEME *postVar()
 {
     if (check(PLUSPLUS))
-        advance();
+        return advance();
     else if (check(MINUSMINUS))
-        advance();
-    // TODO ERROR OUT
+        return advance();
 }
 static int postVarPending()
 {
     return check(PLUSPLUS) || check(MINUSMINUS);
 }
 
-static void optExprList()
+static LEXEME *optExprList()
 {
     if (exprListPending())
-        exprList();
+        return exprList();
+    
+    return NULL;
 }
 //static int optExprListPending()
 //{
 //    return exprListPending();
 //}
 
-static void exprList()
+static LEXEME *exprList()
 {
-    expr();
+    LEXEME *expr, *exprList = NULL;
+    expr = expr();
     if (check(COMMA))
     {
         advance();
-        exprList();
+        exprList = exprList();
     }
+    
+    return cons(EXPR_LIST, expr, exprList);
 }
 static int exprListPending()
 {
     return exprPending();
 }
 
-static void uop()
+static LEXEME *uop()
 {
     if (check(MINUS))
-        advance();
+        return advance();
     else if (check(PLUSPLUS))
-        advance();
+        return advance();
     else if (check(MINUSMINUS))
-        advance();
+        return advance();
     else if (check(NOT))
-        advance();
-    else
-        failParse("unary operator");
+        return advance();
+    failParse("unary operator");
 }
 static int uopPending()
 {
     return check(MINUS) || check(PLUSPLUS) || check(MINUSMINUS) || check(NOT);
 }
 
-static void op()
+static LEXEME *op()
 {
     if (check(EQUALS))
-        advance();
+        return advance();
     else if (check(PLUS))
-        advance();
+        return advance();
     else if (check(MINUS))
-        advance();
+        return advance();
     else if (check(TIMES))
-        advance();
+        return advance();
     else if (check(DIVIDE))
-        advance();
+        return advance();
     else if (check(MODULUS))
-        advance();
+        return advance();
     else if (check(EXPONANT))
-        advance();
+        return advance();
     else if (check(DOT))
-        advance();
+        return advance();
     else if (check(LESS_THAN))
-        advance();
+        return advance();
     else if (check(GREATER_THAN))
-        advance();
+        return advance();
     else if (check(LESS_THAN_EQUAL))
-        advance();
+        return advance();
     else if (check(GREATER_THAN_EQUAL))
-        advance();
+        return advance();
     else if (check(EQUALSEQUALS))
-        advance();
+        return advance();
     else if (check(NOTEQUALS))
-        advance();
+        return advance();
     else if (check(LOGICAL_AND))
-        advance();
+        return advance();
     else if (check(LOGICAL_OR))
-        advance();
+        return advance();
     else if (check(BINARY_AND))
-        advance();
+        return advance();
     else if (check(BINARY_OR))
-        advance();
-    else
-        failParse("operator");
+        return advance();
+    failParse("operator");
 }
 static int opPending()
 {
@@ -441,59 +507,25 @@ static int opPending()
         || check(LOGICAL_AND) || check(LOGICAL_OR) || check(BINARY_AND) || check(BINARY_OR);
 }
 
-static void optParamList()
+static LEXEME *block()
 {
-    if (paramListPending())
-        paramList();
-}
-//static int optParamListPending()
-//{
-//    return paramListPending();
-//}
-
-static void paramList()
-{
-    param();
-    if (check(COMMA))
-    {
-        advance();
-        paramList();
-    }
-}
-static int paramListPending()
-{
-    return paramPending();
-}
-
-static void param()
-{
-    match(ID);
-    if (check(EQUALS))
-    {
-        advance();
-        expr();
-    }
-}
-static int paramPending()
-{
-    return check(ID);
-}
-
-static void block()
-{
+    LEXEME *statements;
     match(OBRACE);
-    optStatements();
+    statements = optStatements();
     match(CBRACE);
+    
+    return cons(BLOCK_DEF, statements, NULL);
 }
 static int blockPending()
 {
     return check(OBRACE);
 }
 
-static void optStatements()
+static LEXEME *optStatements()
 {
     if (statementsPending())
-        statements();
+        return statements();
+    return NULL;
 }
 //static int optStatementsPending()
 //{
@@ -502,72 +534,96 @@ static void optStatements()
 
 static void statements()
 {
-    statement();
+    LEXEME *statement, *statements = NULL;
+    statement = statement();
     if (statementsPending())
-        statements();
+        statements = statements();
+    
+    return cons(STATEMENTS, statement, statements);
 }
 static int statementsPending()
 {
     return statementPending();
 }
 
-static void statement()
+static LEXEME *statement()
 {
+    LEXEME *statement;
     if (exprPending())
     {
-        expr();
+        statement = expr();
         match(SEMICOLON);
     }
     else if (check(VAR))
     {
         advance();
-        varList();
+        statement = varList();
         match(SEMICOLON);
     }
     else if (check(IF))
     {
+        LEXEME *ifStatement, *expr, *block, *optElse;
         advance();
         match(OPAREN);
-        expr();
+        expr = expr();
         match(CPAREN);
-        block();
-        optElse();
+        block = block();
+        optElse = optElse();
+        
+        ifStatement = cons(IF_BODY, expr, block);
+        statement = cons(IF_STATEMENT, ifStatement, optElse);
     }
     else if (check(WHILE))
     {
+        LEXEME *expr, *block;
         advance();
         match(OPAREN);
-        expr();
+        expr = expr();
         match(CPAREN);
-        block();
+        block = block();
+        
+        statement = cons(WHILE_STATEMENT, expr, block);
     }
     else if (check(DO))
     {
+        LEXEME *block, *expr;
         advance();
-        block();
+        block = block();
         match(WHILE);
         match(OPAREN);
-        expr();
+        expr = expr();
         match(CPAREN);
         match(SEMICOLON);
+        
+        statement = cons(DO_WHILE_STATEMENT, block, expr);
     }
     else if (check(RETURN))
     {
+        LEXEME *expr = NULL;
         advance();
-        expr();
+        if(exprPending())
+            expr = expr();
         match(SEMICOLON);
+        
+        statement = cons(RETURN_STATEMENT, expr, NULL);
     }
     else if (check(DEFINE))
     {
+        LEXEME *header, *id, *params, *block;
         advance();
-        match(ID);
+        id = match(ID);
         match(OPAREN);
-        optParamList();
+        params = optVarList();
         match(CPAREN);
-        block();
+        block = block();
+        
+        header = cons(DEFINE_HEADER, id, params);
+        statement = cons(DEFINE_STATEMENT, header, block);
     }
     else
         failParse("statement");
+    
+    return statement;
 }
 static int statementPending()
 {
@@ -575,29 +631,38 @@ static int statementPending()
         || check(RETURN) || check(DEFINE);
 }
 
-static void optElse()
+static LEXEME *optElse()
 {
     if (elseStatementPending())
-        elseStatement();
+        return elseStatement();
+    
+    return NULL;
 }
 //static int optElsePending()
 //{
 //    return elseStatementPending();
 //}
 
-static void elseStatement()
-{
+static LEXEME *elseStatement()
+{   
     match(ELSE);
     if (blockPending())
-        block();
+    {
+        LEXEME *block = block();
+        return cons(ELSE_STATEMENT, block, NULL)
+    }
     else if (check(IF))
     {
+        LEXEME *ifStatement, *expr, *block, *optElse;
         advance();
         match(OPAREN);
-        expr();
+        expr = expr();
         match(CPAREN);
-        block();
-        optElse();
+        block = block();
+        optElse = optElse();
+        
+        ifStatement = cons(IF_BODY, expr, block);
+        return cons(IF_STATEMENT, ifStatement, optElse);
     }
     else
         failParse("else statement");

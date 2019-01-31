@@ -1,6 +1,33 @@
 #ifndef __TYPES_INCLUDED__
 #define __TYPES_INCLUDED__
 
+// Parse tree
+extern char *PROG;
+extern char *CLASS_DEF;
+extern char *CLASS_HEADER;
+extern char *CLASS_STATEMENTS;
+extern char *CLASS_STATEMENT;
+extern char *FUNCTION_STATEMENT;
+extern char *FUNCTION_INFO;
+extern char *VAR_DECL;
+extern char *VAR_LIST;
+extern char *VAR_DEF;
+extern char *EXPR;
+extern char *EXPR_OP;
+extern char *ID_EXPR;
+extern char *UNARY_DEF;
+extern char *EXPR_LIST;
+extern char *BLOCK;
+extern char *STATEMENTS;
+extern char *IF_STATEMENT;
+extern char *IF_BODY;
+extern char *ELSE_STATEMENT;
+extern char *DEFINE_STATEMENT;
+extern char *DEFINE_HEADER;
+extern char *WHILE_STATEMENT;
+extern char *DO_WHILE_STATEMENT;
+extern char *RETURN_STATEMENT;
+
 // Data primatives
 extern char *INTEGER;
 extern char *REAL;

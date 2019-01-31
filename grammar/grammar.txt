@@ -13,12 +13,15 @@ classStatements : classStatement
                 | classStatement classStatements
 
 classStatement : accessMod VAR varList SEMICOLON
-               | accessMod FUNCTION ID OPAREN optParamList CPAREN block
+               | accessMod FUNCTION ID OPAREN optVarList CPAREN block
 
 accessMod : PUBLIC
           | PRIVATE
           | PROTECTED
           | EMPTY
+
+optVarList : varList
+           | EMPTY
 
 varList : varDef
         : varDef COMMA varList
@@ -29,7 +32,7 @@ varDef : ID
 expr : unary
      | unary op expr
 
-unary : idExpr
+unary : idExpr postVar
       | INTEGER
       | REAL
       | STRING
@@ -40,12 +43,12 @@ unary : idExpr
       | NEW ID OPAREN optExprList CPAREN
 
 idExpr : ID
-       | ID postVar
        | ID OPAREN optExprList CPAREN
        | ID OBRACKET expr CBRACKET
 
 postVar : PLUSPLUS
        | MINUSMINUS
+       | EMPTY
 
 optExprList : exprList
             | EMPTY
@@ -77,15 +80,6 @@ op : EQUALS
    | BINARY_AND
    | BINARY_OR
 
-optParamList : paramList
-             | EMPTY
-
-paramList : param
-          | param COMMA paramList
-
-param : ID
-      | ID EQUALS expr
-
 block : OBRACE optStatements CBRACE
 
 optStatements : statements
@@ -100,7 +94,7 @@ statement : expr SEMICOLON
           | WHILE OPAREN expr CPAREN block
           | DO block WHILE OPAREN expr CPAREN SEMICOLON
           | RETURN expr SEMICOLON
-          | DEFINE ID OPAREN optParamList CPAREN block
+          | DEFINE ID OPAREN optVarList CPAREN block
 
 optElse : elseStatement
         | EMPTY
