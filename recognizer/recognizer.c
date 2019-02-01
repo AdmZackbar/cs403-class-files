@@ -28,7 +28,7 @@ static int classStatementPending();
 static LEXEME *accessMod();
 static int accessModPending();
 static LEXEME *optVarList();
-static int optVarListPending();
+//static int optVarListPending();
 static LEXEME *varList();
 static int varListPending();
 static LEXEME *varDef();
@@ -140,7 +140,7 @@ static LEXEME *program()
     LEXEME *classLex = classDef();
     LEXEME *programLex = NULL;
     if(programPending())
-        program = program();
+        programLex = program();
     
     return cons(PROG, classLex, programLex);
 }
@@ -229,7 +229,7 @@ static LEXEME *classStatement()
         blockLex = block();
         
         functionInfo = cons(FUNCTION_INFO, functionName, functionParams);
-        statement = cons(FUNCTION_STATEMENT, functionInfo, blockLex);
+        statementLex = cons(FUNCTION_STATEMENT, functionInfo, blockLex);
     }
     else
         failParse("class statement");
@@ -263,10 +263,10 @@ static LEXEME *optVarList()
     
     return NULL;
 }
-static int optVarListPending()
-{
-    return varListPending();
-}
+//static int optVarListPending()
+//{
+//    return varListPending();
+//}
 
 static LEXEME *varList()
 {
@@ -311,10 +311,10 @@ static LEXEME *expr()
         LEXEME *opLex, *exprLex;
         opLex = op();
         exprLex = expr();
-        operation = cons(OPERATION, opLex, exprLex);
+        operation = cons(EXPR_OP, opLex, exprLex);
     }
     
-    return cons(EXPRESSION, unaryLex, operation);
+    return cons(EXPR, unaryLex, operation);
 }
 static int exprPending()
 {
@@ -326,7 +326,7 @@ static LEXEME *unary()
     if (idExprPending())
     {
         LEXEME *idExprLex, *postVarLex;
-        idExprLex = idExpr;
+        idExprLex = idExpr();
         if (postVarPending())
             postVarLex = postVar();
         
@@ -631,7 +631,7 @@ static LEXEME *statement()
     else
         failParse("statement");
     
-    return statement;
+    return statementLex;
 }
 static int statementPending()
 {
@@ -674,6 +674,8 @@ static LEXEME *elseStatement()
     }
     else
         failParse("else statement");
+    
+    return NULL;    // unreachable - for compiler
 }
 static int elseStatementPending()
 {
