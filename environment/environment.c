@@ -7,10 +7,11 @@ LEXEME *newEnvironment()
     return cons(ENV, cons(TABLE, NULL, NULL), NULL);
 }
 
-void insertEnvironment(LEXEME *env, LEXEME *id, LEXEME *value)
+LEXEME *insertEnvironment(LEXEME *env, LEXEME *id, LEXEME *value)
 {
     setCar(car(env), cons(ID, id, car(car(env))));
     setCdr(car(env), cons(IDENTIFIER, value, cdr(car(env))));
+    return value;
 }
 
 LEXEME *getValueEnv(LEXEME *env, LEXEME *id)
