@@ -91,3 +91,19 @@ void displayEnvironment(FILE *fp, LEXEME *env)
         env = cdr(env);
     }
 }
+
+void displayLocalEnv(FILE *fp, LEXEME *env)
+{
+    LEXEME *var = car(car(env));
+    LEXEME *val = cdr(car(env));
+    fprintf(fp, "Local Environment:\n");
+    while (var != NULL)
+    {
+        displayLEXEME(fp, car(var));
+        fprintf(fp, ": ");
+        displayLEXEME(fp, car(val));
+        fprintf(fp, "\n");
+        var = cdr(var);
+        val = cdr(val);
+    }
+}

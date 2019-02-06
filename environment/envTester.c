@@ -8,6 +8,7 @@ static LEXEME *findValue(LEXEME *env, char *name);
 static LEXEME *changeValue(LEXEME *env, char *name, LEXEME *newVal);
 static LEXEME *addScope(LEXEME *env, LEXEME *vars, LEXEME *vals);
 static void printEnv(LEXEME *env);
+static void printLocalEnv(LEXEME *env);
 
 int main()
 {
@@ -23,8 +24,9 @@ int main()
     vals = cons(VALUE, newLEXEMEstring(STRING, "there", -1), cons(VALUE, newLEXEMEstring(STRING, "kenobi", -1), NULL));
     env = addScope(env, vars, vals);
     insertEnv(env, "star_wars", newLEXEMEstring(STRING, "prequels", -1));
+    printLocalEnv(env);
+    changeValue(env, "y", newLEXEMEdouble(3.0, -1));
     printEnv(env);
-    changeVal(env, "y", newLEXEMEreal(3.0, -1));
 }
 
 static LEXEME *createEnv()
@@ -55,7 +57,7 @@ static LEXEME *changeValue(LEXEME *env, char *name, LEXEME *newVal)
     printf("Setting a new value for %s: ", name);
     displayLEXEME(stdout, newVal);
     printf("\n");
-    LEXEME *oldVal = setValue(env, newLEXEMEstring(ID, name, -1), newVal);
+    LEXEME *oldVal = setValueEnv(env, newLEXEMEstring(ID, name, -1), newVal);
     displayLEXEME(stdout, oldVal);
     printf(" was replaced\n");
     return oldVal;
@@ -83,4 +85,9 @@ static void printEnv(LEXEME *env)
 {
     printf("The environment is:\n");
     displayEnvironment(stdout, env);
+}
+
+static void printLocalEnv(LEXEME *env)
+{
+    displayLocalEnv(stdout, env);
 }
