@@ -38,6 +38,33 @@ LEXEME *getValueEnv(LEXEME *env, LEXEME *id)
     //return NULL;
 }
 
+LEXEME *setValueEnv(LEXEME *env, LEXEME *id, LEXEME *newVal)
+{
+    LEXEME *vars, *vals;
+    
+    while (env != NULL)
+    {
+        vars = car(car(env));
+        vals = cdr(car(env));
+        while (vars != NULL)
+        {
+            if (sameVar(id, car(vars)))
+            {
+                LEXEME *oldVal = car(vals);
+                setCar(vals, newVal);
+                return oldVal;
+            }
+            vars = cdr(vars);
+            vals = cdr(vals);
+        }
+        env = cdr(env);
+    }
+    fprintf(stderr, "Error: unidentified variable ");
+    displayLEXEME(stderr, id);
+    fprintf(stderr, "\n");
+    exit(-11);
+}
+
 LEXEME *newScopeEnv(LEXEME *env, LEXEME *vars, LEXEME *vals)
 {
     return cons(ENV, cons(TABLE, vars, vals), env);
