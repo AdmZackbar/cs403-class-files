@@ -1,9 +1,10 @@
 #include "environment.h"
 #include "types.h"
 
+// Wrappers for environment functions(with print statements)
 static LEXEME *createEnv();
-static void insertEnv(LEXEME *env, char *name, LEXEME *value);
-static void findValue(LEXEME *env, char *name);
+static LEXEME *insertEnv(LEXEME *env, char *name, LEXEME *value);
+static LEXEME *findValue(LEXEME *env, char *name);
 static LEXEME *addScope(LEXEME *env, LEXEME *vars, LEXEME *vals);
 static void printEnv(LEXEME *env);
 
@@ -17,6 +18,11 @@ int main()
     env = addScope(env, vars, vals);
     printEnv(env);
     findValue(env, "x");
+    vars = cons(IDENTIFIER, newLEXEMEstring(ID, "hello", -1), cons(IDENTIFIER, newLEXEMEstring(ID, "general", -1), NULL));
+    vals = cons(VALUE, newLEXEMEstring(STRING, "there", -1), cons(VALUE, newLEXEMEstring(STRING, "kenobi", -1), NULL));
+    env = addScope(env, vars, vals);
+    insertEnv(env, "star_wars", newLEXEMEstring(STRING, "prequels", -1));
+    printEnv(env);
 }
 
 static LEXEME *createEnv()
@@ -25,20 +31,21 @@ static LEXEME *createEnv()
     return newEnvironment();
 }
 
-static void insertEnv(LEXEME *env, char *name, LEXEME *value)
+static LEXEME *insertEnv(LEXEME *env, char *name, LEXEME *value)
 {
     printf("Adding variable %s with value ", name);
     displayLEXEME(stdout, value);
     printf("\n");
-    insertEnvironment(env, newLEXEMEstring(ID, name, -1), value);
+    return insertEnvironment(env, newLEXEMEstring(ID, name, -1), value);
 }
 
-static void findValue(LEXEME *env, char *name)
+static LEXEME *findValue(LEXEME *env, char *name)
 {
     printf("Value of %s: ", name);
     LEXEME *value = getValueEnv(env, newLEXEMEstring(ID, name, -1));
     displayLEXEME(stdout, value);
     printf("\n");
+    return value;
 }
 
 static LEXEME *addScope(LEXEME *env, LEXEME *vars, LEXEME *vals)
