@@ -77,7 +77,6 @@ LEXEME *match(char *type)
         return advance();
         
     printf("SYNTAX ERROR: expected %s got %s - line %d\n", type, getTypeLEXEME(current), getLineNumLEXEME(current));
-    printf("Illegal\n");
     exit(-2);
 }
 
@@ -99,7 +98,6 @@ LEXEME *parse(char *filename)
 static void failParse(char *component)
 {
     printf("Incorrect structure in grammar module %s\n", component);
-    printf("Illegal\n");
     exit(-404);
 }
 
@@ -183,7 +181,7 @@ static LEXEME *classStatement()
     if (check(VAR))
     {
         advance();
-        statementLex = varList();
+        statementLex = cons(VAR_DECL, varList(), NULL);
         match(SEMICOLON);
     }
     else if (check(FUNCTION))
@@ -197,7 +195,7 @@ static LEXEME *classStatement()
         blockLex = block();
         
         functionInfo = cons(FUNCTION_INFO, functionName, functionParams);
-        statementLex = cons(FUNCTION_STATEMENT, functionInfo, blockLex);
+        statementLex = cons(FUNCTION_STATEMENT, blockLex, functionInfo);
     }
     else
         failParse("class statement");

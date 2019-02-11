@@ -151,7 +151,7 @@ void displayLEXEME(FILE *fp, LEXEME *lexeme)
     else if (lexeme->type == MINUS)                 fprintf(fp, "-");
     else if (lexeme->type == TIMES)                 fprintf(fp, "*");
     else if (lexeme->type == DIVIDE)                fprintf(fp, "/");
-    else if (lexeme->type == MODULUS)               fprintf(fp, "%");
+    else if (lexeme->type == MODULUS)               fprintf(fp, "%%");
     else if (lexeme->type == EXPONANT)              fprintf(fp, "^");
     else if (lexeme->type == DOT)                   fprintf(fp, ".");
     else if (lexeme->type == NOT)                   fprintf(fp, "!");

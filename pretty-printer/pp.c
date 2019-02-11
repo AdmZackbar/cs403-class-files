@@ -1,6 +1,9 @@
+#include <stdio.h>  // for printf()
+#include <stdlib.h> // for exit()
 #include "pp.h"
 #include "parser.h"
 #include "lexeme.h"
+#include "types.h"
 
 static char *parseFileArg(int argc, char **argv);
 static void printIndent(int indent);
@@ -52,8 +55,8 @@ static void printIndent(int indent)
 void pp(LEXEME *tree, int indent)
 {
     char *type = getTypeLEXEME(tree);
-    if (isPrimative(tree) || isOperator(tree) || getTypeLEXEME(tree) == ID || isAccessMod(tree)) displayLEXEME(tree);
-    else if (type == PROGRAM)   printProgram(tree, indent);
+    if (isPrimative(tree) || isOperator(tree) || getTypeLEXEME(tree) == ID || isAccessMod(tree)) displayLEXEME(stdout, tree);
+    else if (type == PROG)   printProgram(tree, indent);
     else if (type == CLASS_DEF) printClassDef(tree, indent);
     else if (type == CLASS_HEADER)  printClassHeader(tree, indent);
     else if (type == CLASS_STATEMENTS)  printClassStatements(tree, indent);
@@ -77,8 +80,7 @@ static void printClassDef(LEXEME *tree, int indent)
     printf("\n");
     printIndent(indent);
     printf("{\n");
-    if (cdr(tree) != NULL)  pp(cdr(tree), indent+indentSpaces)  // Class statements
-    printIndent(indent);
+    if (cdr(tree))  pp(cdr(tree), indent+indentSpaces); // Class statements
     printf("}\n");
 }
 
@@ -103,23 +105,27 @@ static void printClassStatements(LEXEME *tree, int indent)
 static void printClassStatement(LEXEME *tree, int indent)
 {
     printIndent(indent);
-    if (car(tree))  pp(car(tree), indent);  // Access Mod
-    pp(cdr(tree));  // var declaration or function statement
+    if (car(tree))
+    {
+        pp(car(tree), indent);  // Access Mod
+        printf(" ");
+    }
+    pp(cdr(tree), indent);  // var declaration or function statement
 }
 
 static void printFunctionStatement(LEXEME *tree, int indent)
 {
     printf("function ");
-    pp(car(cdr(tree), indent);  // ID - function name
+    pp(car(cdr(tree)), indent);  // ID - function name
     printf("(");
-    pp(cdr(cdr(tree), indent);  // Var list
+    LEXEME *varList = cdr(cdr(tree));
+    if (varList)    pp(varList, indent);  // Var list
     printf(")\n");
     pp(car(tree), indent);  // Block
 }
 
 static void printVarDecl(LEXEME *tree, int indent)
 {
-    printIndent(indent);
     printf("var ");
     pp(car(tree), indent);  // Var list
     printf(";\n");
