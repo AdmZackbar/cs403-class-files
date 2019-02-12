@@ -29,8 +29,39 @@ varList : varDef
 varDef : ID
        | ID EQUALS expr
 
-expr : unary
-     | unary op expr
+expr : expr2
+     | expr2 EQUALS expr
+
+expr2 : expr3
+      | expr3 LOGICAL_AND expr2
+      | expr3 LOGICAL_OR expr2
+
+expr3 : expr4
+      | expr4 BINARY_AND expr3
+      | expr4 BINARY_OR expr3
+
+expr4 : expr5
+      | expr5 EQUALSEQUALS expr4
+      | expr5 NOTEQUALS expr4
+      | expr5 LESS_THAN expr4
+      | expr5 GREATER_THAN expr4
+      | expr5 LESS_THAN_EQUALS expr4
+      | expr5 GREATER_THAN_EQUALS expr4
+
+expr5 : expr6
+      | expr6 PLUS expr5
+      | expr6 MINUS expr5
+
+expr6 : expr7
+      | expr7 TIMES expr6
+      | expr7 DIVIDE expr6
+      | expr7 MODULUS expr6
+
+expr7 : expr8
+      | expr8 EXPONANT expr7
+
+expr8 : unary
+      | unary DOT expr8
 
 unary : idExpr postVar
       | INTEGER
@@ -60,25 +91,6 @@ uop : UMINUS
     | PLUSPLUS
     | MINUSMINUS
     | NOT
-
-op : EQUALS
-   | PLUS
-   | MINUS
-   | TIMES
-   | DIVIDE
-   | MODULUS
-   | EXPONANT
-   | DOT
-   | LESS_THAN
-   | GREATER_THAN
-   | LESS_THAN_EQUAL
-   | GREATER_THAN_EQUAL
-   | EQUALSEQUALS
-   | NOTEQUALS
-   | LOGICAL_AND
-   | LOGICAL_OR
-   | BINARY_AND
-   | BINARY_OR
 
 block : OBRACE optStatements CBRACE
 

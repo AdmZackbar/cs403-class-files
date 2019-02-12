@@ -29,6 +29,13 @@ static LEXEME *varDef();
 static int varDefPending();
 static LEXEME *expr();
 static int exprPending();
+static LEXEME *expr2();
+static LEXEME *expr3();
+static LEXEME *expr4();
+static LEXEME *expr5();
+static LEXEME *expr6();
+static LEXEME *expr7();
+static LEXEME *expr8();
 static LEXEME *unary();
 static int unaryPending();
 static LEXEME *idExpr();
@@ -270,21 +277,129 @@ static int varDefPending()
 
 static LEXEME *expr()
 {
-    LEXEME *unaryLex, *operation = NULL;
-    unaryLex = unary();
-    if (opPending())
+    LEXEME *unaryLex, *exprLex;
+    unaryLex = expr2();
+    while (check(EQUALS))
     {
-        LEXEME *opLex, *exprLex;
-        opLex = op();
+        opLex = match();
         exprLex = expr();
-        operation = cons(EXPR_OP, opLex, exprLex);
+        setCar(opLex, unaryLex);
+        setCdr(opLex, exprLex);
+        unaryLex = opLex;
     }
     
-    return cons(EXPR, unaryLex, operation);
+    return unaryLex;
 }
 static int exprPending()
 {
     return unaryPending();
+}
+
+static LEXEME *expr2()
+{
+    LEXEME *unaryLex, *exprLex;
+    unaryLex = expr3();
+    while (check(LOGICAL_AND) || check(LOGICAL_OR))
+    {
+        opLex = match();
+        exprLex = expr2();
+        setCar(opLex, unaryLex);
+        setCdr(opLex, exprLex);
+        unaryLex = opLex;
+    }
+    
+    return unaryLex;
+}
+static LEXEME *expr3()
+{
+    LEXEME *unaryLex, *exprLex;
+    unaryLex = expr4();
+    while (check(BINARY_AND) || check(BINARY_OR))
+    {
+        opLex = match();
+        exprLex = expr3();
+        setCar(opLex, unaryLex);
+        setCdr(opLex, exprLex);
+        unaryLex = opLex;
+    }
+    
+    return unaryLex;
+}
+static LEXEME *expr4()
+{
+    LEXEME *unaryLex, *exprLex;
+    unaryLex = expr5();
+    while (check(EQUALSEQUALS) || check(NOTEQUALS) || check(LESS_THAN)
+        || check(GREATER_THAN) || check(LESS_THAN_EQUALS) || check(GREATER_THAN_EQUALS))
+    {
+        opLex = match();
+        exprLex = expr4();
+        setCar(opLex, unaryLex);
+        setCdr(opLex, exprLex);
+        unaryLex = opLex;
+    }
+    
+    return unaryLex;
+}
+static LEXEME *expr5()
+{
+    LEXEME *unaryLex, *exprLex;
+    unaryLex = expr6();
+    while (check(PLUS) || check(MINUS))
+    {
+        opLex = match();
+        exprLex = expr5();
+        setCar(opLex, unaryLex);
+        setCdr(opLex, exprLex);
+        unaryLex = opLex;
+    }
+    
+    return unaryLex;
+}
+static LEXEME *expr6()
+{
+    LEXEME *unaryLex, *exprLex;
+    unaryLex = expr7();
+    while (check(TIMES) || check(DIVIDE) || check(MODULUS))
+    {
+        opLex = match();
+        exprLex = expr6();
+        setCar(opLex, unaryLex);
+        setCdr(opLex, exprLex);
+        unaryLex = opLex;
+    }
+    
+    return unaryLex;
+}
+static LEXEME *expr7()
+{
+    LEXEME *unaryLex, *exprLex;
+    unaryLex = expr8();
+    while (check(EXPONANT))
+    {
+        opLex = match();
+        exprLex = expr7();
+        setCar(opLex, unaryLex);
+        setCdr(opLex, exprLex);
+        unaryLex = opLex;
+    }
+    
+    return unaryLex;
+}
+static LEXEME *expr8()
+{
+    LEXEME *unaryLex, *exprLex;
+    unaryLex = unary();
+    while (check(DOT))
+    {
+        opLex = match();
+        exprLex = expr8();
+        setCar(opLex, unaryLex);
+        setCdr(opLex, exprLex);
+        unaryLex = opLex;
+    }
+    
+    return unaryLex;
 }
 
 static LEXEME *unary()

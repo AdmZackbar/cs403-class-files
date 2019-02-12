@@ -129,6 +129,12 @@ int isAccessMod(LEXEME *lexeme)
     return type == PUBLIC || type == PRIVATE || type == PROTECTED;
 }
 
+int isReserved(LEXEME *lexeme)
+{
+    char *type = lexeme->type;
+    return type == NULL_WORD || type == THIS;
+}
+
 void printLEXEME(FILE *fp, LEXEME *lexeme)
 {
     fprintf(fp, "%s - line %d", lexeme->type, lexeme->lineNum);
@@ -171,4 +177,6 @@ void displayLEXEME(FILE *fp, LEXEME *lexeme)
     else if (lexeme->type == PUBLIC)    fprintf(fp, "public");
     else if (lexeme->type == PRIVATE)   fprintf(fp, "private");
     else if (lexeme->type == PROTECTED) fprintf(fp, "protected");
+    else if (lexeme->type == NULL_WORD) fprintf(fp, "NULL");
+    else if (lexeme->type == THIS)      fprintf(fp, "this");
 }

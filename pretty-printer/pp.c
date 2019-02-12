@@ -18,6 +18,7 @@ static void printVarDecl(LEXEME *tree, int indent);
 static void printVarList(LEXEME *tree, int indent);
 static void printVarDef(LEXEME *tree, int indent);
 static void printExpr(LEXEME *tree, int indent);
+static void printOp(LEXEME *tree, int indent);
 
 int indentSpaces = 4;   // Number of spaces per tab(indent)
 
@@ -55,7 +56,7 @@ static void printIndent(int indent)
 void pp(LEXEME *tree, int indent)
 {
     char *type = getTypeLEXEME(tree);
-    if (isPrimative(tree) || isOperator(tree) || getTypeLEXEME(tree) == ID || isAccessMod(tree)) displayLEXEME(stdout, tree);
+    if (isPrimative(tree) || getTypeLEXEME(tree) == ID || isAccessMod(tree) || isReserved(tree)) displayLEXEME(stdout, tree);
     else if (type == PROG)   printProgram(tree, indent);
     else if (type == CLASS_DEF) printClassDef(tree, indent);
     else if (type == CLASS_HEADER)  printClassHeader(tree, indent);
@@ -65,7 +66,8 @@ void pp(LEXEME *tree, int indent)
     else if (type == VAR_DECL)  printVarDecl(tree, indent);
     else if (type == VAR_LIST)  printVarList(tree, indent);
     else if (type == VAR_DEF)   printVarDef(tree, indent);
-    else if (type == EXPR)  printExpr(tree, indent);
+    //else if (type == EXPR)  printExpr(tree, indent);
+    else if (type == OP)    printOp(tree, indent);
 }
 
 static void printProgram(LEXEME *tree, int indent)
@@ -88,11 +90,11 @@ static void printClassHeader(LEXEME *tree, int indent)
 {
     printIndent(indent);
     printf("Class ");
-    displayLEXEME(car(tree));   // ID - classname
-    if (cdr(tree) != NULL))
+    pp(car(tree), indent);   // ID - class name
+    if (cdr(tree))
     {
         printf(" extends ");
-        displayLEXEME(cdr(tree));
+        pp(cdr(tree), indent);  // ID - base class name
     }
 }
 
@@ -161,4 +163,13 @@ static void printExpr(LEXEME *tree, int indent)
         printf(" ");
         pp(cdr(cdr(tree)), indent); // Expr
     }
+}
+
+static void printOp(LEXEME *tree, int indent)
+{
+    pp(car(tree), indent);  // Unary/Operator
+    printf(" ");
+    displayLEXEME(tree);    // Operator
+    printf(" ");
+    pp(cdr(tree), indent);  // Unary/Operator
 }
