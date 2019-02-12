@@ -67,7 +67,7 @@ void pp(LEXEME *tree, int indent)
     else if (type == VAR_LIST)  printVarList(tree, indent);
     else if (type == VAR_DEF)   printVarDef(tree, indent);
     //else if (type == EXPR)  printExpr(tree, indent);
-    else if (type == OP)    printOp(tree, indent);
+    else if (isOperator(tree))  printOp(tree, indent);
 }
 
 static void printProgram(LEXEME *tree, int indent)
@@ -169,7 +169,7 @@ static void printOp(LEXEME *tree, int indent)
 {
     pp(car(tree), indent);  // Unary/Operator
     printf(" ");
-    displayLEXEME(tree);    // Operator
+    displayLEXEME(stdout, tree);    // Operator
     printf(" ");
     pp(cdr(tree), indent);  // Unary/Operator
 }

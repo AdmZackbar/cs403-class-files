@@ -277,7 +277,7 @@ static int varDefPending()
 
 static LEXEME *expr()
 {
-    LEXEME *unaryLex, *exprLex;
+    LEXEME *unaryLex, *exprLex, *opLex;
     unaryLex = expr2();
     while (check(EQUALS))
     {
@@ -297,7 +297,7 @@ static int exprPending()
 
 static LEXEME *expr2()
 {
-    LEXEME *unaryLex, *exprLex;
+    LEXEME *unaryLex, *exprLex, *opLex;
     unaryLex = expr3();
     while (check(LOGICAL_AND) || check(LOGICAL_OR))
     {
@@ -312,7 +312,7 @@ static LEXEME *expr2()
 }
 static LEXEME *expr3()
 {
-    LEXEME *unaryLex, *exprLex;
+    LEXEME *unaryLex, *exprLex, *opLex;
     unaryLex = expr4();
     while (check(BINARY_AND) || check(BINARY_OR))
     {
@@ -327,7 +327,7 @@ static LEXEME *expr3()
 }
 static LEXEME *expr4()
 {
-    LEXEME *unaryLex, *exprLex;
+    LEXEME *unaryLex, *exprLex, *opLex;
     unaryLex = expr5();
     while (check(EQUALSEQUALS) || check(NOTEQUALS) || check(LESS_THAN)
         || check(GREATER_THAN) || check(LESS_THAN_EQUALS) || check(GREATER_THAN_EQUALS))
@@ -343,7 +343,7 @@ static LEXEME *expr4()
 }
 static LEXEME *expr5()
 {
-    LEXEME *unaryLex, *exprLex;
+    LEXEME *unaryLex, *exprLex, *opLex;
     unaryLex = expr6();
     while (check(PLUS) || check(MINUS))
     {
@@ -358,7 +358,7 @@ static LEXEME *expr5()
 }
 static LEXEME *expr6()
 {
-    LEXEME *unaryLex, *exprLex;
+    LEXEME *unaryLex, *exprLex, *opLex;
     unaryLex = expr7();
     while (check(TIMES) || check(DIVIDE) || check(MODULUS))
     {
@@ -373,7 +373,7 @@ static LEXEME *expr6()
 }
 static LEXEME *expr7()
 {
-    LEXEME *unaryLex, *exprLex;
+    LEXEME *unaryLex, *exprLex, *opLex;
     unaryLex = expr8();
     while (check(EXPONANT))
     {
@@ -388,7 +388,7 @@ static LEXEME *expr7()
 }
 static LEXEME *expr8()
 {
-    LEXEME *unaryLex, *exprLex;
+    LEXEME *unaryLex, *exprLex, *opLex;
     unaryLex = unary();
     while (check(DOT))
     {
