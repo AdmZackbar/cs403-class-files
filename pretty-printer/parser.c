@@ -48,8 +48,6 @@ static LEXEME *exprList();
 static int exprListPending();
 static LEXEME *uop();
 static int uopPending();
-static LEXEME *op();
-static int opPending();
 static LEXEME *block();
 static int blockPending();
 static LEXEME *optStatements();
@@ -281,7 +279,7 @@ static LEXEME *expr()
     unaryLex = expr2();
     while (check(EQUALS))
     {
-        opLex = match();
+        opLex = advance();
         exprLex = expr();
         setCar(opLex, unaryLex);
         setCdr(opLex, exprLex);
@@ -301,7 +299,7 @@ static LEXEME *expr2()
     unaryLex = expr3();
     while (check(LOGICAL_AND) || check(LOGICAL_OR))
     {
-        opLex = match();
+        opLex = advance();
         exprLex = expr2();
         setCar(opLex, unaryLex);
         setCdr(opLex, exprLex);
@@ -316,7 +314,7 @@ static LEXEME *expr3()
     unaryLex = expr4();
     while (check(BINARY_AND) || check(BINARY_OR))
     {
-        opLex = match();
+        opLex = advance();
         exprLex = expr3();
         setCar(opLex, unaryLex);
         setCdr(opLex, exprLex);
@@ -330,9 +328,9 @@ static LEXEME *expr4()
     LEXEME *unaryLex, *exprLex, *opLex;
     unaryLex = expr5();
     while (check(EQUALSEQUALS) || check(NOTEQUALS) || check(LESS_THAN)
-        || check(GREATER_THAN) || check(LESS_THAN_EQUALS) || check(GREATER_THAN_EQUALS))
+        || check(GREATER_THAN) || check(LESS_THAN_EQUAL) || check(GREATER_THAN_EQUAL))
     {
-        opLex = match();
+        opLex = advance();
         exprLex = expr4();
         setCar(opLex, unaryLex);
         setCdr(opLex, exprLex);
@@ -347,7 +345,7 @@ static LEXEME *expr5()
     unaryLex = expr6();
     while (check(PLUS) || check(MINUS))
     {
-        opLex = match();
+        opLex = advance();
         exprLex = expr5();
         setCar(opLex, unaryLex);
         setCdr(opLex, exprLex);
@@ -362,7 +360,7 @@ static LEXEME *expr6()
     unaryLex = expr7();
     while (check(TIMES) || check(DIVIDE) || check(MODULUS))
     {
-        opLex = match();
+        opLex = advance();
         exprLex = expr6();
         setCar(opLex, unaryLex);
         setCdr(opLex, exprLex);
@@ -377,7 +375,7 @@ static LEXEME *expr7()
     unaryLex = expr8();
     while (check(EXPONANT))
     {
-        opLex = match();
+        opLex = advance();
         exprLex = expr7();
         setCar(opLex, unaryLex);
         setCdr(opLex, exprLex);
@@ -392,7 +390,7 @@ static LEXEME *expr8()
     unaryLex = unary();
     while (check(DOT))
     {
-        opLex = match();
+        opLex = advance();
         exprLex = expr8();
         setCar(opLex, unaryLex);
         setCdr(opLex, exprLex);
@@ -543,56 +541,6 @@ static LEXEME *uop()
 static int uopPending()
 {
     return check(MINUS) || check(PLUSPLUS) || check(MINUSMINUS) || check(NOT);
-}
-
-static LEXEME *op()
-{
-    if (check(EQUALS))
-        return advance();
-    else if (check(PLUS))
-        return advance();
-    else if (check(MINUS))
-        return advance();
-    else if (check(TIMES))
-        return advance();
-    else if (check(DIVIDE))
-        return advance();
-    else if (check(MODULUS))
-        return advance();
-    else if (check(EXPONANT))
-        return advance();
-    else if (check(DOT))
-        return advance();
-    else if (check(LESS_THAN))
-        return advance();
-    else if (check(GREATER_THAN))
-        return advance();
-    else if (check(LESS_THAN_EQUAL))
-        return advance();
-    else if (check(GREATER_THAN_EQUAL))
-        return advance();
-    else if (check(EQUALSEQUALS))
-        return advance();
-    else if (check(NOTEQUALS))
-        return advance();
-    else if (check(LOGICAL_AND))
-        return advance();
-    else if (check(LOGICAL_OR))
-        return advance();
-    else if (check(BINARY_AND))
-        return advance();
-    else if (check(BINARY_OR))
-        return advance();
-    failParse("operator");
-    return NULL;    // Unreachable - for compiler
-}
-static int opPending()
-{
-    return check(EQUALS) || check(PLUS) || check(MINUS) || check(TIMES)
-        || check(DIVIDE) || check(MODULUS) || check(EXPONANT) || check(DOT)
-        || check(LESS_THAN) || check(GREATER_THAN) || check(LESS_THAN_EQUAL)
-        || check(GREATER_THAN_EQUAL) || check(EQUALSEQUALS) || check(NOTEQUALS)
-        || check(LOGICAL_AND) || check(LOGICAL_OR) || check(BINARY_AND) || check(BINARY_OR);
 }
 
 static LEXEME *block()
