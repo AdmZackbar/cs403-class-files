@@ -1,0 +1,42 @@
+class AVLNode
+{
+    public var value, balance;
+    public var parent, left, right;    // Pointers to other nodes
+    
+    function AVLNode(value)
+    {
+        this.value = value;
+        parent = left = right = NULL;
+    }
+}
+
+class AVLTree
+{
+    private var root;
+    
+    public function insert(value)
+    {
+        var newNode = new AVLNode(value);
+        if (root == NULL)
+        {
+             root = newNode;
+        }
+    }
+}
+
+class Tester
+{
+    public function main(args)
+    {
+        var fp = open(args[1]);
+        var tree = new AVLTree();
+        tree.interpret(fp);
+        
+        return 0;
+    }
+    
+    public function interpret(fp)
+    {
+        
+    }
+}

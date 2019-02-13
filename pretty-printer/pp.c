@@ -17,8 +17,14 @@ static void printFunctionStatement(LEXEME *tree, int indent);
 static void printVarDecl(LEXEME *tree, int indent);
 static void printVarList(LEXEME *tree, int indent);
 static void printVarDef(LEXEME *tree, int indent);
-static void printExpr(LEXEME *tree, int indent);
+//static void printExpr(LEXEME *tree, int indent);
 static void printOp(LEXEME *tree, int indent);
+static void printStatements(LEXEME *tree, int indent);
+static void printIf(LEXEME *tree, int indent);
+static void printElse(LEXEME *tree, int indent);
+static void printWhile(LEXEME *tree, int indent);
+static void printDoWhile(LEXEME *tree, int indent);
+static void printReturn(LEXEME *tree, int indent);
 
 int indentSpaces = 4;   // Number of spaces per tab(indent)
 
@@ -55,6 +61,11 @@ static void printIndent(int indent)
 
 void pp(LEXEME *tree, int indent)
 {
+    if (tree == NULL)
+    {
+        printf("Got NULL tree in pp\n");
+        return;
+    }
     char *type = getTypeLEXEME(tree);
     if (isPrimative(tree) || getTypeLEXEME(tree) == ID || isAccessMod(tree) || isReserved(tree)) displayLEXEME(stdout, tree);
     else if (type == PROG)   printProgram(tree, indent);
@@ -68,6 +79,12 @@ void pp(LEXEME *tree, int indent)
     else if (type == VAR_DEF)   printVarDef(tree, indent);
     //else if (type == EXPR)  printExpr(tree, indent);
     else if (isOperator(tree))  printOp(tree, indent);
+    else if (type == STATEMENTS)    printStatements(tree, indent);
+    else if (type == IF_STATEMENT)  printIf(tree, indent);
+    else if (type == ELSE_STATEMENT)    printElse(tree, indent);
+    else if (type == WHILE_STATEMENT)   printWhile(tree, indent);
+    else if (type == DO_WHILE_STATEMENT)    printDoWhile(tree, indent);
+    else if (type == RETURN_STATEMENT)  printReturn(tree, indent);
 }
 
 static void printProgram(LEXEME *tree, int indent)
@@ -89,7 +106,7 @@ static void printClassDef(LEXEME *tree, int indent)
 static void printClassHeader(LEXEME *tree, int indent)
 {
     printIndent(indent);
-    printf("Class ");
+    printf("class ");
     pp(car(tree), indent);   // ID - class name
     if (cdr(tree))
     {
@@ -112,7 +129,7 @@ static void printClassStatement(LEXEME *tree, int indent)
         pp(car(tree), indent);  // Access Mod
         printf(" ");
     }
-    pp(cdr(tree), indent);  // var declaration or function statement
+    pp(cdr(tree), indent);  // Var declaration or function statement
 }
 
 static void printFunctionStatement(LEXEME *tree, int indent)
@@ -123,7 +140,11 @@ static void printFunctionStatement(LEXEME *tree, int indent)
     LEXEME *varList = cdr(cdr(tree));
     if (varList)    pp(varList, indent);  // Var list
     printf(")\n");
-    pp(car(tree), indent);  // Block
+    printIndent(indent);
+    printf("{\n");
+    if (car(tree))  pp(car(tree), indent+indentSpaces); // Statements
+    printIndent(indent);
+    printf("}\n");
 }
 
 static void printVarDecl(LEXEME *tree, int indent)
@@ -153,17 +174,17 @@ static void printVarDef(LEXEME *tree, int indent)
     }
 }
 
-static void printExpr(LEXEME *tree, int indent)
-{
-    pp(car(tree), indent);  // Unary
-    if (cdr(tree))
-    {
-        printf(" ");
-        pp(car(cdr(tree)), indent); // Operator
-        printf(" ");
-        pp(cdr(cdr(tree)), indent); // Expr
-    }
-}
+//static void printExpr(LEXEME *tree, int indent)
+//{
+//    pp(car(tree), indent);  // Unary
+//    if (cdr(tree))
+//    {
+//        printf(" ");
+//        pp(car(cdr(tree)), indent); // Operator
+//        printf(" ");
+//        pp(cdr(cdr(tree)), indent); // Expr
+//    }
+//}
 
 static void printOp(LEXEME *tree, int indent)
 {
@@ -172,4 +193,80 @@ static void printOp(LEXEME *tree, int indent)
     displayLEXEME(stdout, tree);    // Operator
     printf(" ");
     pp(cdr(tree), indent);  // Unary/Operator
+}
+
+static void printStatements(LEXEME *tree, int indent)
+{
+    printIndent(indent);
+    pp(car(tree), indent);  // Statement - if, else, etc...
+    printf("\n");
+    if (cdr(tree))  pp(cdr(tree), indent);
+    if (isOperator(car(tree)))  printf(";\n");  // After expressions
+}
+
+static void printIf(LEXEME *tree, int indent)
+{
+    printf("if (");
+    pp(car(cdr(tree)), indent); // If conditional - expr
+    printf(")\n");
+    printIndent(indent);
+    printf("{\n");
+    printIndent(indent+indentSpaces);
+    pp(cdr(cdr(tree)), indent+indentSpaces);    // If block - statements
+    printIndent(indent);
+    printf("}\n");
+    if (car(tree))  pp(car(tree), indent);  // Else
+}
+
+static void printElse(LEXEME *tree, int indent)
+{
+    printIndent(indent);
+    if (getTypeLEXEME(car(tree)) == IF_STATEMENT)
+    {
+        printf("else ");
+        pp(car(tree), indent);  // If statement
+    }
+    else
+    {
+        printf("else\n{");
+        pp(car(tree), indent+indentSpaces);    // Block - statements
+        printIndent(indent);
+        printf("}\n");
+    }
+}
+
+static void printWhile(LEXEME *tree, int indent)
+{
+    printf("while (");
+    pp(car(tree), indent);  // While conditional - expr
+    printf(")\n");
+    printIndent(indent);
+    printf("{\n");
+    pp(cdr(tree), indent+indentSpaces);    // Body - statements
+    printIndent(indent);
+    printf("}\n");
+}
+
+static void printDoWhile(LEXEME *tree, int indent)
+{
+    printf("do\n");
+    printIndent(indent);
+    printf("{\n");
+    pp(car(tree), indent+indentSpaces); // Block - statements
+    printIndent(indent);
+    printf("} while (");
+    pp(cdr(tree), indent);  // While conditional - expr
+    printf(")\n");
+}
+
+static void printReturn(LEXEME *tree, int indent)
+{
+    printf("return");
+    if (car(tree))
+    {
+        printf(" ");
+        pp(car(tree), indent);  // Return statement - expr
+        printf(";\n");
+    }
+    else    printf(";\n");
 }

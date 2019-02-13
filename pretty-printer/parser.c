@@ -404,7 +404,7 @@ static LEXEME *unary()
 {
     if (idExprPending())
     {
-        LEXEME *idExprLex, *postVarLex;
+        LEXEME *idExprLex, *postVarLex = NULL;
         idExprLex = idExpr();
         if (postVarPending())
             postVarLex = postVar();
@@ -550,7 +550,7 @@ static LEXEME *block()
     statementsLex = optStatements();
     match(CBRACE);
     
-    return cons(BLOCK, statementsLex, NULL);
+    return statementsLex;
 }
 static int blockPending()
 {

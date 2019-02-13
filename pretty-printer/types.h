@@ -18,7 +18,7 @@ extern char *FUNCTION_INFO;
 extern char *VAR_DECL;
 extern char *VAR_LIST;
 extern char *VAR_DEF;
-extern char *EXPR;
+//extern char *EXPR;
 extern char *EXPR_OP;
 extern char *ID_EXPR;
 extern char *UNARY_DEF;

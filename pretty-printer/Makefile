@@ -6,7 +6,7 @@ OBJS = pp.o parser.o lexer.o lexeme.o scanner.o types.o stringBuffer.o
 pp : $(OBJS)
 	gcc $(OBJS) -o pp
 
-run : recognizer
+run : pp
 	@echo Running test 1...
 	make test1
 	@echo Running test 2...
@@ -14,14 +14,14 @@ run : recognizer
 	@echo Running test 3...
 	make test3
 
-test1 : recognizer ./testfiles/test1.sea
-	./recognizer ./testfiles/test1.sea
+test1 : pp ./testfiles/test1.sea
+	./pp ./testfiles/test1.sea
 
-test2 : recognizer ./testfiles/test2.sea
-	./recognizer ./testfiles/test2.sea
+test2 : pp ./testfiles/test2.sea
+	./pp ./testfiles/test2.sea
 
 test3 : recognizer ./testfiles/test3.sea
-	./recognizer ./testfiles/test3.sea
+	./pp ./testfiles/test3.sea
 
 pp.o : pp.c pp.h parser.h
 	gcc $(OPTS) $(FLAGS) pp.c
