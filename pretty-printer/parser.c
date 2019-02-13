@@ -475,7 +475,7 @@ static LEXEME *idExpr()
         return cons(ARRAY_LOOKUP, idLex, postIDLex);
     }
     
-    return cons(ID_EXPR, idLex, postIDLex);
+    return idLex;
 }
 static int idExprPending()
 {

@@ -88,11 +88,13 @@ void setCdr(LEXEME *parent, LEXEME *child)
 
 char *getTypeLEXEME(LEXEME *lexeme)
 {
+    assert(lexeme != 0);
     return lexeme->type;
 }
 
 int getLineNumLEXEME(LEXEME *lexeme)
 {
+    assert(lexeme != 0);
     return lexeme->lineNum;
 }
 
@@ -104,17 +106,20 @@ int sameVar(LEXEME *var1, LEXEME *var2)
 
 int isErrorLEXEME(LEXEME *lexeme)
 {
+    assert(lexeme != 0);
     return lexeme->type == PARSE_ERROR || lexeme->type == BAD_NUM;
 }
 
 int isPrimative(LEXEME *lexeme)
 {
+    assert(lexeme != 0);
     char *type = lexeme->type;
     return type == INTEGER || type == REAL || type == STRING;
 }
 
 int isOperator(LEXEME *lexeme)
 {
+    assert(lexeme != 0);
     char *type = lexeme->type;
     return type == PLUS || type == MINUS || type == TIMES || type == DIVIDE || type == MODULUS
             || type == EXPONANT || type == DOT || type == NOT || type == LESS_THAN || type == GREATER_THAN
@@ -125,18 +130,21 @@ int isOperator(LEXEME *lexeme)
 
 int isAccessMod(LEXEME *lexeme)
 {
+    assert(lexeme != 0);
     char *type = lexeme->type;
     return type == PUBLIC || type == PRIVATE || type == PROTECTED;
 }
 
 int isReserved(LEXEME *lexeme)
 {
+    assert(lexeme != 0);
     char *type = lexeme->type;
     return type == NULL_WORD || type == THIS;
 }
 
 void printLEXEME(FILE *fp, LEXEME *lexeme)
 {
+    assert(lexeme != 0);
     fprintf(fp, "%s - line %d", lexeme->type, lexeme->lineNum);
     if (lexeme->type == INTEGER)
         fprintf(fp, " - %d", lexeme->iVal);
@@ -148,6 +156,7 @@ void printLEXEME(FILE *fp, LEXEME *lexeme)
 
 void displayLEXEME(FILE *fp, LEXEME *lexeme)
 {
+    assert(lexeme != 0);
     if (lexeme->type == INTEGER)        fprintf(fp, "%d", lexeme->iVal);
     else if (lexeme->type == REAL)      fprintf(fp, "%f", lexeme->rVal);
     else if (lexeme->type == STRING)    fprintf(fp, "\"%s\"", lexeme->sVal);
