@@ -29,6 +29,8 @@ static void printUnaryID(LEXEME *tree, int indent);
 static void printFunctionCall(LEXEME *tree, int indent);
 static void printArrayLookup(LEXEME *tree, int indent);
 static void printExprList(LEXEME *tree, int indent);
+static void printUnaryOp(LEXEME *tree, int indent);
+static void printUnaryParen(LEXEME *tree, int indent);
 
 int indentSpaces = 4;   // Number of spaces per tab(indent)
 
@@ -65,7 +67,7 @@ static void printIndent(int indent)
 
 void pp(LEXEME *tree, int indent)
 {
-    if (tree == NULL)
+    if (getTypeLEXEME(tree) == NULL)
     {
         printf("Got NULL tree in pp\n");
         return;
@@ -93,6 +95,8 @@ void pp(LEXEME *tree, int indent)
     else if (type == FUNCTION_CALL) printFunctionCall(tree, indent);
     else if (type == ARRAY_LOOKUP)  printArrayLookup(tree, indent);
     else if (type == EXPR_LIST) printExprList(tree, indent);
+    else if (type == UNARY_OP)  printUnaryOp(tree, indent);
+    else if (type == UNARY_PAREN)   printUnaryParen(tree, indent);
 }
 
 static void printProgram(LEXEME *tree, int indent)
@@ -197,9 +201,9 @@ static void printVarDef(LEXEME *tree, int indent)
 static void printOp(LEXEME *tree, int indent)
 {
     pp(car(tree), indent);  // Unary/Operator
-    if (tree != DOT)    printf(" ");
+    if (getTypeLEXEME(tree) != DOT)    printf(" ");
     displayLEXEME(stdout, tree);    // Operator
-    if (tree != DOT)    printf(" ");
+    if (getTypeLEXEME(tree) != DOT)    printf(" ");
     pp(cdr(tree), indent);  // Unary/Operator
 }
 
@@ -282,14 +286,14 @@ static void printReturn(LEXEME *tree, int indent)
 static void printUnaryID(LEXEME *tree, int indent)
 {
     pp(car(tree), indent);  // IdExpr
-    pp(cdr(tree), indent);  // Postvar
+    if (cdr(tree))  pp(cdr(tree), indent);  // Postvar
 }
 
 static void printFunctionCall(LEXEME *tree, int indent)
 {
     pp(car(tree), indent);  // ID
     printf("(");
-    if (cdr(tree))  pp(cdr(tree));  // ExprList
+    if (cdr(tree))  pp(cdr(tree), indent);  // ExprList
     printf(")");
 }
 
@@ -297,7 +301,7 @@ static void printArrayLookup(LEXEME *tree, int indent)
 {
     pp(car(tree), indent);  // ID
     printf("[");
-    pp(cdr(tree));  // Expr
+    pp(cdr(tree), indent);  // Expr
     printf("]");
 }
 
@@ -309,4 +313,17 @@ static void printExprList(LEXEME *tree, int indent)
         printf(", ");
         pp(cdr(tree), indent);  // ExprList
     }
+}
+
+static void printUnaryOp(LEXEME *tree, int indent)
+{
+    pp(car(tree), indent);  // uop
+    pp(cdr(tree), indent);  // UnaryID
+}
+
+static void printUnaryParen(LEXEME *tree, int indent)
+{
+    printf("(");
+    pp(car(tree), indent);  // Expr
+    printf(")");
 }
