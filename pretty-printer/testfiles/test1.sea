@@ -19,7 +19,7 @@ class AVLTree
         var newNode = new AVLNode(value);
         if (root == NULL)
         {
-             root = newNode;
+            root = newNode;
         }
     }
 }

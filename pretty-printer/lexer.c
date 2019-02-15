@@ -233,8 +233,8 @@ static LEXEME *lexWord(LEXER *lexer, int ch)
         return newLEXEME(VAR, lexer->lineNum);
     if (wordIs(FUNCTION, word))
         return newLEXEME(FUNCTION, lexer->lineNum);
-    if (wordIs(DEFINE, word))
-        return newLEXEME(DEFINE, lexer->lineNum);
+    //if (wordIs(DEFINE, word))
+    //    return newLEXEME(DEFINE, lexer->lineNum);
     if (wordIs(CLASS, word))
         return newLEXEME(CLASS, lexer->lineNum);
     if (wordIs(EXTENDS, word))
@@ -259,6 +259,8 @@ static LEXEME *lexWord(LEXER *lexer, int ch)
         return newLEXEME(WHILE, lexer->lineNum);
     if (wordIs(DO, word))
         return newLEXEME(DO, lexer->lineNum);
+    if (wordIs(LAMBDA, word))
+        return newLEXEME(LAMBDA, lexer->lineNum);
     if (wordIs(RETURN, word))
         return newLEXEME(RETURN, lexer->lineNum);
     

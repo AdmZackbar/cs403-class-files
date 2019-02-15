@@ -446,6 +446,17 @@ static LEXEME *unary()
         match(CPAREN);
         return cons(NEW_OBJECT, idLex, exprListLex);
     }
+    else if (check(LAMBDA))
+    {
+        LEXEME *params, *blockLex;
+        advance();
+        match(OPAREN);
+        params = optVarList();
+        match(CPAREN);
+        blockLex = block();
+        
+        return cons(LAMBDA_STATEMENT, params, blockLex);
+    }
     failParse("unary");
     return NULL;    // Unreachable - for compiler
 }
@@ -453,7 +464,7 @@ static int unaryPending()
 {
     return idExprPending() || check(INTEGER) || check(REAL) || check(STRING)
             || uopPending() || check(OPAREN) || check(NULL_WORD) || check(THIS)
-            || check(NEW);
+            || check(NEW) || check(LAMBDA);
 }
 
 static LEXEME *idExpr()
@@ -608,7 +619,7 @@ static LEXEME *statement()
         optElseLex = optElse();
         
         ifStatement = cons(IF_BODY, exprLex, blockLex);
-        statementLex = cons(IF_STATEMENT, ifStatement, optElseLex);
+        statementLex = cons(IF_STATEMENT, optElseLex, ifStatement);
     }
     else if (check(WHILE))
     {
@@ -644,19 +655,6 @@ static LEXEME *statement()
         
         statementLex = cons(RETURN_STATEMENT, exprLex, NULL);
     }
-    else if (check(DEFINE))
-    {
-        LEXEME *header, *idLex, *params, *blockLex;
-        advance();
-        idLex = match(ID);
-        match(OPAREN);
-        params = optVarList();
-        match(CPAREN);
-        blockLex = block();
-        
-        header = cons(DEFINE_HEADER, idLex, params);
-        statementLex = cons(DEFINE_STATEMENT, header, blockLex);
-    }
     else
         failParse("statement");
     
@@ -665,7 +663,7 @@ static LEXEME *statement()
 static int statementPending()
 {
     return exprPending() || check(VAR) || check(IF) || check(WHILE) || check(DO)
-        || check(RETURN) || check(DEFINE);
+        || check(RETURN);
 }
 
 static LEXEME *optElse()

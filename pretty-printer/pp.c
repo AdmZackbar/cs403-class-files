@@ -24,6 +24,8 @@ static void printIf(LEXEME *tree, int indent);
 static void printElse(LEXEME *tree, int indent);
 static void printWhile(LEXEME *tree, int indent);
 static void printDoWhile(LEXEME *tree, int indent);
+static void printLambda(LEXEME *tree, int indent);
+static void printNew(LEXEME *tree, int indent);
 static void printReturn(LEXEME *tree, int indent);
 static void printUnaryID(LEXEME *tree, int indent);
 static void printFunctionCall(LEXEME *tree, int indent);
@@ -90,6 +92,8 @@ void pp(LEXEME *tree, int indent)
     else if (type == ELSE_STATEMENT)    printElse(tree, indent);
     else if (type == WHILE_STATEMENT)   printWhile(tree, indent);
     else if (type == DO_WHILE_STATEMENT)    printDoWhile(tree, indent);
+    else if (type == LAMBDA_STATEMENT)  printLambda(tree, indent);
+    else if (type == NEW_OBJECT)    printNew(tree, indent);
     else if (type == RETURN_STATEMENT)  printReturn(tree, indent);
     else if (type == UNARY_ID)  printUnaryID(tree, indent);
     else if (type == FUNCTION_CALL) printFunctionCall(tree, indent);
@@ -211,7 +215,8 @@ static void printStatements(LEXEME *tree, int indent)
 {
     printIndent(indent);
     pp(car(tree), indent);  // Statement - if, else, etc...
-    if (isOperator(car(tree)))  printf(";\n");  // After expressions
+    char *type = getTypeLEXEME(car(tree));
+    if (type != IF_STATEMENT && type != WHILE_STATEMENT && type != LAMBDA_STATEMENT)    printf(";\n");  // After expressions
     //printf("\n");
     if (cdr(tree))  pp(cdr(tree), indent);
 }
@@ -223,7 +228,6 @@ static void printIf(LEXEME *tree, int indent)
     printf(")\n");
     printIndent(indent);
     printf("{\n");
-    printIndent(indent+indentSpaces);
     pp(cdr(cdr(tree)), indent+indentSpaces);    // If block - statements
     printIndent(indent);
     printf("}\n");
@@ -268,7 +272,28 @@ static void printDoWhile(LEXEME *tree, int indent)
     printIndent(indent);
     printf("} while (");
     pp(cdr(tree), indent);  // While conditional - expr
+    printf(")");
+}
+
+static void printLambda(LEXEME *tree, int indent)
+{
+    printf("lambda(");
+    if(car(tree))   pp(car(tree), indent);  // VarList
     printf(")\n");
+    printIndent(indent);
+    printf("{\n");
+    pp(cdr(tree), indent+indentSpaces); // Block
+    printIndent(indent);
+    printf("}\n");
+}
+
+static void printNew(LEXEME *tree, int indent)
+{
+    printf("new ");
+    pp(car(tree), indent);  // ID
+    printf("(");
+    if (cdr(tree))  pp(cdr(tree), indent);  // ArgList
+    printf(")");
 }
 
 static void printReturn(LEXEME *tree, int indent)
@@ -278,9 +303,7 @@ static void printReturn(LEXEME *tree, int indent)
     {
         printf(" ");
         pp(car(tree), indent);  // Return statement - expr
-        printf(";\n");
     }
-    else    printf(";\n");
 }
 
 static void printUnaryID(LEXEME *tree, int indent)

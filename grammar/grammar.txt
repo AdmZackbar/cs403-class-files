@@ -72,6 +72,7 @@ unary : idExpr postVar
       | NULL
       | THIS
       | NEW ID OPAREN optExprList CPAREN
+      | LAMBDA OPAREN optVarList CPAREN block
 
 idExpr : ID
        | ID OPAREN optExprList CPAREN
@@ -106,7 +107,6 @@ statement : expr SEMICOLON
           | WHILE OPAREN expr CPAREN block
           | DO block WHILE OPAREN expr CPAREN SEMICOLON
           | RETURN expr SEMICOLON
-          | DEFINE ID OPAREN optVarList CPAREN block
 
 optElse : elseStatement
         | EMPTY

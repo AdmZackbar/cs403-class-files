@@ -41,8 +41,9 @@ char *STATEMENTS = "statements";
 char *IF_STATEMENT = "if statement";
 char *IF_BODY = "if body";
 char *ELSE_STATEMENT = "else statement";
-char *DEFINE_STATEMENT = "define statement";
-char *DEFINE_HEADER = "define header";
+//char *DEFINE_STATEMENT = "define statement";
+//char *DEFINE_HEADER = "define header";
+char *LAMBDA_STATEMENT = "lambda statement";
 char *WHILE_STATEMENT = "while statement";
 char *DO_WHILE_STATEMENT = "do-while statement";
 char *RETURN_STATEMENT = "return statement";
@@ -55,7 +56,7 @@ char *STRING = "string";
 // Resevered
 char *VAR = "var";
 char *FUNCTION = "function";
-char *DEFINE = "define";
+//char *DEFINE = "define";
 char *CLASS = "class";
 char *EXTENDS = "extends";
 char *PUBLIC = "public";
@@ -68,6 +69,7 @@ char *IF = "if";
 char *ELSE = "else";
 char *WHILE = "while";
 char *DO = "do";
+char *LAMBDA = "lambda";
 char *RETURN = "return";
 
 // Punctuation

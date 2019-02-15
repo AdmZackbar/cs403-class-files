@@ -34,8 +34,9 @@ extern char *STATEMENTS;
 extern char *IF_STATEMENT;
 extern char *IF_BODY;
 extern char *ELSE_STATEMENT;
-extern char *DEFINE_STATEMENT;
-extern char *DEFINE_HEADER;
+//extern char *DEFINE_STATEMENT;
+//extern char *DEFINE_HEADER;
+extern char *LAMBDA_STATEMENT;
 extern char *WHILE_STATEMENT;
 extern char *DO_WHILE_STATEMENT;
 extern char *RETURN_STATEMENT;
@@ -48,7 +49,7 @@ extern char *STRING;
 // Reserved
 extern char *VAR;
 extern char *FUNCTION;
-extern char *DEFINE;
+//extern char *DEFINE;
 extern char *CLASS;
 extern char *EXTENDS;
 extern char *PUBLIC;
@@ -61,6 +62,7 @@ extern char *IF;
 extern char *ELSE;
 extern char *WHILE;
 extern char *DO;
+extern char *LAMBDA;
 extern char *RETURN;
 
 // Punctuation

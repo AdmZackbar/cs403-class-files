@@ -20,7 +20,7 @@ test1 : pp ./testfiles/test1.sea
 test2 : pp ./testfiles/test2.sea
 	./pp ./testfiles/test2.sea
 
-test3 : recognizer ./testfiles/test3.sea
+test3 : pp ./testfiles/test3.sea
 	./pp ./testfiles/test3.sea
 
 pp.o : pp.c pp.h parser.h
