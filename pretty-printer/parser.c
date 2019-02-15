@@ -538,8 +538,10 @@ static int exprListPending()
 
 static LEXEME *uop()
 {
-    if (check(MINUS))
-        return advance();
+    if (check(MINUS)) {
+        LEXEME *uop = advance();
+        return newLEXEME(UMINUS, uop.getLineNumLEXEME(uop));
+    }
     else if (check(PLUSPLUS))
         return advance();
     else if (check(MINUSMINUS))

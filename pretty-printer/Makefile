@@ -2,7 +2,7 @@ OPTS = -std=c99 -Wall -Wextra
 FLAGS = -c -g
 EXECS = pp
 OBJS = pp.o parser.o lexer.o lexeme.o scanner.o types.o stringBuffer.o
-TESTFILES = *.pp.1 *.pp.2
+TESTFILES = *.1 *.2
 
 pp : $(OBJS)
 	gcc $(OBJS) -o pp
@@ -18,36 +18,36 @@ run : pp
 test1 : pp ./testfiles/test1.sea
 	@echo Original file:
 	@cat ./testfiles/test1.sea
-	@pp ./testfiles/test1.sea > ./testfiles/test1.pp.1
+	@pp ./testfiles/test1.sea > test1.pp.1
 	@echo Pretty printed version of test1:
-	@cat ./testfiles/test1.pp.1
-	@pp ./testfiles/test1.pp.1 > ./testfiles/test1.pp.2
+	@cat test1.pp.1
+	@pp test1.pp.1 > test1.pp.2
 	@echo Pretty printed version of pretty printed test1:
-	@cat ./testfiles/test1.pp.2
-	diff -s -q ./testfiles/test1.pp.1 ./testfiles/test1.pp.2
+	@cat test1.pp.2
+	diff -s -q test1.pp.1 test1.pp.2
 	
 
 test2 : pp ./testfiles/test2.sea
 	@echo Original file:
 	@cat ./testfiles/test2.sea
-	@pp ./testfiles/test2.sea > ./testfiles/test2.pp.1
+	@pp ./testfiles/test2.sea > test2.pp.1
 	@echo Pretty printed version of test2:
-	@cat ./testfiles/test2.pp.1
-	@pp ./testfiles/test2.pp.1 > ./testfiles/test2.pp.2
+	@cat test2.pp.1
+	@pp test2.pp.1 > test2.pp.2
 	@echo Pretty printed version of pretty printed test2:
-	@cat ./testfiles/test2.pp.2
-	diff -s -q ./testfiles/test2.pp.1 ./testfiles/test2.pp.2
+	@cat test2.pp.2
+	diff -s -q test2.pp.1 test2.pp.2
 
 test3 : pp ./testfiles/test3.sea
 	@echo Original file:
 	@cat ./testfiles/test3.sea
-	@pp ./testfiles/test3.sea > ./testfiles/test3.pp.1
+	@pp ./testfiles/test3.sea > test3.pp.1
 	@echo Pretty printed version of test3:
-	@cat ./testfiles/test3.pp.1
-	@pp ./testfiles/test3.pp.1 > ./testfiles/test3.pp.2
+	@cat test3.pp.1
+	@pp test3.pp.1 > test3.pp.2
 	@echo Pretty printed version of pretty printed test3:
-	@cat ./testfiles/test3.pp.2
-	diff -s -q ./testfiles/test3.pp.1 ./testfiles/test3.pp.2
+	@cat test3.pp.2
+	diff -s -q test3.pp.1 test3.pp.2
 
 pp.o : pp.c pp.h parser.h
 	gcc $(OPTS) $(FLAGS) pp.c
