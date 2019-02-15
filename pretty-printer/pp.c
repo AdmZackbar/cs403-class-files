@@ -284,7 +284,7 @@ static void printLambda(LEXEME *tree, int indent)
     printf("{\n");
     pp(cdr(tree), indent+indentSpaces); // Block
     printIndent(indent);
-    printf("}\n");
+    printf("}");
 }
 
 static void printNew(LEXEME *tree, int indent)

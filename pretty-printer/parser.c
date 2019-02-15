@@ -538,9 +538,11 @@ static int exprListPending()
 
 static LEXEME *uop()
 {
-    if (check(MINUS)) {
+    if (check(MINUS))
+    {
+        // Change minus to the unary version
         LEXEME *uop = advance();
-        return newLEXEME(UMINUS, uop.getLineNumLEXEME(uop));
+        return newLEXEME(UMINUS, getLineNumLEXEME(uop));
     }
     else if (check(PLUSPLUS))
         return advance();
@@ -699,7 +701,7 @@ static LEXEME *elseStatement()
         optElseLex = optElse();
         
         ifStatement = cons(IF_BODY, exprLex, blockLex);
-        return cons(IF_STATEMENT, ifStatement, optElseLex);
+        return cons(IF_STATEMENT, optElseLex, ifStatement);
     }
     else
         failParse("else statement");
