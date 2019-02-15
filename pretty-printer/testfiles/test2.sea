@@ -1,6 +1,6 @@
 class Temp
 {
-    var globalFunc = lambda(x, y) { return x + y; }
+    var globalFunc = lambda(x, y) { return x + y; };
     var globalVar;
     function Temp()
     {

@@ -122,10 +122,17 @@ int isOperator(LEXEME *lexeme)
     assert(lexeme != 0);
     char *type = lexeme->type;
     return type == PLUS || type == MINUS || type == TIMES || type == DIVIDE || type == MODULUS
-            || type == EXPONANT || type == DOT || type == NOT || type == LESS_THAN || type == GREATER_THAN
+            || type == EXPONANT || type == DOT || type == LESS_THAN || type == GREATER_THAN
             || type == LESS_THAN_EQUAL || type == GREATER_THAN_EQUAL || type == NOTEQUALS
             || type == EQUALSEQUALS || type == LOGICAL_AND || type == LOGICAL_OR || type == BINARY_AND
-            || type == BINARY_OR || type == EQUALS || type == UMINUS || type == PLUSPLUS || type == MINUSMINUS;
+            || type == BINARY_OR || type == EQUALS;
+}
+
+int isUnaryOp(LEXEME *lexeme)
+{
+    assert(lexeme != 0);
+    char *type = lexeme->type;
+    return type == UMINUS || type == PLUSPLUS || type == MINUSMINUS || type == NOT;
 }
 
 int isAccessMod(LEXEME *lexeme)

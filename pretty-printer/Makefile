@@ -2,6 +2,7 @@ OPTS = -std=c99 -Wall -Wextra
 FLAGS = -c -g
 EXECS = pp
 OBJS = pp.o parser.o lexer.o lexeme.o scanner.o types.o stringBuffer.o
+TESTFILES = *.pp.1 *.pp.2
 
 pp : $(OBJS)
 	gcc $(OBJS) -o pp
@@ -70,4 +71,4 @@ stringBuffer.o : stringBuffer.c stringBuffer.h
 	gcc $(OPTS) $(FLAGS) stringBuffer.c
 
 clean :
-	rm -f *.o $(EXECS)
+	rm -f *.o $(EXECS) $(TESTFILES)

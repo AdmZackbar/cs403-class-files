@@ -20,6 +20,7 @@ extern int sameVar(LEXEME *var1, LEXEME *var2);
 extern int isErrorLEXEME(LEXEME *lexeme);
 extern int isPrimative(LEXEME *lexeme);
 extern int isOperator(LEXEME *lexeme);
+extern int isUnaryOp(LEXEME *lexeme);
 extern int isAccessMod(LEXEME *lexeme);
 extern int isReserved(LEXEME *lexeme);
 extern void printLEXEME(FILE *fp, LEXEME *lexeme);
