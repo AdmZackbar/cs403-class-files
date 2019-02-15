@@ -22,6 +22,7 @@ static void printOp(LEXEME *tree, int indent);
 static void printStatements(LEXEME *tree, int indent);
 static void printIf(LEXEME *tree, int indent);
 static void printElse(LEXEME *tree, int indent);
+static void printElseIf(LEXEME *tree, int indent)
 static void printWhile(LEXEME *tree, int indent);
 static void printDoWhile(LEXEME *tree, int indent);
 static void printLambda(LEXEME *tree, int indent);
@@ -90,7 +91,7 @@ void pp(LEXEME *tree, int indent)
     else if (type == STATEMENTS)    printStatements(tree, indent);
     else if (type == IF_STATEMENT)  printIf(tree, indent);
     else if (type == ELSE_STATEMENT)    printElse(tree, indent);
-    else if (type == ELSE_IF_STATEMENT) printElse(tree, indent);
+    else if (type == ELSE_IF_STATEMENT) printElseIf(tree, indent);
     else if (type == WHILE_STATEMENT)   printWhile(tree, indent);
     else if (type == DO_WHILE_STATEMENT)    printDoWhile(tree, indent);
     else if (type == LAMBDA_STATEMENT)  printLambda(tree, indent);
@@ -247,8 +248,15 @@ static void printElse(LEXEME *tree, int indent)
 static void printElseIf(LEXEME *tree, int indent)
 {
     printIndent(indent);
-    printf("else ");
-    pp(car(tree), indent);  // If statement
+    printf("else if (");
+    pp(car(cdr(tree)), indent); // If conditional - expr
+    printf(")\n");
+    printIndent(indent);
+    printf("{\n");
+    pp(cdr(cdr(tree)), indent+indentSpaces);    // If block - statements
+    printIndent(indent);
+    printf("}\n");
+    if (car(tree))  pp(car(tree), indent);  // else
 }
 
 static void printWhile(LEXEME *tree, int indent)
