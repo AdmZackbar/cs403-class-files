@@ -107,6 +107,8 @@ statement : expr SEMICOLON
           | WHILE OPAREN expr CPAREN block
           | DO block WHILE OPAREN expr CPAREN SEMICOLON
           | RETURN expr SEMICOLON
+          | BREAK SEMICOLON
+          | CONTINUE SEMICOLON
 
 optElse : elseStatement
         | EMPTY

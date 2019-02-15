@@ -1,4 +1,45 @@
-class temp
+class Temp
 {
+    var globalFunc = lambda(x, y) { return x + y; }
+    var globalVar;
+    function Temp()
+    {
+        globalVar = 4;
+    }
     
+    function setFunction(newFunc)
+    {
+        globalFunc = newFunc;
+    }
+    
+    public function main(args)
+    {
+        var tempObj = new Temp();
+        print(tempObj.globalFunc(3, 5));
+        
+        var xray = 4 & 8 && 2 < 3;
+        xray++;
+        var zulu = -xray + ++xray;
+        if (!zulu)
+        {
+            xray = 2;
+        }
+        else if (xray)
+        {
+            xray = 3;
+        }
+        else
+        {
+            var temp = 21;
+        }
+        
+        var i = 0;
+        do
+        {
+            i++;
+        }
+        while (i < 23);
+        
+        return xray - zulu + i;
+    }
 }

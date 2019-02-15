@@ -1,4 +1,31 @@
-class DynamicArray
+class Dictionary
 {
+    private var keys;
+    private var vals;
     
+    public function Dictionary()
+    {
+        keys = Array();
+        vals = Array();
+    }
+    
+    public function insert(key, val)
+    {
+        keys.push(key);
+        vals.push(val);
+    }
+    
+    public function getVal(key)
+    {
+        var i = 0, length = keys.length;
+        while (i < length)
+        {
+            if (keys[i] == key)
+            {
+                index = i;
+                return vals[i];
+            }
+        }
+        return NULL;
+    }
 }
