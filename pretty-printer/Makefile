@@ -10,8 +10,10 @@ pp : $(OBJS)
 run : pp
 	@echo Running test 1...
 	make test1
+	@echo
 	@echo Running test 2...
 	make test2
+	@echo
 	@echo Running test 3...
 	make test3
 

@@ -216,8 +216,9 @@ static void printOp(LEXEME *tree, int indent)
 static void printStatements(LEXEME *tree, int indent)
 {
     printIndent(indent);
-    pp(car(tree), indent);  // Statement - if, else, etc...
     char *type = getTypeLEXEME(car(tree));
+    if (type == VAR_LIST)   printf("var ");
+    pp(car(tree), indent);  // Statement - if, else, etc...
     if (type != IF_STATEMENT && type != WHILE_STATEMENT && type != LAMBDA_STATEMENT)    printf(";\n");  // After expressions
     //printf("\n");
     if (cdr(tree))  pp(cdr(tree), indent);

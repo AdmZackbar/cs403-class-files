@@ -1,12 +1,11 @@
 class Dictionary
 {
-    private var keys;
-    private var vals;
-    
-    public function Dictionary()
+    private var keys;private var vals;
+
+    public function Dictionary(     )
     {
         keys = Array();
-        vals = Array();
+       vals = Array(   );
     }
     
     public function insert(key, val)
@@ -15,17 +14,20 @@ class Dictionary
         vals.push(val);
     }
     
-    public function getVal(key)
+   public function getVal(key)
     {
-        var i = 0, length = keys.length;
-        while (i < length)
-        {
+        var i = 0, length= keys.length;
+           while (i <    length)
+      {
             if (keys[i] == key)
-            {
-                index = i;
+               {
+               index = i;
                 return vals[i];
-            }
+      }
         }
-        return NULL;
+            
+            
+            
+            return NULL;
     }
 }
