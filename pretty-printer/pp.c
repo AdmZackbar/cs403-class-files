@@ -22,7 +22,7 @@ static void printOp(LEXEME *tree, int indent);
 static void printStatements(LEXEME *tree, int indent);
 static void printIf(LEXEME *tree, int indent);
 static void printElse(LEXEME *tree, int indent);
-static void printElseIf(LEXEME *tree, int indent)
+static void printElseIf(LEXEME *tree, int indent);
 static void printWhile(LEXEME *tree, int indent);
 static void printDoWhile(LEXEME *tree, int indent);
 static void printLambda(LEXEME *tree, int indent);
@@ -239,7 +239,9 @@ static void printIf(LEXEME *tree, int indent)
 static void printElse(LEXEME *tree, int indent)
 {
     printIndent(indent);
-    printf("else\n{");
+    printf("else\n");
+    printIndent(indent);
+    printf("{\n");
     pp(car(tree), indent+indentSpaces);    // Block - statements
     printIndent(indent);
     printf("}\n");
