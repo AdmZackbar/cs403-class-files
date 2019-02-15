@@ -701,7 +701,7 @@ static LEXEME *elseStatement()
         optElseLex = optElse();
         
         ifStatement = cons(IF_BODY, exprLex, blockLex);
-        return cons(IF_STATEMENT, optElseLex, ifStatement);
+        return cons(ELSE_IF_STATEMENT, optElseLex, ifStatement);
     }
     else
         failParse("else statement");

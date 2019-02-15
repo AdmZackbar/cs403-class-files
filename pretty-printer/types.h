@@ -34,6 +34,7 @@ extern char *STATEMENTS;
 extern char *IF_STATEMENT;
 extern char *IF_BODY;
 extern char *ELSE_STATEMENT;
+extern char *ELSE_IF_STATEMENT;
 //extern char *DEFINE_STATEMENT;
 //extern char *DEFINE_HEADER;
 extern char *LAMBDA_STATEMENT;

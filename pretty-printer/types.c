@@ -41,6 +41,7 @@ char *STATEMENTS = "statements";
 char *IF_STATEMENT = "if statement";
 char *IF_BODY = "if body";
 char *ELSE_STATEMENT = "else statement";
+char *ELSE_IF_STATEMENT = "else if statement";
 //char *DEFINE_STATEMENT = "define statement";
 //char *DEFINE_HEADER = "define header";
 char *LAMBDA_STATEMENT = "lambda statement";
