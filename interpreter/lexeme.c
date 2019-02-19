@@ -98,6 +98,24 @@ int getLineNumLEXEME(LEXEME *lexeme)
     return lexeme->lineNum;
 }
 
+int getIntLEXEME(LEXEME *lexeme)
+{
+    assert(lexeme != 0);
+    return lexeme->iVal;
+}
+
+double getRealLEXEME(LEXEME *lexeme)
+{
+    assert(lexeme != 0);
+    return lexeme->rVal;
+}
+
+char *getStrLEXEME(LEXEME *lexeme)
+{
+    assert(lexeme != 0);
+    return lexeme->sVal;
+}
+
 int sameVar(LEXEME *var1, LEXEME *var2)
 {
     assert(var1 != 0 && var2 != 0 && var1->sVal != 0 && var2->sVal != 0);
