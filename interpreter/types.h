@@ -1,6 +1,11 @@
 #ifndef __TYPES_INCLUDED__
 #define __TYPES_INCLUDED__
 
+// Interpreter
+extern char *CLOSURE;
+extern char *OCLOSURE;
+extern char *RETURNED;
+
 // Environments
 extern char *ENV;
 extern char *TABLE;

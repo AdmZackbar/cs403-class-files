@@ -8,6 +8,11 @@
  *          This allows for the use of == between these strings.
  */
 
+// Interpreter
+char *CLOSURE = "closure";
+char *OCLOSURE = "object closure";
+char *RETURNED = "returned";
+
 // Environments
 char *ENV = "environment";
 char *TABLE = "table";
