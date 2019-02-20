@@ -109,7 +109,7 @@ LEXEME *lex(LEXER *lexer)
     if (ch == '%')
         return newLEXEME(MODULUS, lexer->lineNum);
     if (ch == '^')
-        return newLEXEME(EXPONANT, lexer->lineNum);
+        return newLEXEME(EXPONENT, lexer->lineNum);
     if (ch == '<')
     {
         ch = readChar(lexer->fp, &lexer->lineNum);
@@ -196,7 +196,7 @@ static LEXEME *lexNumber(LEXER *lexer, int ch)
     }
     pushbackChar(lexer->fp, ch, &lexer->lineNum);
     if(isReal)
-        return newLEXEMEdouble(atof(returnStringBUFFER(buffer)), lexer->lineNum);
+        return newLEXEMEreal(atof(returnStringBUFFER(buffer)), lexer->lineNum);
     return newLEXEMEint(atoi(returnStringBUFFER(buffer)), lexer->lineNum);
 }
 

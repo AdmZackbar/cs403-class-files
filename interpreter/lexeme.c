@@ -42,7 +42,7 @@ LEXEME *newLEXEMEstring(char *type, char *value, int lineNum)
     return l;
 }
 
-LEXEME *newLEXEMEdouble(double value, int lineNum)
+LEXEME *newLEXEMEreal(double value, int lineNum)
 {
     LEXEME *l = newLEXEME(REAL, lineNum);
     l->rVal = value;
@@ -140,7 +140,7 @@ int isOperator(LEXEME *lexeme)
     assert(lexeme != 0);
     char *type = lexeme->type;
     return type == PLUS || type == MINUS || type == TIMES || type == DIVIDE || type == MODULUS
-            || type == EXPONANT || type == DOT || type == LESS_THAN || type == GREATER_THAN
+            || type == EXPONENT || type == DOT || type == LESS_THAN || type == GREATER_THAN
             || type == LESS_THAN_EQUAL || type == GREATER_THAN_EQUAL || type == NOTEQUALS
             || type == EQUALSEQUALS || type == LOGICAL_AND || type == LOGICAL_OR || type == BINARY_AND
             || type == BINARY_OR || type == EQUALS;
@@ -192,7 +192,7 @@ void displayLEXEME(FILE *fp, LEXEME *lexeme)
     else if (lexeme->type == TIMES)                 fprintf(fp, "*");
     else if (lexeme->type == DIVIDE)                fprintf(fp, "/");
     else if (lexeme->type == MODULUS)               fprintf(fp, "%%");
-    else if (lexeme->type == EXPONANT)              fprintf(fp, "^");
+    else if (lexeme->type == EXPONENT)              fprintf(fp, "^");
     else if (lexeme->type == DOT)                   fprintf(fp, ".");
     else if (lexeme->type == NOT)                   fprintf(fp, "!");
     else if (lexeme->type == LESS_THAN)             fprintf(fp, "<");

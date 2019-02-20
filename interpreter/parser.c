@@ -373,7 +373,7 @@ static LEXEME *expr7()
 {
     LEXEME *unaryLex, *exprLex, *opLex;
     unaryLex = expr8();
-    while (check(EXPONANT))
+    while (check(EXPONENT))
     {
         opLex = advance();
         exprLex = expr7();
@@ -478,7 +478,7 @@ static LEXEME *idExpr()
         match(CPAREN);
         return cons(FUNCTION_CALL, idLex, postIDLex);
     }
-    else if (check(OBRACKET))
+    if (check(OBRACKET))
     {
         advance();
         postIDLex = expr();

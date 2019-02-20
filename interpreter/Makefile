@@ -4,7 +4,7 @@ EXECS = interpreter
 OBJS = interpreter.o environment.o parser.o lexer.o lexeme.o scanner.o types.o stringBuffer.o
 
 interpreter : $(OBJS)
-	gcc $(OBJS) -o interpreter
+	gcc $(OBJS) -o interpreter -lm
 
 interpreter.o : interpreter.c parser.h
 	gcc $(OPTS) $(FLAGS) interpreter.c

@@ -5,6 +5,8 @@
 extern char *CLOSURE;
 extern char *OCLOSURE;
 extern char *RETURNED;
+extern char *BUILT_IN;
+extern char *EVAL_EXPR;
 
 // Environments
 extern char *ENV;
@@ -88,9 +90,8 @@ extern char *MINUS;
 extern char *TIMES;
 extern char *DIVIDE;
 extern char *MODULUS;
-extern char *EXPONANT;
+extern char *EXPONENT;
 extern char *DOT;
-extern char *NOT;
 extern char *LESS_THAN;
 extern char *GREATER_THAN;
 extern char *LESS_THAN_EQUAL;
@@ -101,7 +102,8 @@ extern char *LOGICAL_AND;
 extern char *LOGICAL_OR;
 extern char *BINARY_AND;
 extern char *BINARY_OR;
-
+// Unary Operators
+extern char *NOT;
 extern char *UMINUS;
 extern char *PLUSPLUS;
 extern char *MINUSMINUS;

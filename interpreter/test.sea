@@ -1,1 +1,4 @@
-class Temp {}
+class Temp
+{
+    var x = 4;
+}

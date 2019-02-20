@@ -7,7 +7,7 @@ typedef struct lexeme LEXEME;
 
 extern LEXEME *newLEXEME(char *type, int lineNum);
 extern LEXEME *newLEXEMEstring(char *type, char *value, int lineNum);
-extern LEXEME *newLEXEMEdouble(double value, int lineNum);
+extern LEXEME *newLEXEMEreal(double value, int lineNum);
 extern LEXEME *newLEXEMEint(int value, int lineNum);
 extern LEXEME *cons(char *type, LEXEME *left, LEXEME *right);
 extern LEXEME *car(LEXEME *lexeme);

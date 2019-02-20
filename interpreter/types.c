@@ -12,6 +12,8 @@
 char *CLOSURE = "closure";
 char *OCLOSURE = "object closure";
 char *RETURNED = "returned";
+char *BUILT_IN = "built in function";
+char *EVAL_EXPR = "eval expr";
 
 // Environments
 char *ENV = "environment";
@@ -95,9 +97,8 @@ char *MINUS = "dash";
 char *TIMES = "asterix";
 char *DIVIDE = "back slash";
 char *MODULUS = "percent";
-char *EXPONANT = "carat";
+char *EXPONENT = "carat";
 char *DOT = "dot";
-char *NOT = "not";
 char *LESS_THAN = "less than";
 char *GREATER_THAN = "greater than";
 char *LESS_THAN_EQUAL = "less than or equal";
@@ -108,7 +109,8 @@ char *LOGICAL_AND = "double ampersand";
 char *LOGICAL_OR = "double vertical bar";
 char *BINARY_AND = "ampersand";
 char *BINARY_OR = "vertical bar";
-
+// Unary Operators
+char *NOT = "not";
 char *UMINUS = "unary minus";
 char *PLUSPLUS = "double plus";
 char *MINUSMINUS = "double minus";

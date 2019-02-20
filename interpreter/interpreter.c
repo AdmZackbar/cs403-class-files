@@ -28,8 +28,20 @@ static LEXEME *evalLessThan(LEXEME *tree, LEXEME *env);
 static LEXEME *evalGreaterThan(LEXEME *tree, LEXEME *env);
 static LEXEME *evalLessTE(LEXEME *tree, LEXEME *env);
 static LEXEME *evalGreaterTE(LEXEME *tree, LEXEME *env);
+static LEXEME *evalLogicalAnd(LEXEME *tree, LEXEME *env);
+static LEXEME *evalLogicalOr(LEXEME *tree, LEXEME *env);
+static LEXEME *evalBinaryAnd(LEXEME *tree, LEXEME *env);
+static LEXEME *evalBinaryOr(LEXEME *tree, LEXEME *env);
+static LEXEME *evalDot(LEXEME *tree, LEXEME *env);
+static LEXEME *evalParen(LEXEME *tree, LEXEME *env);
+static LEXEME *evalUnaryID(LEXEME *tree, LEXEME *env);
+static LEXEME *evalFunctionCall(LEXEME *tree, LEXEME *env);
+static LEXEME *evalConstructor(LEXEME *tree, LEXEME *env);
+static LEXEME *evalBuiltIn(LEXEME *tree, LEXEME *env);
+static LEXEME *evalArgs(LEXEME *args, LEXEME *env);
+static LEXEME *evalStatements(LEXEME *tree, LEXEME *env);
 
-static void failExpr(char *msg, LEXEME *badLex);
+static void failExpr(char *expected, char *exprType, LEXEME *badLex);
 
 int main(int argc, char **argv)
 {
@@ -59,7 +71,7 @@ static char *parseFileArg(int argc, char **argv)
 static LEXEME *eval(LEXEME *tree, LEXEME *env)
 {
     char *type = getTypeLEXEME(tree);
-    if (isPrimative(tree))  return tree;    // Int, real, or str
+    if (isPrimative(tree) || type == ID || type == ARRAY_LOOKUP)  return tree;    // Int, real, or str
     if (type == ID) return getValueEnv(env, tree);
     if (type == PROG)   return evalProgram(tree, env);
     if (type == CLASS_DEF)  return evalClassDef(tree, env);
@@ -74,13 +86,22 @@ static LEXEME *eval(LEXEME *tree, LEXEME *env)
     if (type == TIMES)  return evalTimes(tree, env);
     if (type == DIVIDE) return evalDivide(tree, env);
     if (type == MODULUS)    return evalModulus(tree, env);
-    if (type == EXPONANT)   return evalExponent(tree, env);
+    if (type == EXPONENT)   return evalExponent(tree, env);
     if (type == EQUALSEQUALS)   return evalEqualsEquals(tree, env);
     if (type == NOTEQUALS)  return evalNotEquals(tree, env);
     if (type == LESS_THAN)  return evalLessThan(tree, env);
     if (type == GREATER_THAN)   return evalGreaterThan(tree, env);
-    if (type == LESS_THAN_EQUALS)   return evalLessTE(tree, env);
-    if (type == GREATER_THAN_EQUALS)    return evalGreaterTE(tree, env);
+    if (type == LESS_THAN_EQUAL)    return evalLessTE(tree, env);
+    if (type == GREATER_THAN_EQUAL)    return evalGreaterTE(tree, env);
+    if (type == LOGICAL_AND)    return evalLogicalAnd(tree, env);
+    if (type == LOGICAL_OR) return evalLogicalOr(tree, env);
+    if (type == BINARY_AND) return evalBinaryAnd(tree, env);
+    if (type == BINARY_OR)  return evalBinaryOr(tree, env);
+    if (type == DOT)    return evalDot(tree, env);
+    if (type == UNARY_PAREN)    return evalParen(tree, env);
+    if (type == UNARY_ID)   return evalUnaryID(tree, env);
+    if (type == FUNCTION_CALL)  return evalFunctionCall(tree, env);
+    if (type == EXPR_LIST)  return evalArgs(tree, env);
 }
 
 static LEXEME *evalProgram(LEXEME *tree, LEXEME *env)
@@ -134,7 +155,7 @@ static LEXEME *evalVarDecl(LEXEME *tree, LEXEME *env)
     {
         varDef = car(tree);
         if (cdr(varDef))
-            value = eval(cdr(varDef), env); // Expr - TODO
+            value = eval(cdr(varDef), env); // Expr
         insertEnvironment(env, car(varDef), value);  // ID - var name
         tree = cdr(tree);
     }
@@ -164,14 +185,14 @@ static LEXEME *evalPlus(LEXEME *tree, LEXEME *env)
     if (leftType == INTEGER)
     {
         if (rightType == INTEGER)   return newLEXEMEint(getIntLEXEME(left) + getIntLEXEME(right), -1);
-        if (rightType == REAL)  return newLEXEMEdouble(getIntLEXEME(left) + getRealLEXEME(right), -1);
+        if (rightType == REAL)  return newLEXEMEreal(getIntLEXEME(left) + getRealLEXEME(right), -1);
         //if (rightType == STRING)    return newLEXEMEstring
         failExpr("INTEGER or REAL", "plus", right);
     }
     if (leftType == REAL)
     {
-        if (rightType == INTEGER)   return newLEXEMEdouble(getRealLEXEME(left) + getIntLEXEME(right), -1);
-        if (rightType == REAL)  return newLEXEMEdouble(getRealLEXEME(left) + getRealLEXEME(right), -1);
+        if (rightType == INTEGER)   return newLEXEMEreal(getRealLEXEME(left) + getIntLEXEME(right), -1);
+        if (rightType == REAL)  return newLEXEMEreal(getRealLEXEME(left) + getRealLEXEME(right), -1);
         //if (rightType == STRING)    return newLEXEMEstring
         failExpr("INTEGER or REAL", "plus", right);
     }
@@ -187,14 +208,14 @@ static LEXEME *evalMinus(LEXEME *tree, LEXEME *env)
     if (leftType == INTEGER)
     {
         if (rightType == INTEGER)   return newLEXEMEint(getIntLEXEME(left) - getIntLEXEME(right), -1);
-        if (rightType == REAL)  return newLEXEMEdouble(getIntLEXEME(left) - getRealLEXEME(right), -1);
+        if (rightType == REAL)  return newLEXEMEreal(getIntLEXEME(left) - getRealLEXEME(right), -1);
         //if (rightType == STRING)    return newLEXEMEstring
         failExpr("INTEGER or REAL", "minus", right);
     }
     if (leftType == REAL)
     {
-        if (rightType == INTEGER)   return newLEXEMEdouble(getRealLEXEME(left) - getIntLEXEME(right), -1);
-        if (rightType == REAL)  return newLEXEMEdouble(getRealLEXEME(left) - getRealLEXEME(right), -1);
+        if (rightType == INTEGER)   return newLEXEMEreal(getRealLEXEME(left) - getIntLEXEME(right), -1);
+        if (rightType == REAL)  return newLEXEMEreal(getRealLEXEME(left) - getRealLEXEME(right), -1);
         //if (rightType == STRING)    return newLEXEMEstring
         failExpr("INTEGER or REAL", "minus", right);
     }
@@ -210,13 +231,13 @@ static LEXEME *evalTimes(LEXEME *tree, LEXEME *env)
     if (leftType == INTEGER)
     {
         if (rightType == INTEGER)   return newLEXEMEint(getIntLEXEME(left) * getIntLEXEME(right), -1);
-        if (rightType == REAL)  return newLEXEMEdouble(getIntLEXEME(left) * getRealLEXEME(right), -1);
+        if (rightType == REAL)  return newLEXEMEreal(getIntLEXEME(left) * getRealLEXEME(right), -1);
         failExpr("INTEGER or REAL", "times", right);
     }
     if (leftType == REAL)
     {
-        if (rightType == INTEGER)   return newLEXEMEdouble(getRealLEXEME(left) * getIntLEXEME(right), -1);
-        if (rightType == REAL)  return newLEXEMEdouble(getRealLEXEME(left) * getRealLEXEME(right), -1);
+        if (rightType == INTEGER)   return newLEXEMEreal(getRealLEXEME(left) * getIntLEXEME(right), -1);
+        if (rightType == REAL)  return newLEXEMEreal(getRealLEXEME(left) * getRealLEXEME(right), -1);
         failExpr("INTEGER or REAL", "times", right);
     }
     failExpr("INTEGER or REAL", "times", left);
@@ -231,13 +252,13 @@ static LEXEME *evalDivide(LEXEME *tree, LEXEME *env)
     if (leftType == INTEGER)
     {
         if (rightType == INTEGER)   return newLEXEMEint(getIntLEXEME(left) / getIntLEXEME(right), -1);
-        if (rightType == REAL)  return newLEXEMEdouble(getIntLEXEME(left) / getRealLEXEME(right), -1);
+        if (rightType == REAL)  return newLEXEMEreal(getIntLEXEME(left) / getRealLEXEME(right), -1);
         failExpr("INTEGER or REAL", "divide", right);
     }
     if (leftType == REAL)
     {
-        if (rightType == INTEGER)   return newLEXEMEdouble(getRealLEXEME(left) / getIntLEXEME(right), -1);
-        if (rightType == REAL)  return newLEXEMEdouble(getRealLEXEME(left) / getRealLEXEME(right), -1);
+        if (rightType == INTEGER)   return newLEXEMEreal(getRealLEXEME(left) / getIntLEXEME(right), -1);
+        if (rightType == REAL)  return newLEXEMEreal(getRealLEXEME(left) / getRealLEXEME(right), -1);
         failExpr("INTEGER or REAL", "divide", right);
     }
     failExpr("INTEGER or REAL", "divide", left);
@@ -252,13 +273,13 @@ static LEXEME *evalModulus(LEXEME *tree, LEXEME *env)
     if (leftType == INTEGER)
     {
         if (rightType == INTEGER)   return newLEXEMEint(getIntLEXEME(left) % getIntLEXEME(right), -1);
-        if (rightType == REAL)  return newLEXEMEdouble(fmod(getIntLEXEME(left), getRealLEXEME(right)), -1);
+        if (rightType == REAL)  return newLEXEMEreal(fmod(getIntLEXEME(left), getRealLEXEME(right)), -1);
         failExpr("INTEGER or REAL", "modulus", right);
     }
     if (leftType == REAL)
     {
-        if (rightType == INTEGER)   return newLEXEMEdouble(fmod(getRealLEXEME(left), getIntLEXEME(right)), -1);
-        if (rightType == REAL)  return newLEXEMEdouble(fmod(getRealLEXEME(left), getRealLEXEME(right)), -1);
+        if (rightType == INTEGER)   return newLEXEMEreal(fmod(getRealLEXEME(left), getIntLEXEME(right)), -1);
+        if (rightType == REAL)  return newLEXEMEreal(fmod(getRealLEXEME(left), getRealLEXEME(right)), -1);
         failExpr("INTEGER or REAL", "modulus", right);
     }
     failExpr("INTEGER or REAL", "modulus", left);
@@ -272,14 +293,14 @@ static LEXEME *evalExponent(LEXEME *tree, LEXEME *env)
     char *leftType = getTypeLEXEME(left), *rightType = getTypeLEXEME(right);
     if (leftType == INTEGER)
     {
-        if (rightType == INTEGER)   return newLEXEMEdouble(pow(getIntLEXEME(left), getIntLEXEME(right)), -1);
-        if (rightType == REAL)  return newLEXEMEdouble(pow(getIntLEXEME(left), getRealLEXEME(right)), -1);
+        if (rightType == INTEGER)   return newLEXEMEreal(pow(getIntLEXEME(left), getIntLEXEME(right)), -1);
+        if (rightType == REAL)  return newLEXEMEreal(pow(getIntLEXEME(left), getRealLEXEME(right)), -1);
         failExpr("INTEGER or REAL", "exponent", right);
     }
     if (leftType == REAL)
     {
-        if (rightType == INTEGER)   return newLEXEMEdouble(pow(getRealLEXEME(left), getIntLEXEME(right)), -1);
-        if (rightType == REAL)  return newLEXEMEdouble(pow(getRealLEXEME(left), getRealLEXEME(right)), -1);
+        if (rightType == INTEGER)   return newLEXEMEreal(pow(getRealLEXEME(left), getIntLEXEME(right)), -1);
+        if (rightType == REAL)  return newLEXEMEreal(pow(getRealLEXEME(left), getRealLEXEME(right)), -1);
         failExpr("INTEGER or REAL", "exponent", right);
     }
     failExpr("INTEGER or REAL", "exponent", left);
@@ -422,6 +443,156 @@ static LEXEME *evalGreaterTE(LEXEME *tree, LEXEME *env)
     }
     failExpr("INTEGER or REAL", ">=", left);
     return NULL;    // Unreachable - for compiler
+}
+
+static LEXEME *evalLogicalAnd(LEXEME *tree, LEXEME *env)
+{
+    LEXEME *left = eval(car(tree), env);
+    LEXEME *right = eval(cdr(tree), env);
+    char *leftType = getTypeLEXEME(left), *rightType = getTypeLEXEME(right);
+    if (leftType == INTEGER)
+    {
+        if (rightType == INTEGER)   return newLEXEMEint(getIntLEXEME(left) && getIntLEXEME(right), -1);
+        if (rightType == REAL)  return newLEXEMEint(getIntLEXEME(left) && getRealLEXEME(right), -1);
+        failExpr("INTEGER or REAL", "&&", right);
+    }
+    if (leftType == REAL)
+    {
+        if (rightType == INTEGER)   return newLEXEMEint(getRealLEXEME(left) && getIntLEXEME(right), -1);
+        if (rightType == REAL)  return newLEXEMEint(getRealLEXEME(left) && getRealLEXEME(right), -1);
+        failExpr("INTEGER or REAL", "&&", right);
+    }
+    failExpr("INTEGER or REAL", "&&", left);
+    return NULL;    // Unreachable - for compiler
+}
+
+static LEXEME *evalLogicalOr(LEXEME *tree, LEXEME *env)
+{
+    LEXEME *left = eval(car(tree), env);
+    LEXEME *right = eval(cdr(tree), env);
+    char *leftType = getTypeLEXEME(left), *rightType = getTypeLEXEME(right);
+    if (leftType == INTEGER)
+    {
+        if (rightType == INTEGER)   return newLEXEMEint(getIntLEXEME(left) || getIntLEXEME(right), -1);
+        if (rightType == REAL)  return newLEXEMEint(getIntLEXEME(left) || getRealLEXEME(right), -1);
+        failExpr("INTEGER or REAL", "||", right);
+    }
+    if (leftType == REAL)
+    {
+        if (rightType == INTEGER)   return newLEXEMEint(getRealLEXEME(left) || getIntLEXEME(right), -1);
+        if (rightType == REAL)  return newLEXEMEint(getRealLEXEME(left) || getRealLEXEME(right), -1);
+        failExpr("INTEGER or REAL", "||", right);
+    }
+    failExpr("INTEGER or REAL", "||", left);
+    return NULL;    // Unreachable - for compiler
+}
+
+static LEXEME *evalBinaryAnd(LEXEME *tree, LEXEME *env)
+{
+    LEXEME *left = eval(car(tree), env);
+    LEXEME *right = eval(cdr(tree), env);
+    char *leftType = getTypeLEXEME(left), *rightType = getTypeLEXEME(right);
+    if (leftType == INTEGER)
+    {
+        if (rightType == INTEGER)   return newLEXEMEint(getIntLEXEME(left) & getIntLEXEME(right), -1);
+        failExpr("INTEGER", "&", right);
+    }
+    failExpr("INTEGER", "&", left);
+    return NULL;    // Unreachable - for compiler
+}
+
+static LEXEME *evalBinaryOr(LEXEME *tree, LEXEME *env)
+{
+    LEXEME *left = eval(car(tree), env);
+    LEXEME *right = eval(cdr(tree), env);
+    char *leftType = getTypeLEXEME(left), *rightType = getTypeLEXEME(right);
+    if (leftType == INTEGER)
+    {
+        if (rightType == INTEGER)   return newLEXEMEint(getIntLEXEME(left) | getIntLEXEME(right), -1);
+        failExpr("INTEGER", "|", right);
+    }
+    failExpr("INTEGER", "|", left);
+    return NULL;    // Unreachable - for compiler
+}
+
+static LEXEME *evalDot(LEXEME *tree, LEXEME *env)
+{
+    LEXEME *object = eval(car(tree), env);
+    LEXEME *field = eval(cdr(tree), env);
+    return getValueEnv(car(getValueEnv(env, object)), field);
+}
+
+static LEXEME *evalParen(LEXEME *tree, LEXEME *env)
+{
+    return eval(car(tree), env);
+}
+
+static LEXEME *evalUnaryID(LEXEME *tree, LEXEME *env)
+{
+    LEXEME *var = eval(car(tree), env); // IDExpr
+    LEXEME *value = getValueEnv(env, var);
+    LEXEME *postVar = cdr(tree);    // PostVar
+    if (postVar)
+    {
+        int shift = 0;
+        char *valType = getTypeLEXEME(value);
+        if (getTypeLEXEME(postVar) == PLUSPLUS)    shift = 1;
+        if (getTypeLEXEME(postVar) == MINUSMINUS)  shift = -1;
+        if (valType == INTEGER)
+        {
+            setValueEnv(env, var, newLEXEMEint(getIntLEXEME(value)+shift, -1));
+            return value;
+        }
+        if (valType == REAL)
+        {
+            setValueEnv(env, var, newLEXEMEreal(getRealLEXEME(value)+shift, -1));
+            return value;
+        }
+    }
+    return value;
+}
+
+static LEXEME *evalFunctionCall(LEXEME *tree, LEXEME *env)
+{
+    LEXEME *closure = getValueEnv(env, car(tree));
+    char *closureType = getTypeLEXEME(closure);
+    LEXEME *args = evalArgs(cdr(tree), env);
+    if (closureType == BUILT_IN)    return evalBuiltIn(closure, args);
+    if (closureType == OCLOSURE)    return evalConstructor(closure, env);
+    if (closureType == CLOSURE)
+    {
+        LEXEME *staticEnv = car(closure);
+        LEXEME *params = car(cdr(cdr(closure)));
+        // TODO - add support for opt args
+        LEXEME *localEnv = newScopeEnv(env, params, args);
+        LEXEME *body = cdr(cdr(closure));
+        LEXEME *result = evalStatements(body, localEnv);
+        if (getTypeLEXEME(result) == RETURNED)  return car(result);
+        return result;
+    }
+    fprintf(stderr, "Invalid closure type given in function call\n");
+    exit(-210);
+}
+
+static LEXEME *evalConstructor(LEXEME *closure, LEXEME *env)
+{
+    LEXEME *staticEnv = car(closure);
+    LEXEME *extendedEnv = newScopeEnv(staticEnv, NULL, NULL);
+    LEXEME *body = cdr(cdr(closure));
+    evalStatements(body, extendedEnv);
+    return extendedEnv;
+}
+
+static LEXEME *evalBuiltIn(LEXEME *tree, LEXEME *env)
+{
+    // TODO
+    return NULL;
+}
+
+static LEXEME *evalArgs(LEXEME *args, LEXEME *env)
+{
+    if (args == NULL)   return NULL;
+    return cons(EVAL_EXPR, eval(car(args), env), eval(cdr(args), env));
 }
 
 static LEXEME *evalStatements(LEXEME *tree, LEXEME *env)
