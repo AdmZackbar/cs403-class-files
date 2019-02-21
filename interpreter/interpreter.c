@@ -43,6 +43,9 @@ static LEXEME *evalStatements(LEXEME *tree, LEXEME *env);
 
 static void failExpr(char *expected, char *exprType, LEXEME *badLex);
 
+LEXEME *mainFunction = NULL;
+LEXEME *mainArgs = NULL;
+
 int main(int argc, char **argv)
 {
     char *filename = parseFileArg(argc, argv);
@@ -50,19 +53,33 @@ int main(int argc, char **argv)
     LEXEME *globalEnv = newEnvironment();
     LEXEME *rootLex = parse(filename);
 
-    LEXEME *returnVal = eval(rootLex, globalEnv);
+    eval(rootLex, globalEnv);
 
-    // TODO handle return value
-    return 0;
+    LEXEME *returnVal;
+    if (mainFunction)   returnVal = eval(mainFunction, globalEnv);
+    else
+    {
+        fprintf(stderr, "No main function located\n");
+        return -1;
+    }
+    
+    return getIntLEXEME(returnVal);
 }
 
 static char *parseFileArg(int argc, char **argv)
 {
-    if (argc != 2)
+    if (argc < 2)
     {
-        printf("Incorrect number of parameters, expected 2, got %d.\n", argc);
-        printf("Correct usage: %s <filepath>\n", argv[0]);
+        printf("Incorrect number of parameters, expected 2 or more, got %d.\n", argc);
+        printf("Correct usage: %s <filepath> [args+]\n", argv[0]);
         exit(-1);
+    }
+    
+    LEXEME *arg;
+    for (int i=argc-1; i>=2; i--)
+    {
+        arg = newLEXEMEstring(argv[i], -1);
+        mainArgs = cons(VAR_LIST, arg, mainArgs);
     }
     
     return argv[1];
@@ -164,7 +181,22 @@ static LEXEME *evalVarDecl(LEXEME *tree, LEXEME *env)
 
 static LEXEME *evalFunctionStatement(LEXEME *tree, LEXEME *env)
 {
-    insertEnvironment(env, car(cdr(tree)), cons(CLOSURE, env, tree));   // ID - function name
+    LEXEME *closure = cons(CLOSURE, env, tree);
+    
+    if (strcmp(getStrLEXEME(car(cdr(tree))), "main"))    // if function name is main
+    {
+        if (mainFunction == NULL)   mainFunction = closure; // TODO - handle params
+        else
+        {
+            fprintf(stderr, "Additional main function found, exiting...\n");
+            exit(-400);
+        }
+    }
+    else
+    {
+        insertEnvironment(env, car(cdr(tree)), closure);
+    }
+    
     return env;
 }
 

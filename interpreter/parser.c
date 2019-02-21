@@ -395,6 +395,8 @@ static LEXEME *expr8()
         setCar(opLex, unaryLex);
         setCdr(opLex, exprLex);
         unaryLex = opLex;
+        if (getTypeLEXEME(cdr(unaryLex)) == FUNCTION_CALL)
+            return cons(FUNCTION_CALL, cons(DOT, car(unaryLex), car(cdr(unaryLex))), cdr(cdr(unaryLex)));
     }
     
     return unaryLex;
