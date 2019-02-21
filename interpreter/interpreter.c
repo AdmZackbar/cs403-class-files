@@ -8,6 +8,7 @@
 #include "types.h"
 
 static char *parseFileArg(int argc, char **argv);
+static void addBuiltIn(LEXEME *env);
 static LEXEME *eval(LEXEME *tree, LEXEME *env);
 static LEXEME *evalProgram(LEXEME *tree, LEXEME *env);
 static LEXEME *evalClassDef(LEXEME *tree, LEXEME *env);
@@ -16,6 +17,17 @@ static LEXEME *evalClassStatements(LEXEME *tree, LEXEME *env);
 static LEXEME *evalClassStatement(LEXEME *tree, LEXEME *env);
 static LEXEME *evalVarDecl(LEXEME *tree, LEXEME *env);
 static LEXEME *evalFunctionStatement(LEXEME *tree, LEXEME *env);
+static LEXEME *evalParen(LEXEME *tree, LEXEME *env);
+static LEXEME *evalUnaryID(LEXEME *tree, LEXEME *env);
+static LEXEME *evalFunctionCall(LEXEME *tree, LEXEME *env);
+static LEXEME *evalConstructor(LEXEME *tree, LEXEME *env);
+static LEXEME *evalBuiltIn(LEXEME *tree, LEXEME *args);
+static LEXEME *evalClosure(LEXEME *closure, LEXEME *args);
+static LEXEME *evalArgs(LEXEME *args, LEXEME *env);
+static LEXEME *evalStatements(LEXEME *tree, LEXEME *env);
+static LEXEME *evalReturn(LEXEME *tree, LEXEME *env);
+static LEXEME *evalLambda(LEXEME *tree, LEXEME *env);
+// evalOperator
 static LEXEME *evalEquals(LEXEME *tree, LEXEME *env);
 static LEXEME *evalPlus(LEXEME *tree, LEXEME *env);
 static LEXEME *evalMinus(LEXEME *tree, LEXEME *env);
@@ -34,16 +46,10 @@ static LEXEME *evalLogicalOr(LEXEME *tree, LEXEME *env);
 static LEXEME *evalBinaryAnd(LEXEME *tree, LEXEME *env);
 static LEXEME *evalBinaryOr(LEXEME *tree, LEXEME *env);
 static LEXEME *evalDot(LEXEME *tree, LEXEME *env);
-static LEXEME *evalParen(LEXEME *tree, LEXEME *env);
-static LEXEME *evalUnaryID(LEXEME *tree, LEXEME *env);
-static LEXEME *evalFunctionCall(LEXEME *tree, LEXEME *env);
-static LEXEME *evalConstructor(LEXEME *tree, LEXEME *env);
-static LEXEME *evalBuiltIn(LEXEME *tree, LEXEME *args);
-static LEXEME *evalClosure(LEXEME *closure, LEXEME *args);
-static LEXEME *evalArgs(LEXEME *args, LEXEME *env);
-static LEXEME *evalStatements(LEXEME *tree, LEXEME *env);
-static LEXEME *evalReturn(LEXEME *tree);
-static LEXEME *evalLambda(LEXEME *tree, LEXEME *env);
+// evalBuiltIn
+static LEXEME *evalNewArray(LEXEME *args);
+static LEXEME *evalGetArray(LEXEME *args);
+static LEXEME *evalSetArray(LEXEME *args);
 
 static void failExpr(char *expected, char *exprType, LEXEME *badLex);
 
@@ -55,6 +61,8 @@ int main(int argc, char **argv)
     char *filename = parseFileArg(argc, argv);
 
     LEXEME *globalEnv = newEnvironment();
+    addBuiltIn(globalEnv);
+    
     LEXEME *rootLex = parse(filename);
 
     eval(rootLex, globalEnv);
@@ -94,11 +102,18 @@ static char *parseFileArg(int argc, char **argv)
     return argv[1];
 }
 
+static void addBuiltIn(LEXEME *env)
+{
+    insertEnv(env, newLEXEMEstring(ID, "newArray", -1), newLEXEMEfunction(BUILT_IN, evalNewArray));
+    insertEnv(env, newLEXEMEstring(ID, "getArray", -1), newLEXEMEfunction(BUILT_IN, evalGetArray));
+    insertEnv(env, newLEXEMEstring(ID, "setArray", -1), newLEXEMEfunction(BUILT_IN, evalSetArray));
+}
+
 static LEXEME *eval(LEXEME *tree, LEXEME *env)
 {
     char *type = getTypeLEXEME(tree);
     if (isPrimative(tree) || type == ID || type == ARRAY_LOOKUP)  return tree;    // Int, real, or str
-    if (type == ID) return getValueEnv(env, tree);
+    //if (type == ID) return getValueEnv(env, tree);
     if (type == PROG)   return evalProgram(tree, env);
     if (type == CLASS_DEF)  return evalClassDef(tree, env);
     if (type == CLASS_HEADER)   return evalClassHeader(tree, env);
@@ -106,6 +121,13 @@ static LEXEME *eval(LEXEME *tree, LEXEME *env)
     if (type == CLASS_STATEMENT)    return evalClassStatement(tree, env);
     if (type == VAR_DECL)   return evalVarDecl(tree, env);
     if (type == FUNCTION_STATEMENT) return evalFunctionStatement(tree, env);
+    if (type == UNARY_PAREN)    return evalParen(tree, env);
+    if (type == UNARY_ID)   return evalUnaryID(tree, env);
+    if (type == FUNCTION_CALL)  return evalFunctionCall(tree, env);
+    if (type == EXPR_LIST)  return evalArgs(tree, env);
+    if (type == CLOSURE)    return evalClosure(tree, env);
+    if (type == RETURN_STATEMENT)   return evalReturn(tree, env);
+    if (type == LAMBDA_STATEMENT)   return evalLambda(tree, env);
     if (type == EQUALS) return evalEquals(tree, env);
     if (type == PLUS)   return evalPlus(tree, env);
     if (type == MINUS)  return evalMinus(tree, env);
@@ -124,13 +146,6 @@ static LEXEME *eval(LEXEME *tree, LEXEME *env)
     if (type == BINARY_AND) return evalBinaryAnd(tree, env);
     if (type == BINARY_OR)  return evalBinaryOr(tree, env);
     if (type == DOT)    return evalDot(tree, env);
-    if (type == UNARY_PAREN)    return evalParen(tree, env);
-    if (type == UNARY_ID)   return evalUnaryID(tree, env);
-    if (type == FUNCTION_CALL)  return evalFunctionCall(tree, env);
-    if (type == EXPR_LIST)  return evalArgs(tree, env);
-    if (type == CLOSURE)    return evalClosure(tree, env);
-    if (type == RETURN_STATEMENT)   return evalReturn(tree);
-    if (type == LAMBDA_STATEMENT)   return evalLambda(tree, env);
     fprintf(stderr, "Unhandled LEXEME in eval(). Type %s\n", getTypeLEXEME(tree));
     exit(-500);
 }
@@ -214,6 +229,105 @@ static LEXEME *evalFunctionStatement(LEXEME *tree, LEXEME *env)
     }
     
     return env;
+}
+
+static LEXEME *evalParen(LEXEME *tree, LEXEME *env)
+{
+    return eval(car(tree), env);
+}
+
+static LEXEME *evalUnaryID(LEXEME *tree, LEXEME *env)
+{
+    LEXEME *var = eval(car(tree), env); // IDExpr
+    LEXEME *value = getValueEnv(env, var);
+    LEXEME *postVar = cdr(tree);    // PostVar
+    if (postVar)
+    {
+        int shift = 0;
+        char *valType = getTypeLEXEME(value);
+        if (getTypeLEXEME(postVar) == PLUSPLUS)    shift = 1;
+        if (getTypeLEXEME(postVar) == MINUSMINUS)  shift = -1;
+        if (valType == INTEGER)
+        {
+            setValueEnv(env, var, newLEXEMEint(getIntLEXEME(value)+shift, -1));
+            return value;
+        }
+        if (valType == REAL)
+        {
+            setValueEnv(env, var, newLEXEMEreal(getRealLEXEME(value)+shift, -1));
+            return value;
+        }
+    }
+    return value;
+}
+
+static LEXEME *evalFunctionCall(LEXEME *tree, LEXEME *env)
+{
+    LEXEME *closure = getValueEnv(env, car(tree));
+    char *closureType = getTypeLEXEME(closure);
+    LEXEME *args = evalArgs(cdr(tree), env);
+    if (closureType == BUILT_IN)    return evalBuiltIn(closure, args);
+    if (closureType == OCLOSURE)    return evalConstructor(closure, env);
+    if (closureType == CLOSURE)     return evalClosure(closure, args);
+    fprintf(stderr, "Invalid closure type given in function call\n");
+    exit(-210);
+}
+
+static LEXEME *evalConstructor(LEXEME *closure, LEXEME *env)
+{
+    LEXEME *staticEnv = car(closure);
+    LEXEME *extendedEnv = newScopeEnv(staticEnv, NULL, NULL);
+    LEXEME *body = cdr(cdr(closure));
+    evalStatements(body, extendedEnv);
+    return extendedEnv;
+}
+
+static LEXEME *evalBuiltIn(LEXEME *tree, LEXEME *args)
+{
+    return evalFunctionLEXEME(tree, args);
+}
+
+static LEXEME *evalClosure(LEXEME *closure, LEXEME *args)
+{
+    LEXEME *staticEnv = car(closure);
+    LEXEME *params = cdr(cdr(cdr(closure)));
+    // TODO - add support for opt args
+    LEXEME *localEnv = newScopeEnv(staticEnv, params, args);
+    LEXEME *body = car(cdr(closure));
+    LEXEME *result = evalStatements(body, localEnv);
+    if (getTypeLEXEME(result) == RETURNED)  return car(result);
+    return result;
+}
+
+static LEXEME *evalArgs(LEXEME *args, LEXEME *env)
+{
+    if (args == NULL)   return NULL;
+    return cons(EVAL_EXPR, eval(car(args), env), eval(cdr(args), env));
+}
+
+static LEXEME *evalStatements(LEXEME *tree, LEXEME *env)
+{
+    LEXEME *result;
+    while (tree)
+    {
+        result = eval(car(tree), env);  // Statement - if, else, etc - TODO
+        if (getTypeLEXEME(result) == RETURNED)
+            break;
+        tree = cdr(tree);
+    }
+    return result;
+}
+
+static LEXEME *evalReturn(LEXEME *tree, LEXEME *env)
+{
+    LEXEME *returned = newLEXEME(RETURNED, -1);
+    setCar(returned, eval(car(tree), env));
+    return returned;
+}
+
+static LEXEME *evalLambda(LEXEME *tree, LEXEME *env)
+{
+    return cons(CLOSURE, env, tree);
 }
 
 static LEXEME *evalEquals(LEXEME *tree, LEXEME *env)
@@ -570,108 +684,39 @@ static LEXEME *evalDot(LEXEME *tree, LEXEME *env)
     return getValueEnv(car(getValueEnv(env, object)), field);
 }
 
-static LEXEME *evalParen(LEXEME *tree, LEXEME *env)
-{
-    return eval(car(tree), env);
-}
-
-static LEXEME *evalUnaryID(LEXEME *tree, LEXEME *env)
-{
-    LEXEME *var = eval(car(tree), env); // IDExpr
-    LEXEME *value = getValueEnv(env, var);
-    LEXEME *postVar = cdr(tree);    // PostVar
-    if (postVar)
-    {
-        int shift = 0;
-        char *valType = getTypeLEXEME(value);
-        if (getTypeLEXEME(postVar) == PLUSPLUS)    shift = 1;
-        if (getTypeLEXEME(postVar) == MINUSMINUS)  shift = -1;
-        if (valType == INTEGER)
-        {
-            setValueEnv(env, var, newLEXEMEint(getIntLEXEME(value)+shift, -1));
-            return value;
-        }
-        if (valType == REAL)
-        {
-            setValueEnv(env, var, newLEXEMEreal(getRealLEXEME(value)+shift, -1));
-            return value;
-        }
-    }
-    return value;
-}
-
-static LEXEME *evalFunctionCall(LEXEME *tree, LEXEME *env)
-{
-    LEXEME *closure = getValueEnv(env, car(tree));
-    char *closureType = getTypeLEXEME(closure);
-    LEXEME *args = evalArgs(cdr(tree), env);
-    if (closureType == BUILT_IN)    return evalBuiltIn(closure, args);
-    if (closureType == OCLOSURE)    return evalConstructor(closure, env);
-    if (closureType == CLOSURE)     return evalClosure(closure, args);
-    fprintf(stderr, "Invalid closure type given in function call\n");
-    exit(-210);
-}
-
-static LEXEME *evalConstructor(LEXEME *closure, LEXEME *env)
-{
-    LEXEME *staticEnv = car(closure);
-    LEXEME *extendedEnv = newScopeEnv(staticEnv, NULL, NULL);
-    LEXEME *body = cdr(cdr(closure));
-    evalStatements(body, extendedEnv);
-    return extendedEnv;
-}
-
-static LEXEME *evalBuiltIn(LEXEME *tree, LEXEME *args)
-{
-    // TODO
-    return NULL;
-}
-
-static LEXEME *evalClosure(LEXEME *closure, LEXEME *args)
-{
-    LEXEME *staticEnv = car(closure);
-    LEXEME *params = cdr(cdr(cdr(closure)));
-    // TODO - add support for opt args
-    LEXEME *localEnv = newScopeEnv(staticEnv, params, args);
-    LEXEME *body = car(cdr(closure));
-    LEXEME *result = evalStatements(body, localEnv);
-    if (getTypeLEXEME(result) == RETURNED)  return car(result);
-    return result;
-}
-
-static LEXEME *evalArgs(LEXEME *args, LEXEME *env)
-{
-    if (args == NULL)   return NULL;
-    return cons(EVAL_EXPR, eval(car(args), env), eval(cdr(args), env));
-}
-
-static LEXEME *evalStatements(LEXEME *tree, LEXEME *env)
-{
-    LEXEME *result;
-    while (tree)
-    {
-        result = eval(car(tree), env);  // Statement - if, else, etc - TODO
-        if (getTypeLEXEME(result) == RETURNED)
-            break;
-        tree = cdr(tree);
-    }
-    return result;
-}
-
-static LEXEME *evalReturn(LEXEME *tree)
-{
-    LEXEME *returned = newLEXEME(RETURNED, -1);
-    setCar(returned, car(tree));
-    return returned;
-}
-
-static LEXEME *evalLambda(LEXEME *tree, LEXEME *env)
-{
-    return cons(CLOSURE, env, tree);
-}
-
 static void failExpr(char *expected, char *exprType, LEXEME *badLex)
 {
     fprintf(stderr, "Expected type %s in %s expression. Got %s", expected, exprType, getTypeLEXEME(badLex));
     exit(-101);
+}
+
+static LEXEME *evalNewArray(LEXEME *args)
+{
+    assert(cdr(args) == NULL);  // 1 argument
+    LEXEME *size = car(args);
+    assert(getTypeLEXEME(size) == INTEGER);  // Argument is an integer
+    return newLEXEMEarray(getIntLEXEME(size));
+}
+
+static LEXEME *evalGetArray(LEXEME *args)
+{
+    assert(cdr(args) && cdr(cdr(args)) == NULL);    // 2 arguments
+    LEXEME *array = car(args);  // 1st arg is the array
+    LEXEME *index = car(cdr(args)); // 2nd arg is the array index
+    assert(getTypeLEXEME(array) == ARRAY && getTypeLEXEME(index) == INTEGER);
+    return getArrayValueLEXEME(array, getIntLEXEME(index));
+}
+
+/*
+ * Sets a new lexeme value for the given array at the given index.
+ * Returns the old value at that location.
+ */
+static LEXEME *evalSetArray(LEXEME *args)
+{
+    assert(cdr(args) && cdr(cdr(args)) && cdr(cdr(cdr(args))) == NULL); // 3 arguments
+    LEXEME *array = car(args);  // 1st arg is the array
+    LEXEME *index = car(cdr(args)); // 2nd arg is the array index
+    LEXEME *newVal = car(cdr(cdr(args)));   // 3rd arg is the new value
+    assert(getTypeLEXEME(array) == ARRAY && getTypeLEXEME(index) == INTEGER);
+    return setArrayValueLEXEME(array, getIntLEXEME(index), newVal);
 }

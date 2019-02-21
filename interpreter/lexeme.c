@@ -14,12 +14,14 @@
 
 struct lexeme
 {
-    char *type;             // Stores a constant string(from types)
-    int lineNum;            // Stores the line number where the lexeme was found
-    int iVal;               // Holds integer values
-    double rVal;            // Holds real values
-    char *sVal;             // Holds string values
-    LEXEME *left, *right;   // Points to the children of the lexeme
+    char *type;                 // Stores a constant string(from types)
+    int lineNum;                // Stores the line number where the lexeme was found
+    int iVal;                   // Holds integer values
+    double rVal;                // Holds real values
+    char *sVal;                 // Holds string values
+    LEXEME **aVal;              // Holds array values
+    LEXEME *(*fVal)(LEXEME *);  // Holds a function
+    LEXEME *left, *right;       // Points to the children of the lexeme
 };
 
 LEXEME *newLEXEME(char *type, int lineNum)
@@ -54,6 +56,19 @@ LEXEME *newLEXEMEint(int value, int lineNum)
     l->iVal = value;
     return l;
 }
+LEXEME *newLEXEMEarray(int size)
+{
+    LEXEME *l = newLEXEME(ARRAY, -1);
+    l->aVal = malloc(sizeof(LEXEME *) * size);
+    assert(l->aVal != 0);
+    return l;
+}
+LEXEME *newLEXEMEfunction(char *type, LEXEME *(*fVal)(LEXEME *))
+{
+    LEXEME *l = newLEXEME(type, -1);
+    l->fVal = fVal;
+    return l;
+}
 
 LEXEME *cons(char *type, LEXEME *left, LEXEME *right)
 {
@@ -86,6 +101,14 @@ void setCdr(LEXEME *parent, LEXEME *child)
     parent->right = child;
 }
 
+LEXEME *setArrayValueLEXEME(LEXEME *array, int index, LEXEME *value)
+{
+    assert(array != 0);
+    LEXEME *oldVal = array->aVal[index];
+    array->aVal[index] = value;
+    return oldVal;
+}
+
 char *getTypeLEXEME(LEXEME *lexeme)
 {
     assert(lexeme != 0);
@@ -114,6 +137,17 @@ char *getStrLEXEME(LEXEME *lexeme)
 {
     assert(lexeme != 0);
     return lexeme->sVal;
+}
+
+LEXEME *getArrayValueLEXEME(LEXEME *array, int index)
+{
+    assert(array != 0);
+    return array->aVal[index];
+}
+
+LEXEME *evalFunctionLEXEME(LEXEME *lexeme, LEXEME *args)
+{
+    return lexeme->fVal(args);
 }
 
 int sameVar(LEXEME *var1, LEXEME *var2)

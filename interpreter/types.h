@@ -7,6 +7,7 @@ extern char *OCLOSURE;
 extern char *RETURNED;
 extern char *BUILT_IN;
 extern char *EVAL_EXPR;
+extern char *ARRAY;
 
 // Environments
 extern char *ENV;

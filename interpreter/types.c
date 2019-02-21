@@ -14,6 +14,7 @@ char *OCLOSURE = "object closure";
 char *RETURNED = "returned";
 char *BUILT_IN = "built in function";
 char *EVAL_EXPR = "eval expr";
+char *ARRAY = "array";
 
 // Environments
 char *ENV = "environment";
