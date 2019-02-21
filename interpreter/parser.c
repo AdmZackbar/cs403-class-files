@@ -457,7 +457,7 @@ static LEXEME *unary()
         match(CPAREN);
         blockLex = block();
         
-        return cons(LAMBDA_STATEMENT, params, blockLex);
+        return cons(LAMBDA_STATEMENT, blockLex, cons(FUNCTION_INFO, NULL, params));
     }
     failParse("unary");
     return NULL;    // Unreachable - for compiler

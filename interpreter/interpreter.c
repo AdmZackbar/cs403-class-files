@@ -43,6 +43,7 @@ static LEXEME *evalClosure(LEXEME *closure, LEXEME *args);
 static LEXEME *evalArgs(LEXEME *args, LEXEME *env);
 static LEXEME *evalStatements(LEXEME *tree, LEXEME *env);
 static LEXEME *evalReturn(LEXEME *tree);
+static LEXEME *evalLambda(LEXEME *tree, LEXEME *env);
 
 static void failExpr(char *expected, char *exprType, LEXEME *badLex);
 
@@ -129,6 +130,7 @@ static LEXEME *eval(LEXEME *tree, LEXEME *env)
     if (type == EXPR_LIST)  return evalArgs(tree, env);
     if (type == CLOSURE)    return evalClosure(tree, env);
     if (type == RETURN_STATEMENT)   return evalReturn(tree);
+    if (type == LAMBDA_STATEMENT)   return evalLambda(tree, env);
     fprintf(stderr, "Unhandled LEXEME in eval(). Type %s\n", getTypeLEXEME(tree));
     exit(-500);
 }
@@ -628,10 +630,10 @@ static LEXEME *evalBuiltIn(LEXEME *tree, LEXEME *args)
 static LEXEME *evalClosure(LEXEME *closure, LEXEME *args)
 {
     LEXEME *staticEnv = car(closure);
-    LEXEME *params = car(cdr(cdr(closure)));
+    LEXEME *params = cdr(cdr(cdr(closure)));
     // TODO - add support for opt args
     LEXEME *localEnv = newScopeEnv(staticEnv, params, args);
-    LEXEME *body = cdr(cdr(closure));
+    LEXEME *body = car(cdr(closure));
     LEXEME *result = evalStatements(body, localEnv);
     if (getTypeLEXEME(result) == RETURNED)  return car(result);
     return result;
@@ -661,6 +663,11 @@ static LEXEME *evalReturn(LEXEME *tree)
     LEXEME *returned = newLEXEME(RETURNED, -1);
     setCar(returned, car(tree));
     return returned;
+}
+
+static LEXEME *evalLambda(LEXEME *tree, LEXEME *env)
+{
+    return cons(CLOSURE, env, tree);
 }
 
 static void failExpr(char *expected, char *exprType, LEXEME *badLex)

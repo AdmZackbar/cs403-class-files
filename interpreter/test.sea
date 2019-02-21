@@ -2,6 +2,7 @@ class Temp
 {
     function main(args)
     {
-        return 0;
+        var i = 3;
+        return i;
     }
 }
