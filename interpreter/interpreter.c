@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 #include "environment.h"
 #include "lexeme.h"
 #include "parser.h"
@@ -37,9 +38,11 @@ static LEXEME *evalParen(LEXEME *tree, LEXEME *env);
 static LEXEME *evalUnaryID(LEXEME *tree, LEXEME *env);
 static LEXEME *evalFunctionCall(LEXEME *tree, LEXEME *env);
 static LEXEME *evalConstructor(LEXEME *tree, LEXEME *env);
-static LEXEME *evalBuiltIn(LEXEME *tree, LEXEME *env);
+static LEXEME *evalBuiltIn(LEXEME *tree, LEXEME *args);
+static LEXEME *evalClosure(LEXEME *closure, LEXEME *args);
 static LEXEME *evalArgs(LEXEME *args, LEXEME *env);
 static LEXEME *evalStatements(LEXEME *tree, LEXEME *env);
+static LEXEME *evalReturn(LEXEME *tree);
 
 static void failExpr(char *expected, char *exprType, LEXEME *badLex);
 
@@ -62,6 +65,11 @@ int main(int argc, char **argv)
         fprintf(stderr, "No main function located\n");
         return -1;
     }
+
+    //printf("Main type: %s\n", getTypeLEXEME(returnVal));
+    printf("Returned lexeme: ");
+    displayLEXEME(stdout, returnVal);
+    printf("\n");
     
     return getIntLEXEME(returnVal);
 }
@@ -78,7 +86,7 @@ static char *parseFileArg(int argc, char **argv)
     LEXEME *arg;
     for (int i=argc-1; i>=2; i--)
     {
-        arg = newLEXEMEstring(argv[i], -1);
+        arg = newLEXEMEstring(STRING, argv[i], -1);
         mainArgs = cons(VAR_LIST, arg, mainArgs);
     }
     
@@ -119,6 +127,10 @@ static LEXEME *eval(LEXEME *tree, LEXEME *env)
     if (type == UNARY_ID)   return evalUnaryID(tree, env);
     if (type == FUNCTION_CALL)  return evalFunctionCall(tree, env);
     if (type == EXPR_LIST)  return evalArgs(tree, env);
+    if (type == CLOSURE)    return evalClosure(tree, env);
+    if (type == RETURN_STATEMENT)   return evalReturn(tree);
+    fprintf(stderr, "Unhandled LEXEME in eval(). Type %s\n", getTypeLEXEME(tree));
+    exit(-500);
 }
 
 static LEXEME *evalProgram(LEXEME *tree, LEXEME *env)
@@ -166,13 +178,15 @@ static LEXEME *evalClassStatement(LEXEME *tree, LEXEME *env)
 
 static LEXEME *evalVarDecl(LEXEME *tree, LEXEME *env)
 {
-    LEXEME *varDef, *value = NULL;
+    LEXEME *varDef, *value;
     tree = car(tree);   // VarList
     while (tree)
     {
         varDef = car(tree);
         if (cdr(varDef))
             value = eval(cdr(varDef), env); // Expr
+        else
+            value = NULL;
         insertEnvironment(env, car(varDef), value);  // ID - var name
         tree = cdr(tree);
     }
@@ -183,7 +197,7 @@ static LEXEME *evalFunctionStatement(LEXEME *tree, LEXEME *env)
 {
     LEXEME *closure = cons(CLOSURE, env, tree);
     
-    if (strcmp(getStrLEXEME(car(cdr(tree))), "main"))    // if function name is main
+    if (!strcmp(getStrLEXEME(car(cdr(tree))), "main"))    // if function name is main
     {
         if (mainFunction == NULL)   mainFunction = closure; // TODO - handle params
         else
@@ -591,17 +605,7 @@ static LEXEME *evalFunctionCall(LEXEME *tree, LEXEME *env)
     LEXEME *args = evalArgs(cdr(tree), env);
     if (closureType == BUILT_IN)    return evalBuiltIn(closure, args);
     if (closureType == OCLOSURE)    return evalConstructor(closure, env);
-    if (closureType == CLOSURE)
-    {
-        LEXEME *staticEnv = car(closure);
-        LEXEME *params = car(cdr(cdr(closure)));
-        // TODO - add support for opt args
-        LEXEME *localEnv = newScopeEnv(env, params, args);
-        LEXEME *body = cdr(cdr(closure));
-        LEXEME *result = evalStatements(body, localEnv);
-        if (getTypeLEXEME(result) == RETURNED)  return car(result);
-        return result;
-    }
+    if (closureType == CLOSURE)     return evalClosure(closure, args);
     fprintf(stderr, "Invalid closure type given in function call\n");
     exit(-210);
 }
@@ -615,10 +619,22 @@ static LEXEME *evalConstructor(LEXEME *closure, LEXEME *env)
     return extendedEnv;
 }
 
-static LEXEME *evalBuiltIn(LEXEME *tree, LEXEME *env)
+static LEXEME *evalBuiltIn(LEXEME *tree, LEXEME *args)
 {
     // TODO
     return NULL;
+}
+
+static LEXEME *evalClosure(LEXEME *closure, LEXEME *args)
+{
+    LEXEME *staticEnv = car(closure);
+    LEXEME *params = car(cdr(cdr(closure)));
+    // TODO - add support for opt args
+    LEXEME *localEnv = newScopeEnv(staticEnv, params, args);
+    LEXEME *body = cdr(cdr(closure));
+    LEXEME *result = evalStatements(body, localEnv);
+    if (getTypeLEXEME(result) == RETURNED)  return car(result);
+    return result;
 }
 
 static LEXEME *evalArgs(LEXEME *args, LEXEME *env)
@@ -638,6 +654,13 @@ static LEXEME *evalStatements(LEXEME *tree, LEXEME *env)
         tree = cdr(tree);
     }
     return result;
+}
+
+static LEXEME *evalReturn(LEXEME *tree)
+{
+    LEXEME *returned = newLEXEME(RETURNED, -1);
+    setCar(returned, car(tree));
+    return returned;
 }
 
 static void failExpr(char *expected, char *exprType, LEXEME *badLex)

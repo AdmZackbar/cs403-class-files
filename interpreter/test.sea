@@ -1,4 +1,7 @@
 class Temp
 {
-    var x = 4;
+    function main(args)
+    {
+        return 0;
+    }
 }
