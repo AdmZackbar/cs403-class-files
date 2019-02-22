@@ -1,0 +1,27 @@
+class Recursion
+{
+    function fib(x)
+    {
+        if (x == 1)
+        {
+            return 1;
+        }
+        if (x <= 0)
+        {
+            return 0;
+        }
+        return fib(x-1) + fib(x-2);
+    }
+}
+
+main(args)
+{
+    var recurse = Recursion(), i = 0;
+    while (i < 14)
+    {
+        println(i, ": ", recurse.fib(x));
+        i = i + 1;
+    }
+    
+    return 0;
+}
