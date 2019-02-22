@@ -84,6 +84,8 @@ char *WHILE = "while";
 char *DO = "do";
 char *LAMBDA = "lambda";
 char *RETURN = "return";
+char *BREAK = "break";
+char *CONTINUE = "continue";
 
 // Punctuation
 char *SEMICOLON = "semicolon";

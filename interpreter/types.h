@@ -77,6 +77,8 @@ extern char *WHILE;
 extern char *DO;
 extern char *LAMBDA;
 extern char *RETURN;
+extern char *BREAK;
+extern char *CONTINUE;
 
 // Punctuation
 extern char *SEMICOLON;

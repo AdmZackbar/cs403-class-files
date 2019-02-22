@@ -667,6 +667,17 @@ static LEXEME *statement()
         
         statementLex = cons(RETURN_STATEMENT, exprLex, NULL);
     }
+    else if (check(FUNCTION))
+    {
+        advance();
+        LEXEME *functionName = match(ID);
+        match(OPAREN);
+        LEXEME *functionParams = optVarList();
+        match(CPAREN);
+        LEXEME *blockLex = block();
+        functionInfo = cons(FUNCTION_INFO, functionName, functionParams);
+        statementLex = cons(FUNCTION_STATEMENT, blockLex, functionInfo);
+    }
     else
         failParse("statement");
     

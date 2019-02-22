@@ -265,6 +265,10 @@ static LEXEME *lexWord(LEXER *lexer, int ch)
         return newLEXEME(LAMBDA, lexer->lineNum);
     if (wordIs(RETURN, word))
         return newLEXEME(RETURN, lexer->lineNum);
+    if (wordIs(BREAK, word))
+        return newLEXEME(BREAK, lexer->lineNum);
+    if (wordIs(CONTINUE, word))
+        return newLEXEME(CONTINUE, lexer->lineNum);
     
     free(word);
     return lexID(originalWord, lexer->lineNum);

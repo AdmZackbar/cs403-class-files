@@ -110,6 +110,7 @@ statement : expr SEMICOLON
           | RETURN expr SEMICOLON
           | BREAK SEMICOLON
           | CONTINUE SEMICOLON
+          | FUNCTION ID OPAREN optVarList CPAREN block
 
 optElse : elseStatement
         | EMPTY
