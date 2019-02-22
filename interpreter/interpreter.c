@@ -292,11 +292,14 @@ static LEXEME *evalClosure(LEXEME *closure, LEXEME *args)
     LEXEME *staticEnv = car(closure);
     LEXEME *params = cdr(cdr(cdr(closure)));
     LEXEME *paramIter = params;
-    while (paramIter)
+    if (getTypeLEXEME(car(params)) != ID)
     {
-        // TODO add support for opt args
-        setCar(car(car(paramIter)));    // Update the value in the list to be ID, not VAR_DEF
-        paramIter = cdr(paramIter);
+        while (paramIter)
+        {
+            // TODO add support for opt args
+            setCar(paramIter, car(car(paramIter)));    // Update the value in the list to be ID, not VAR_DEF
+            paramIter = cdr(paramIter);
+        }
     }
     LEXEME *localEnv = newScopeEnv(staticEnv, params, args);
     LEXEME *body = car(cdr(closure));
