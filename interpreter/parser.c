@@ -667,6 +667,16 @@ static LEXEME *statement()
         
         statementLex = cons(RETURN_STATEMENT, exprLex, NULL);
     }
+    else if (check(BREAK))
+    {
+        advance();
+        statementLex = newLEXEME(BREAK_STATEMENT, -1);
+    }
+    else if (check(CONTINUE))
+    {
+        advance();
+        statementLex = newLEXEME(CONTINUE_STATEMENT, -1);
+    }
     else if (check(FUNCTION))
     {
         advance();
@@ -675,7 +685,7 @@ static LEXEME *statement()
         LEXEME *functionParams = optVarList();
         match(CPAREN);
         LEXEME *blockLex = block();
-        functionInfo = cons(FUNCTION_INFO, functionName, functionParams);
+        LEXEME *functionInfo = cons(FUNCTION_INFO, functionName, functionParams);
         statementLex = cons(FUNCTION_STATEMENT, blockLex, functionInfo);
     }
     else
@@ -686,7 +696,7 @@ static LEXEME *statement()
 static int statementPending()
 {
     return exprPending() || check(VAR) || check(IF) || check(WHILE) || check(DO)
-        || check(RETURN);
+        || check(RETURN) || check(BREAK) || check(CONTINUE) || check(FUNCTION);
 }
 
 static LEXEME *optElse()

@@ -213,6 +213,13 @@ int isReserved(LEXEME *lexeme)
     return type == NULL_WORD || type == THIS;
 }
 
+int isBreak(LEXEME *lexeme)
+{
+    assert(lexeme != 0);
+    char *type = lexeme->type;
+    return type == RETURNED || type == BREAK || type == CONTINUE;
+}
+
 void printLEXEME(FILE *fp, LEXEME *lexeme)
 {
     assert(lexeme != 0);

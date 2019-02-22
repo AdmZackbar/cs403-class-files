@@ -139,6 +139,7 @@ static LEXEME *eval(LEXEME *tree, LEXEME *env)
     if (type == DO_WHILE_STATEMENT) return evalDoWhile(tree, env);
     if (type == RETURN_STATEMENT)   return evalReturn(tree, env);
     if (type == LAMBDA_STATEMENT)   return evalLambda(tree, env);
+    
     if (type == EQUALS) return evalEquals(tree, env);
     if (type == PLUS)   return evalPlus(tree, env);
     if (type == MINUS)  return evalMinus(tree, env);
@@ -321,7 +322,7 @@ static LEXEME *evalStatements(LEXEME *tree, LEXEME *env)
     {
         result = eval(car(tree), env);  // Statement - if, else, etc - TODO
         if (result == NULL) result = newLEXEME(NULL_VALUE, -1);
-        if (getTypeLEXEME(result) == RETURNED)
+        if (isBreak(result))
             break;
         tree = cdr(tree);
     }
@@ -360,7 +361,8 @@ static LEXEME *evalWhile(LEXEME *tree, LEXEME *env)
     while (getIntLEXEME(exprResult))
     {
         bodyResult = eval(cdr(tree), env);
-        if (getTypeLEXEME(bodyResult) == RETURNED)  return bodyResult;
+        if (getTypeLEXEME(bodyResult) == RETURNED || getTypeLEXEME(bodyResult) == BREAK)
+            return bodyResult;
         exprResult = eval(car(tree), env);
     }
     return bodyResult;
@@ -369,13 +371,14 @@ static LEXEME *evalWhile(LEXEME *tree, LEXEME *env)
 static LEXEME *evalDoWhile(LEXEME *tree, LEXEME *env)
 {
     LEXEME *exprResult, *bodyResult = eval(car(tree), env);
-    if (getTypeLEXEME(bodyResult) == RETURNED)  return bodyResult;
+    if (getTypeLEXEME(bodyResult) == RETURNED || getTypeLEXEME(bodyResult) == BREAK)  return bodyResult;
     exprResult = eval(cdr(tree), env);
     assert(getTypeLEXEME(exprResult) == INTEGER);   // Should be a boolean(int)
     while (getIntLEXEME(exprResult))
     {
         bodyResult = eval(car(tree), env);
-        if (getTypeLEXEME(bodyResult) == RETURNED)  return bodyResult;
+        if (getTypeLEXEME(bodyResult) == RETURNED || getTypeLEXEME(bodyResult) == BREAK)
+            return bodyResult;
         exprResult = eval(cdr(tree), env);
     }
     return bodyResult;

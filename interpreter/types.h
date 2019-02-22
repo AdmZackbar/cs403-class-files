@@ -51,6 +51,8 @@ extern char *LAMBDA_STATEMENT;
 extern char *WHILE_STATEMENT;
 extern char *DO_WHILE_STATEMENT;
 extern char *RETURN_STATEMENT;
+extern char *BREAK_STATEMENT;
+extern char *CONTINUE_STATEMENT;
 
 // Data primatives
 extern char *INTEGER;

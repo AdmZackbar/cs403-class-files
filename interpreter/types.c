@@ -58,6 +58,8 @@ char *LAMBDA_STATEMENT = "lambda statement";
 char *WHILE_STATEMENT = "while statement";
 char *DO_WHILE_STATEMENT = "do-while statement";
 char *RETURN_STATEMENT = "return statement";
+char *BREAK_STATEMENT = "break statement";
+char *CONTINUE_STATEMENT = "continue statement";
 
 // Data primatives
 char *INTEGER = "integer";
