@@ -671,11 +671,13 @@ static LEXEME *statement()
     {
         advance();
         statementLex = newLEXEME(BREAK_STATEMENT, -1);
+        match(SEMICOLON);
     }
     else if (check(CONTINUE))
     {
         advance();
         statementLex = newLEXEME(CONTINUE_STATEMENT, -1);
+        match(SEMICOLON);
     }
     else if (check(FUNCTION))
     {

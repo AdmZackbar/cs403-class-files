@@ -139,7 +139,8 @@ static LEXEME *eval(LEXEME *tree, LEXEME *env)
     if (type == DO_WHILE_STATEMENT) return evalDoWhile(tree, env);
     if (type == RETURN_STATEMENT)   return evalReturn(tree, env);
     if (type == LAMBDA_STATEMENT)   return evalLambda(tree, env);
-    
+    if (type == BREAK_STATEMENT)    return tree;
+    if (type == CONTINUE_STATEMENT) return tree;
     if (type == EQUALS) return evalEquals(tree, env);
     if (type == PLUS)   return evalPlus(tree, env);
     if (type == MINUS)  return evalMinus(tree, env);
