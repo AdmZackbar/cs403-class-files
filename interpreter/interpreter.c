@@ -323,7 +323,7 @@ static LEXEME *evalStatements(LEXEME *tree, LEXEME *env)
     {
         result = eval(car(tree), env);  // Statement - if, else, etc - TODO
         if (result == NULL) result = newLEXEME(NULL_VALUE, -1);
-        if (isBreak(result))
+        if (getTypeLEXEME(result) == RETURNED)
             break;
         tree = cdr(tree);
     }
@@ -361,7 +361,7 @@ static LEXEME *evalWhile(LEXEME *tree, LEXEME *env)
     assert(getTypeLEXEME(exprResult) == INTEGER);   // Should be a boolean(int)
     while (getIntLEXEME(exprResult))
     {
-        bodyResult = eval(cdr(tree), env);
+        bodyResult = evalCondStatements(cdr(tree), env);
         if (getTypeLEXEME(bodyResult) == RETURNED || getTypeLEXEME(bodyResult) == BREAK)
             return bodyResult;
         exprResult = eval(car(tree), env);
@@ -371,18 +371,32 @@ static LEXEME *evalWhile(LEXEME *tree, LEXEME *env)
 
 static LEXEME *evalDoWhile(LEXEME *tree, LEXEME *env)
 {
-    LEXEME *exprResult, *bodyResult = eval(car(tree), env);
+    LEXEME *exprResult, *bodyResult = evalCondStatements(car(tree), env);
     if (getTypeLEXEME(bodyResult) == RETURNED || getTypeLEXEME(bodyResult) == BREAK)  return bodyResult;
     exprResult = eval(cdr(tree), env);
     assert(getTypeLEXEME(exprResult) == INTEGER);   // Should be a boolean(int)
     while (getIntLEXEME(exprResult))
     {
-        bodyResult = eval(car(tree), env);
+        bodyResult = evalCondStatements(car(tree), env);
         if (getTypeLEXEME(bodyResult) == RETURNED || getTypeLEXEME(bodyResult) == BREAK)
             return bodyResult;
         exprResult = eval(cdr(tree), env);
     }
     return bodyResult;
+}
+
+static LEXEME *evalCondStatements(LEXEME *tree, LEXEME *env)
+{
+    LEXEME *result;
+    while (tree)
+    {
+        result = eval(car(tree), env);  // Statement - if, else, etc - TODO
+        if (result == NULL) result = newLEXEME(NULL_VALUE, -1);
+        if (getTypeLEXEME(result) == RETURNED || getTypeLEXEME(result) == CONTINUE || getTypeLEXEME(result) == BREAK)
+            break;
+        tree = cdr(tree);
+    }
+    return result;
 }
 
 static LEXEME *evalReturn(LEXEME *tree, LEXEME *env)

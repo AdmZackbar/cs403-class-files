@@ -206,13 +206,6 @@ int isAccessMod(LEXEME *lexeme)
     return type == PUBLIC || type == PRIVATE || type == PROTECTED;
 }
 
-int isBreak(LEXEME *lexeme)
-{
-    assert(lexeme != 0);
-    char *type = lexeme->type;
-    return type == RETURNED || type == BREAK || type == CONTINUE;
-}
-
 void printLEXEME(FILE *fp, LEXEME *lexeme)
 {
     assert(lexeme != 0);
