@@ -1,24 +1,18 @@
 class ArrayTester
 {
-    /*
-    function makeArray(size)
-    {
-        return newArray(size);
-    }
-    */
+
 }
 
 main(args)
 {
-    //var tester = ArrayTester();
-    //var array = tester.makeArray(14);
-    //tester.store[0] = "hello";
-    //tester.store[10] = 13;
-    //return tester.store[10];
     var array = newArray(10);
     array[0] = 3;
     array[1] = 4;
     print(array[0] + array[1]);
     print("\n");
+    array[3] = "hello there";
+    print(array[3]);
+    print("\n");
     return 0;
 }
+

@@ -53,6 +53,7 @@ static LEXEME *evalNewArray(LEXEME *args);
 static LEXEME *evalGetArray(LEXEME *args);
 static LEXEME *evalSetArray(LEXEME *args);
 static LEXEME *evalPrint(LEXEME *args);
+static LEXEME *evalPrintLn(LEXEME *args);
 
 static void failExpr(char *expected, char *exprType, LEXEME *badLex);
 
@@ -102,6 +103,7 @@ static void addBuiltIn(LEXEME *env)
     insertEnvironment(env, newLEXEMEstring(ID, "getArray", -1), newLEXEMEfunction(BUILT_IN, evalGetArray));
     insertEnvironment(env, newLEXEMEstring(ID, "setArray", -1), newLEXEMEfunction(BUILT_IN, evalSetArray));
     insertEnvironment(env, newLEXEMEstring(ID, "print", -1), newLEXEMEfunction(BUILT_IN, evalPrint));
+    insertEnvironment(env, newLEXEMEstring(ID, "println", -1), newLEXEMEfunction(BUILT_IN, evalPrintLn));
 }
 
 static LEXEME *eval(LEXEME *tree, LEXEME *env)
@@ -744,3 +746,21 @@ static LEXEME *evalPrint(LEXEME *args)
     
     return output;
 }
+
+static LEXEME *evalPrintLn(LEXEME *args)
+{
+    assert(cdr(args) == NULL);  // 1 argument
+    LEXEME *output = car(args);
+    char *outType = getTypeLEXEME(output);
+    if (outType == STRING)        printf("%s\n", getStrLEXEME(output));
+    else if (outType == INTEGER)  printf("%d\n", getIntLEXEME(output));
+    else if (outType == REAL)     printf("%f\n", getRealLEXEME(output));
+    else
+    {
+        fprintf(stderr, "Invalid type given to println function. Given: %s\n", getTypeLEXEME(output));
+        exit(-103);
+    }
+
+    return output;
+}
+
