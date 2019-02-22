@@ -9,6 +9,8 @@ LEXEME *newEnvironment()
 
 LEXEME *insertEnvironment(LEXEME *env, LEXEME *id, LEXEME *value)
 {
+    //printf("Inserting %s: %s\n", getStrLEXEME(id), getTypeLEXEME(value));
+    //displayEnvironment(stdout, env); // TODO REMOVE
     setCar(car(env), cons(ID, id, car(car(env))));
     setCdr(car(env), cons(IDENTIFIER, value, cdr(car(env))));
     return value;
@@ -44,6 +46,9 @@ LEXEME *setValueEnv(LEXEME *env, LEXEME *id, LEXEME *newVal)
 {
     LEXEME *vars, *vals;
     
+    //printf("Setting %s: %s\n", getStrLEXEME(id), getStrLEXEME(newVal));
+    //displayEnvironment(stdout, env); // TODO REMOVE
+
     while (env != NULL)
     {
         vars = car(car(env));

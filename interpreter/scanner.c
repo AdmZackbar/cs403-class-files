@@ -13,10 +13,12 @@
 static void checkComment(FILE *fp, int *lineNum);
 static void skipLineComment(FILE *fp, int *lineNum);
 static void skipBlockComment(FILE *fp, int *lineNum);
+static void replaceSpecials(FILE *fp);
 
 char readChar(FILE *fp, int *lineNum)
 {
     checkComment(fp, lineNum);
+    replaceSpecials(fp);
     return fgetc(fp);
 }
 
@@ -110,4 +112,30 @@ static void skipBlockComment(FILE *fp, int *lineNum)
         ch = fgetc(fp);
     }
     skipWhitespace(fp, lineNum);
+}
+
+static void replaceSpecials(FILE *fp)
+{
+    int ch = fgetc(fp);
+    
+    if (ch == '\\')
+    {
+        ch = fgetc(fp);
+        if(ch == 'n') // is a newline
+        {
+            ungetc('\n', fp);
+        }
+        else if (ch == 't') // is a tab
+        {
+            ungetc('\t', fp);
+        }
+        else
+        {
+            // not a special: need to re-add those characters
+            ungetc(ch, fp);
+            ungetc('\\', fp);
+        }
+    }
+    else if (ch != EOF)
+        ungetc(ch, fp);
 }

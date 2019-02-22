@@ -52,6 +52,7 @@ static LEXEME *evalDot(LEXEME *tree, LEXEME *env);
 static LEXEME *evalNewArray(LEXEME *args);
 static LEXEME *evalGetArray(LEXEME *args);
 static LEXEME *evalSetArray(LEXEME *args);
+static LEXEME *evalPrint(LEXEME *args);
 
 static void failExpr(char *expected, char *exprType, LEXEME *badLex);
 
@@ -69,9 +70,9 @@ int main(int argc, char **argv)
     LEXEME *returnVal = eval(rootLex, globalEnv);
 
     //printf("Main type: %s\n", getTypeLEXEME(returnVal));
-    printf("Returned lexeme(%s): ", getTypeLEXEME(returnVal));
-    displayLEXEME(stdout, returnVal);
-    printf("\n");
+    //printf("Returned lexeme(%s): ", getTypeLEXEME(returnVal));
+    //displayLEXEME(stdout, returnVal);
+    //printf("\n");
     
     return getIntLEXEME(returnVal);
 }
@@ -100,6 +101,7 @@ static void addBuiltIn(LEXEME *env)
     insertEnvironment(env, newLEXEMEstring(ID, "newArray", -1), newLEXEMEfunction(BUILT_IN, evalNewArray));
     insertEnvironment(env, newLEXEMEstring(ID, "getArray", -1), newLEXEMEfunction(BUILT_IN, evalGetArray));
     insertEnvironment(env, newLEXEMEstring(ID, "setArray", -1), newLEXEMEfunction(BUILT_IN, evalSetArray));
+    insertEnvironment(env, newLEXEMEstring(ID, "print", -1), newLEXEMEfunction(BUILT_IN, evalPrint));
 }
 
 static LEXEME *eval(LEXEME *tree, LEXEME *env)
@@ -199,7 +201,7 @@ static LEXEME *evalVarDecl(LEXEME *tree, LEXEME *env)
         if (cdr(varDef))
             value = eval(cdr(varDef), env); // Expr
         else
-            value = NULL;
+            value = newLEXEME(NULL_VALUE, -1);
         insertEnvironment(env, car(varDef), value);  // ID - var name
         tree = cdr(tree);
     }
@@ -332,10 +334,16 @@ static LEXEME *evalEquals(LEXEME *tree, LEXEME *env)
     if (getTypeLEXEME(left) == UNARY_ID)
     {
         LEXEME *right = eval(cdr(tree), env);
-        setValueEnv(env, car(left), right);
+        if (getTypeLEXEME(car(left)) == ARRAY_LOOKUP)
+        {
+            LEXEME *array = getValueEnv(env, car(car(left)));
+            setArrayValueLEXEME(array, getIntLEXEME(cdr(car(left))), right);
+        }
+        else if (getTypeLEXEME(car(left)) == ID)    setValueEnv(env, car(left), right);
+        else    failExpr("ID or ArrayLookup", "equals", car(left));
         return right;
     }
-    failExpr("ID", "equals", left);
+    failExpr("UnaryID", "equals", left);
     exit(-290);
 }
 
@@ -718,4 +726,21 @@ static LEXEME *evalSetArray(LEXEME *args)
     LEXEME *newVal = car(cdr(cdr(args)));   // 3rd arg is the new value
     assert(getTypeLEXEME(array) == ARRAY && getTypeLEXEME(index) == INTEGER);
     return setArrayValueLEXEME(array, getIntLEXEME(index), newVal);
+}
+
+static LEXEME *evalPrint(LEXEME *args)
+{
+    assert(cdr(args) == NULL);  // 1 argument
+    LEXEME *output = car(args);  // 1st arg is the output string
+    char *outType = getTypeLEXEME(output);
+    if (outType == STRING)        printf("%s", getStrLEXEME(output));
+    else if (outType == INTEGER)  printf("%d", getIntLEXEME(output));
+    else if (outType == REAL)     printf("%f", getRealLEXEME(output));
+    else
+    {
+        fprintf(stderr, "Invalid type given to print function. Given: %s\n", getTypeLEXEME(output));
+        exit(-103);
+    }
+    
+    return output;
 }

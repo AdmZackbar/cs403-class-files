@@ -15,9 +15,9 @@ class Test
 
 main(args)
 {
-    var tester = new Test();
-    var temp = tester.doNothing();
-    var a = newArray(2);
-    setArray(a, 0, 3);
-    return temp - a[0] + tester.z;
+    var array = newArray(10);
+    array[0] = 7;
+    array[1] = 3;
+    print(array[0] + array[1]);
+    return 0;
 }
