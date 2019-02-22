@@ -103,11 +103,15 @@ static char *parseFileArg(int argc, char **argv)
 
 static void addBuiltIn(LEXEME *env)
 {
+    // Functions
     insertEnvironment(env, newLEXEMEstring(ID, "newArray", -1), newLEXEMEfunction(BUILT_IN, evalNewArray));
     insertEnvironment(env, newLEXEMEstring(ID, "getArray", -1), newLEXEMEfunction(BUILT_IN, evalGetArray));
     insertEnvironment(env, newLEXEMEstring(ID, "setArray", -1), newLEXEMEfunction(BUILT_IN, evalSetArray));
     insertEnvironment(env, newLEXEMEstring(ID, "print", -1), newLEXEMEfunction(BUILT_IN, evalPrint));
     insertEnvironment(env, newLEXEMEstring(ID, "println", -1), newLEXEMEfunction(BUILT_IN, evalPrintLn));
+    // Variables
+    insertEnvironment(env, newLEXEMEstring(ID, "false", -1), newLEXEMEint(0, -1));
+    insertEnvironment(env, newLEXEMEstring(ID, "true", -1), newLEXEMEint(1, -1));
 }
 
 static LEXEME *eval(LEXEME *tree, LEXEME *env)
@@ -127,6 +131,7 @@ static LEXEME *eval(LEXEME *tree, LEXEME *env)
     if (type == FUNCTION_CALL)  return evalFunctionCall(tree, env);
     if (type == EXPR_LIST)  return evalArgs(tree, env);
     if (type == CLOSURE)    return evalClosure(tree, env);
+    if (type == STATEMENTS) return evalStatements(tree, env);
     if (type == NEW_OBJECT) return evalNewObj(tree, env);
     if (type == IF_STATEMENT || type == ELSE_IF_STATEMENT)  return evalIf(tree, env);
     if (type == ELSE_STATEMENT) return evalElse(tree, env);
@@ -323,7 +328,7 @@ static LEXEME *evalNewObj(LEXEME *tree, LEXEME *env)
 
 static LEXEME *evalIf(LEXEME *tree, LEXEME *env)
 {
-    LEXEME *exprResult = eval(car(cdr(tree), env);
+    LEXEME *exprResult = eval(car(cdr(tree)), env);
     assert(getTypeLEXEME(exprResult) == INTEGER);   // Should be a boolean(int)
     if (getIntLEXEME(exprResult))   return eval(cdr(cdr(tree)), env);   // Statements
     else if (car(tree)) // If there is an else statement to be evaluated
@@ -356,7 +361,7 @@ static LEXEME *evalDoWhile(LEXEME *tree, LEXEME *env)
 {
     LEXEME *exprResult, *bodyResult = eval(cdr(tree), env);
     if (getTypeLEXEME(bodyResult) == RETURNED)  return bodyResult;
-    exprResult = eval(car(tree), env)
+    exprResult = eval(car(tree), env);
     assert(getTypeLEXEME(exprResult) == INTEGER);   // Should be a boolean(int)
     while (getIntLEXEME(exprResult))
     {
