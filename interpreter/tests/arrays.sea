@@ -8,11 +8,9 @@ main(args)
     var array = newArray(10);
     array[0] = 3;
     array[1] = 4;
-    print(array[0] + array[1]);
-    print("\n");
+    println(array[0] + array[1]);
     array[3] = "hello there";
-    print(array[3]);
-    print("\n");
+    println(array[3]);
     return 0;
 }
 

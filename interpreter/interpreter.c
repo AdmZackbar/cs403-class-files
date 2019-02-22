@@ -27,6 +27,10 @@ static LEXEME *evalClosure(LEXEME *closure, LEXEME *args);
 static LEXEME *evalArgs(LEXEME *args, LEXEME *env);
 static LEXEME *evalStatements(LEXEME *tree, LEXEME *env);
 static LEXEME *evalNewObj(LEXEME *tree, LEXEME *env);
+static LEXEME *evalIf(LEXEME *tree, LEXEME *env);
+static LEXEME *evalElse(LEXEME *tree, LEXEME *env);
+static LEXEME *evalWhile(LEXEME *tree, LEXEME *env);
+static LEXEME *evalDoWhile(LEXEME *tree, LEXEME *env);
 static LEXEME *evalReturn(LEXEME *tree, LEXEME *env);
 static LEXEME *evalLambda(LEXEME *tree, LEXEME *env);
 // evalOperator
@@ -109,7 +113,7 @@ static void addBuiltIn(LEXEME *env)
 static LEXEME *eval(LEXEME *tree, LEXEME *env)
 {
     char *type = getTypeLEXEME(tree);
-    if (isPrimative(tree) || type == ID || type == ARRAY_LOOKUP)  return tree;    // Int, real, or str
+    if (isPrimative(tree))  return tree;    // Int, real, or str
     //if (type == ID) return getValueEnv(env, tree);
     if (type == PROG)   return evalProgram(tree, env);
     if (type == MAIN_FUNCTION)  return evalMain(tree, env);
@@ -124,6 +128,10 @@ static LEXEME *eval(LEXEME *tree, LEXEME *env)
     if (type == EXPR_LIST)  return evalArgs(tree, env);
     if (type == CLOSURE)    return evalClosure(tree, env);
     if (type == NEW_OBJECT) return evalNewObj(tree, env);
+    if (type == IF_STATEMENT || type == ELSE_IF_STATEMENT)  return evalIf(tree, env);
+    if (type == ELSE_STATEMENT) return evalElse(tree, env);
+    if (type == WHILE_STATEMENT)    return evalWhile(tree, env);
+    if (type == DO_WHILE_STATEMENT) return evalDoWhile(tree, env);
     if (type == RETURN_STATEMENT)   return evalReturn(tree, env);
     if (type == LAMBDA_STATEMENT)   return evalLambda(tree, env);
     if (type == EQUALS) return evalEquals(tree, env);
@@ -311,6 +319,52 @@ static LEXEME *evalNewObj(LEXEME *tree, LEXEME *env)
     LEXEME *classClosure = getValueEnv(env, car(tree)); // Find class with ID of car(tree)
     
     return evalConstructor(classClosure);
+}
+
+static LEXEME *evalIf(LEXEME *tree, LEXEME *env)
+{
+    LEXEME *exprResult = eval(car(cdr(tree), env);
+    assert(getTypeLEXEME(exprResult) == INTEGER);   // Should be a boolean(int)
+    if (getIntLEXEME(exprResult))   return eval(cdr(cdr(tree)), env);   // Statements
+    else if (car(tree)) // If there is an else statement to be evaluated
+    {
+        return eval(car(tree), env);    // else or else if
+    }
+    
+    return exprResult;  // Return 0
+}
+
+static LEXEME *evalElse(LEXEME *tree, LEXEME *env)
+{
+    return eval(car(tree), env);    // statements
+}
+
+static LEXEME *evalWhile(LEXEME *tree, LEXEME *env)
+{
+    LEXEME *exprResult = eval(car(tree), env), *bodyResult;
+    assert(getTypeLEXEME(exprResult) == INTEGER);   // Should be a boolean(int)
+    while (getIntLEXEME(exprResult))
+    {
+        bodyResult = eval(cdr(tree), env);
+        if (getTypeLEXEME(bodyResult) == RETURNED)  return bodyResult;
+        exprResult = eval(car(tree), env);
+    }
+    return bodyResult;
+}
+
+static LEXEME *evalDoWhile(LEXEME *tree, LEXEME *env)
+{
+    LEXEME *exprResult, *bodyResult = eval(cdr(tree), env);
+    if (getTypeLEXEME(bodyResult) == RETURNED)  return bodyResult;
+    exprResult = eval(car(tree), env)
+    assert(getTypeLEXEME(exprResult) == INTEGER);   // Should be a boolean(int)
+    while (getIntLEXEME(exprResult))
+    {
+        bodyResult = eval(cdr(tree), env);
+        if (getTypeLEXEME(bodyResult) == RETURNED)  return bodyResult;
+        exprResult = eval(car(tree), env);
+    }
+    return bodyResult;
 }
 
 static LEXEME *evalReturn(LEXEME *tree, LEXEME *env)
@@ -732,7 +786,7 @@ static LEXEME *evalSetArray(LEXEME *args)
 
 static LEXEME *evalPrint(LEXEME *args)
 {
-    assert(cdr(args) == NULL);  // 1 argument
+    assert(car(args));  // Make sure there is an argument
     LEXEME *output = car(args);  // 1st arg is the output string
     char *outType = getTypeLEXEME(output);
     if (outType == STRING)        printf("%s", getStrLEXEME(output));
@@ -744,23 +798,28 @@ static LEXEME *evalPrint(LEXEME *args)
         exit(-103);
     }
     
+    if (cdr(args) != NULL)  return evalPrint(cdr(args));    // Continue printing arguments
+    
     return output;
 }
 
 static LEXEME *evalPrintLn(LEXEME *args)
 {
-    assert(cdr(args) == NULL);  // 1 argument
-    LEXEME *output = car(args);
+    assert(car(args));  // Make sure there is an argument
+    LEXEME *output = car(args);  // 1st arg is the output string
     char *outType = getTypeLEXEME(output);
-    if (outType == STRING)        printf("%s\n", getStrLEXEME(output));
-    else if (outType == INTEGER)  printf("%d\n", getIntLEXEME(output));
-    else if (outType == REAL)     printf("%f\n", getRealLEXEME(output));
+    if (outType == STRING)        printf("%s", getStrLEXEME(output));
+    else if (outType == INTEGER)  printf("%d", getIntLEXEME(output));
+    else if (outType == REAL)     printf("%f", getRealLEXEME(output));
     else
     {
         fprintf(stderr, "Invalid type given to println function. Given: %s\n", getTypeLEXEME(output));
         exit(-103);
     }
-
+    
+    if (cdr(args) == NULL)  printf("\n");   // Nothing more to print, print the newline
+    else    return evalPrintLn(cdr(args));  // Continue printing arguments
+    
     return output;
 }
 

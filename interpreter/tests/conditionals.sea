@@ -11,5 +11,7 @@ main(args)
     {
         println(i);
     }
+    
+    println("1 < 2: ", 1<2);
 }
 
