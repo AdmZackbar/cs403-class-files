@@ -1,4 +1,4 @@
-class Function
+class FunctionTester
 {
     function nested(x)
     {
@@ -12,7 +12,7 @@ class Function
 
 main(args)
 {
-    var func = Function();
+    var func = FunctionTester();
     var funcNest = func.returnNested();
     println(funcNest(2));
     

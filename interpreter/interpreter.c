@@ -295,7 +295,7 @@ static LEXEME *evalClosure(LEXEME *closure, LEXEME *args)
     LEXEME *staticEnv = car(closure);
     LEXEME *params = cdr(cdr(cdr(closure)));
     LEXEME *paramIter = params;
-    if (getTypeLEXEME(car(params)) != ID)
+    if (params && getTypeLEXEME(car(params)) != ID)
     {
         while (paramIter)
         {

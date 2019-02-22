@@ -1,0 +1,18 @@
+class LambdaTester
+{
+    var store;
+}
+
+main(args)
+{
+    var test = LambdaTester();
+    
+    test.store = lambda(x)
+    {
+        return x + 3;
+    }
+    
+    println(test.store(2));
+    
+    return 0;
+}
