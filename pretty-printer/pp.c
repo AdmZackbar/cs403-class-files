@@ -76,7 +76,7 @@ void pp(LEXEME *tree, int indent)
         return;
     }
     char *type = getTypeLEXEME(tree);
-    if (isPrimative(tree) || getTypeLEXEME(tree) == ID || isAccessMod(tree) || isReserved(tree) || isUnaryOp(tree)) displayLEXEME(stdout, tree);
+    if (isPrimative(tree) || getTypeLEXEME(tree) == ID || isAccessMod(tree) || type == NULL_WORD || isUnaryOp(tree)) displayLEXEME(stdout, tree);
     else if (type == PROG)   printProgram(tree, indent);
     else if (type == CLASS_DEF) printClassDef(tree, indent);
     else if (type == CLASS_HEADER)  printClassHeader(tree, indent);
