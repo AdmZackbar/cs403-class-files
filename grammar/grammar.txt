@@ -1,5 +1,7 @@
-program : classDef
+program : classDef main
         | classDef program
+
+main : MAIN OPAREN ARGS PAREN block
 
 classDef : CLASS classHeader OBRACE optClassStatements CBRACE
 
@@ -70,7 +72,6 @@ unary : idExpr postVar
       | uop unary
       | OPAREN expr CPAREN
       | NULL
-      | THIS
       | NEW ID OPAREN optExprList CPAREN
       | LAMBDA OPAREN optVarList CPAREN block
 

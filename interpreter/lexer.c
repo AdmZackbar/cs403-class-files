@@ -229,6 +229,10 @@ static LEXEME *lexWord(LEXER *lexer, int ch)
     int wordSize = getLengthBUFFER(buffer);
     char *originalWord = returnStringBUFFER(buffer);
     char *word = strToLower(originalWord, wordSize);
+    if (wordIs(MAIN, word))
+        return newLEXEME(MAIN, lexer->lineNum);
+    if (wordIs(ARGS, word))
+        return newLEXEME(ARGS, lexer->lineNum);
     if (wordIs(VAR, word))
         return newLEXEME(VAR, lexer->lineNum);
     if (wordIs(FUNCTION, word))
@@ -247,8 +251,6 @@ static LEXEME *lexWord(LEXER *lexer, int ch)
         return newLEXEME(PROTECTED, lexer->lineNum);
     if (wordIs(NULL_WORD, word))
         return newLEXEME(NULL_WORD, lexer->lineNum);
-    if (wordIs(THIS, word))
-        return newLEXEME(THIS, lexer->lineNum);
     if (wordIs(NEW, word))
         return newLEXEME(NEW, lexer->lineNum);
     if (wordIs(IF, word))

@@ -15,6 +15,7 @@ char *RETURNED = "returned";
 char *BUILT_IN = "built in function";
 char *EVAL_EXPR = "eval expr";
 char *ARRAY = "array";
+char *NULL_VALUE = "null";
 
 // Environments
 char *ENV = "environment";
@@ -24,6 +25,7 @@ char *VALUE = "value";
 
 // Parse trees
 char *PROG = "program";
+char *MAIN_FUNCTION = "main function";
 char *CLASS_DEF = "class definition";
 char *CLASS_HEADER = "class header";
 char *CLASS_STATEMENTS = "class statements";
@@ -62,7 +64,9 @@ char *INTEGER = "integer";
 char *REAL = "real";
 char *STRING = "string";
 
-// Resevered
+// Reserved
+char *MAIN = "main";
+char *ARGS = "args";
 char *VAR = "var";
 char *FUNCTION = "function";
 //char *DEFINE = "define";

@@ -9,6 +9,7 @@ static void failParse(char *component);
 // Grammar helper functions
 static LEXEME *program();
 static int programPending();
+static LEXEME *mainFunc();
 static LEXEME *classDef();
 static int classDefPending();
 static LEXEME *classHeader();
@@ -109,15 +110,22 @@ static void failParse(char *component)
 static LEXEME *program()
 {
     LEXEME *classLex = classDef();
-    LEXEME *programLex = NULL;
     if(programPending())
-        programLex = program();
-    
-    return cons(PROG, classLex, programLex);
+        return cons(PROG, classLex, program());
+    return cons(PROG, classLex, mainFunc());
 }
 static int programPending()
 {
     return classDefPending();
+}
+
+static LEXEME *mainFunc()
+{
+    match(MAIN);
+    match(OPAREN);
+    match(ARGS);
+    match(CPAREN);
+    return cons(MAIN_FUNCTION, block(), NULL);
 }
 
 static LEXEME *classDef()
@@ -277,13 +285,13 @@ static LEXEME *expr()
 {
     LEXEME *unaryLex, *exprLex, *opLex;
     unaryLex = expr2();
-    while (check(EQUALS))
+    if (check(EQUALS))
     {
         opLex = advance();
         exprLex = expr();
         setCar(opLex, unaryLex);
         setCdr(opLex, exprLex);
-        unaryLex = opLex;
+        return opLex;
     }
     
     return unaryLex;
@@ -300,7 +308,7 @@ static LEXEME *expr2()
     while (check(LOGICAL_AND) || check(LOGICAL_OR))
     {
         opLex = advance();
-        exprLex = expr2();
+        exprLex = expr3();
         setCar(opLex, unaryLex);
         setCdr(opLex, exprLex);
         unaryLex = opLex;
@@ -315,7 +323,7 @@ static LEXEME *expr3()
     while (check(BINARY_AND) || check(BINARY_OR))
     {
         opLex = advance();
-        exprLex = expr3();
+        exprLex = expr4();
         setCar(opLex, unaryLex);
         setCdr(opLex, exprLex);
         unaryLex = opLex;
@@ -331,7 +339,7 @@ static LEXEME *expr4()
         || check(GREATER_THAN) || check(LESS_THAN_EQUAL) || check(GREATER_THAN_EQUAL))
     {
         opLex = advance();
-        exprLex = expr4();
+        exprLex = expr5();
         setCar(opLex, unaryLex);
         setCdr(opLex, exprLex);
         unaryLex = opLex;
@@ -346,7 +354,7 @@ static LEXEME *expr5()
     while (check(PLUS) || check(MINUS))
     {
         opLex = advance();
-        exprLex = expr5();
+        exprLex = expr6();
         setCar(opLex, unaryLex);
         setCdr(opLex, exprLex);
         unaryLex = opLex;
@@ -361,7 +369,7 @@ static LEXEME *expr6()
     while (check(TIMES) || check(DIVIDE) || check(MODULUS))
     {
         opLex = advance();
-        exprLex = expr6();
+        exprLex = expr7();
         setCar(opLex, unaryLex);
         setCdr(opLex, exprLex);
         unaryLex = opLex;
@@ -376,7 +384,7 @@ static LEXEME *expr7()
     while (check(EXPONENT))
     {
         opLex = advance();
-        exprLex = expr7();
+        exprLex = expr8();
         setCar(opLex, unaryLex);
         setCdr(opLex, exprLex);
         unaryLex = opLex;
@@ -391,7 +399,7 @@ static LEXEME *expr8()
     while (check(DOT))
     {
         opLex = advance();
-        exprLex = expr8();
+        exprLex = unary();
         setCar(opLex, unaryLex);
         setCdr(opLex, exprLex);
         unaryLex = opLex;
@@ -436,8 +444,6 @@ static LEXEME *unary()
     }
     else if (check(NULL_WORD))
         return advance();
-    else if (check(THIS))
-        return advance();
     else if (check(NEW))
     {
         LEXEME *idLex, *exprListLex;
@@ -465,7 +471,7 @@ static LEXEME *unary()
 static int unaryPending()
 {
     return idExprPending() || check(INTEGER) || check(REAL) || check(STRING)
-            || uopPending() || check(OPAREN) || check(NULL_WORD) || check(THIS)
+            || uopPending() || check(OPAREN) || check(NULL_WORD)
             || check(NEW) || check(LAMBDA);
 }
 
@@ -611,7 +617,7 @@ static LEXEME *statement()
     else if (check(VAR))
     {
         advance();
-        statementLex = varList();
+        statementLex = cons(VAR_DECL, varList(), NULL);
         match(SEMICOLON);
     }
     else if (check(IF))

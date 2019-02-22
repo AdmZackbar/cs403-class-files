@@ -18,6 +18,9 @@ LEXEME *getValueEnv(LEXEME *env, LEXEME *id)
 {
     LEXEME *vars, *vals;
     
+    //printf("Looking for: %s\n", getStrLEXEME(id));
+    //displayEnvironment(stdout, env); // TODO REMOVE
+
     while (env != NULL)
     {
         vars = car(car(env));
@@ -35,7 +38,6 @@ LEXEME *getValueEnv(LEXEME *env, LEXEME *id)
     displayLEXEME(stderr, id);
     fprintf(stderr, "\n");
     exit(-10);
-    //return NULL;
 }
 
 LEXEME *setValueEnv(LEXEME *env, LEXEME *id, LEXEME *newVal)
@@ -84,7 +86,7 @@ void displayEnvironment(FILE *fp, LEXEME *env)
             displayLEXEME(fp, car(var));
             fprintf(fp, ": ");
             displayLEXEME(fp, car(val));
-            fprintf(fp, "\n");
+            fprintf(fp, "(%s)\n", getTypeLEXEME(car(val)));
             var = cdr(var);
             val = cdr(val);
         }

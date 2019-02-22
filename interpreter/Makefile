@@ -6,6 +6,9 @@ OBJS = interpreter.o environment.o parser.o lexer.o lexeme.o scanner.o types.o s
 interpreter : $(OBJS)
 	gcc $(OBJS) -o interpreter -lm
 
+test : interpreter
+	@interpreter test.sea || true
+
 interpreter.o : interpreter.c parser.h
 	gcc $(OPTS) $(FLAGS) interpreter.c
 

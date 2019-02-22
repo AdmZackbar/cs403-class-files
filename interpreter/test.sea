@@ -1,8 +1,23 @@
-class Temp
+class Test
 {
-    function main(args)
+    var x = 1, y = 2, z = 4;
+    function doNothing()
     {
-        var i = 3;
-        return i;
+        z = 8;
+        x = x-2;
+        return this.x + this.y;
     }
+    function makeEqual()
+    {
+        x = y = z = 1;
+    }
+}
+
+main(args)
+{
+    var tester = new Test();
+    var temp = tester.doNothing();
+    var a = newArray(2);
+    setArray(a, 0, 3);
+    return temp - a[0] + tester.z;
 }

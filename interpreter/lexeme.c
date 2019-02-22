@@ -152,6 +152,7 @@ LEXEME *evalFunctionLEXEME(LEXEME *lexeme, LEXEME *args)
 
 int sameVar(LEXEME *var1, LEXEME *var2)
 {
+    //printf("var1(%s): %s\tvar2(%s): %s\n", getTypeLEXEME(var1), getStrLEXEME(var1), getTypeLEXEME(var2), getStrLEXEME(var2));
     assert(var1 != 0 && var2 != 0 && var1->sVal != 0 && var2->sVal != 0);
     return !strcmp(var1->sVal, var2->sVal);
 }

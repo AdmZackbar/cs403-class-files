@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <assert.h>
 #include "environment.h"
 #include "lexeme.h"
 #include "parser.h"
@@ -11,8 +12,8 @@ static char *parseFileArg(int argc, char **argv);
 static void addBuiltIn(LEXEME *env);
 static LEXEME *eval(LEXEME *tree, LEXEME *env);
 static LEXEME *evalProgram(LEXEME *tree, LEXEME *env);
+static LEXEME *evalMain(LEXEME *tree, LEXEME *env);
 static LEXEME *evalClassDef(LEXEME *tree, LEXEME *env);
-static LEXEME *evalClassHeader(LEXEME *tree, LEXEME *env);
 static LEXEME *evalClassStatements(LEXEME *tree, LEXEME *env);
 static LEXEME *evalClassStatement(LEXEME *tree, LEXEME *env);
 static LEXEME *evalVarDecl(LEXEME *tree, LEXEME *env);
@@ -20,11 +21,12 @@ static LEXEME *evalFunctionStatement(LEXEME *tree, LEXEME *env);
 static LEXEME *evalParen(LEXEME *tree, LEXEME *env);
 static LEXEME *evalUnaryID(LEXEME *tree, LEXEME *env);
 static LEXEME *evalFunctionCall(LEXEME *tree, LEXEME *env);
-static LEXEME *evalConstructor(LEXEME *tree, LEXEME *env);
+static LEXEME *evalConstructor(LEXEME *tree);
 static LEXEME *evalBuiltIn(LEXEME *tree, LEXEME *args);
 static LEXEME *evalClosure(LEXEME *closure, LEXEME *args);
 static LEXEME *evalArgs(LEXEME *args, LEXEME *env);
 static LEXEME *evalStatements(LEXEME *tree, LEXEME *env);
+static LEXEME *evalNewObj(LEXEME *tree, LEXEME *env);
 static LEXEME *evalReturn(LEXEME *tree, LEXEME *env);
 static LEXEME *evalLambda(LEXEME *tree, LEXEME *env);
 // evalOperator
@@ -53,7 +55,6 @@ static LEXEME *evalSetArray(LEXEME *args);
 
 static void failExpr(char *expected, char *exprType, LEXEME *badLex);
 
-LEXEME *mainFunction = NULL;
 LEXEME *mainArgs = NULL;
 
 int main(int argc, char **argv)
@@ -65,18 +66,10 @@ int main(int argc, char **argv)
     
     LEXEME *rootLex = parse(filename);
 
-    eval(rootLex, globalEnv);
-
-    LEXEME *returnVal;
-    if (mainFunction)   returnVal = eval(mainFunction, globalEnv);
-    else
-    {
-        fprintf(stderr, "No main function located\n");
-        return -1;
-    }
+    LEXEME *returnVal = eval(rootLex, globalEnv);
 
     //printf("Main type: %s\n", getTypeLEXEME(returnVal));
-    printf("Returned lexeme: ");
+    printf("Returned lexeme(%s): ", getTypeLEXEME(returnVal));
     displayLEXEME(stdout, returnVal);
     printf("\n");
     
@@ -104,9 +97,9 @@ static char *parseFileArg(int argc, char **argv)
 
 static void addBuiltIn(LEXEME *env)
 {
-    insertEnv(env, newLEXEMEstring(ID, "newArray", -1), newLEXEMEfunction(BUILT_IN, evalNewArray));
-    insertEnv(env, newLEXEMEstring(ID, "getArray", -1), newLEXEMEfunction(BUILT_IN, evalGetArray));
-    insertEnv(env, newLEXEMEstring(ID, "setArray", -1), newLEXEMEfunction(BUILT_IN, evalSetArray));
+    insertEnvironment(env, newLEXEMEstring(ID, "newArray", -1), newLEXEMEfunction(BUILT_IN, evalNewArray));
+    insertEnvironment(env, newLEXEMEstring(ID, "getArray", -1), newLEXEMEfunction(BUILT_IN, evalGetArray));
+    insertEnvironment(env, newLEXEMEstring(ID, "setArray", -1), newLEXEMEfunction(BUILT_IN, evalSetArray));
 }
 
 static LEXEME *eval(LEXEME *tree, LEXEME *env)
@@ -115,8 +108,8 @@ static LEXEME *eval(LEXEME *tree, LEXEME *env)
     if (isPrimative(tree) || type == ID || type == ARRAY_LOOKUP)  return tree;    // Int, real, or str
     //if (type == ID) return getValueEnv(env, tree);
     if (type == PROG)   return evalProgram(tree, env);
+    if (type == MAIN_FUNCTION)  return evalMain(tree, env);
     if (type == CLASS_DEF)  return evalClassDef(tree, env);
-    if (type == CLASS_HEADER)   return evalClassHeader(tree, env);
     if (type == CLASS_STATEMENTS)   return evalClassStatements(tree, env);
     if (type == CLASS_STATEMENT)    return evalClassStatement(tree, env);
     if (type == VAR_DECL)   return evalVarDecl(tree, env);
@@ -126,6 +119,7 @@ static LEXEME *eval(LEXEME *tree, LEXEME *env)
     if (type == FUNCTION_CALL)  return evalFunctionCall(tree, env);
     if (type == EXPR_LIST)  return evalArgs(tree, env);
     if (type == CLOSURE)    return evalClosure(tree, env);
+    if (type == NEW_OBJECT) return evalNewObj(tree, env);
     if (type == RETURN_STATEMENT)   return evalReturn(tree, env);
     if (type == LAMBDA_STATEMENT)   return evalLambda(tree, env);
     if (type == EQUALS) return evalEquals(tree, env);
@@ -152,27 +146,29 @@ static LEXEME *eval(LEXEME *tree, LEXEME *env)
 
 static LEXEME *evalProgram(LEXEME *tree, LEXEME *env)
 {
-    LEXEME *returnVal = eval(car(tree), env);   // ClassDef
+    LEXEME *returnVal = eval(car(tree), env);   // ClassDef or Main
     if(cdr(tree))   return eval(cdr(tree), env);    // Program
     return returnVal;
 }
 
-static LEXEME *evalClassDef(LEXEME *tree, LEXEME *env)
+static LEXEME *evalMain(LEXEME *tree, LEXEME *env)
 {
-    LEXEME *closure = eval(car(tree), env);    // ClassHeader
-    if (cdr(tree))  eval(cdr(tree), env);  // ClassStatements
-    //insertEnvironment(env, newLEXEMEstring("this", -1), closure);
-    return closure;
+    //displayEnvironment(stdout, env);
+    LEXEME *result = evalStatements(car(tree), env);
+    if (getTypeLEXEME(result) == RETURNED)  return car(result);
+    fprintf(stderr, "Main function did not return a value. Instead returned type %s\n", getTypeLEXEME(result));
+    exit(-9001);
 }
 
-static LEXEME *evalClassHeader(LEXEME *tree, LEXEME *env)
+static LEXEME *evalClassDef(LEXEME *tree, LEXEME *env)
 {
-    if (cdr(tree))
+    if (cdr(car(tree)))
     {
         // If we need to extend from a previous class - TODO
     }
     LEXEME *closure = cons(OCLOSURE, env, tree);
-    insertEnvironment(env, car(tree), closure);
+    insertEnvironment(env, car(car(tree)), closure);
+    
     return closure;
 }
 
@@ -213,22 +209,9 @@ static LEXEME *evalVarDecl(LEXEME *tree, LEXEME *env)
 static LEXEME *evalFunctionStatement(LEXEME *tree, LEXEME *env)
 {
     LEXEME *closure = cons(CLOSURE, env, tree);
+    insertEnvironment(env, car(cdr(tree)), closure);
     
-    if (!strcmp(getStrLEXEME(car(cdr(tree))), "main"))    // if function name is main
-    {
-        if (mainFunction == NULL)   mainFunction = closure; // TODO - handle params
-        else
-        {
-            fprintf(stderr, "Additional main function found, exiting...\n");
-            exit(-400);
-        }
-    }
-    else
-    {
-        insertEnvironment(env, car(cdr(tree)), closure);
-    }
-    
-    return env;
+    return closure;
 }
 
 static LEXEME *evalParen(LEXEME *tree, LEXEME *env)
@@ -238,27 +221,24 @@ static LEXEME *evalParen(LEXEME *tree, LEXEME *env)
 
 static LEXEME *evalUnaryID(LEXEME *tree, LEXEME *env)
 {
-    LEXEME *var = eval(car(tree), env); // IDExpr
-    LEXEME *value = getValueEnv(env, var);
-    LEXEME *postVar = cdr(tree);    // PostVar
-    if (postVar)
+    char *idType = getTypeLEXEME(car(tree));
+    if (idType == ID)
     {
-        int shift = 0;
-        char *valType = getTypeLEXEME(value);
-        if (getTypeLEXEME(postVar) == PLUSPLUS)    shift = 1;
-        if (getTypeLEXEME(postVar) == MINUSMINUS)  shift = -1;
-        if (valType == INTEGER)
-        {
-            setValueEnv(env, var, newLEXEMEint(getIntLEXEME(value)+shift, -1));
-            return value;
-        }
-        if (valType == REAL)
-        {
-            setValueEnv(env, var, newLEXEMEreal(getRealLEXEME(value)+shift, -1));
-            return value;
-        }
+        return getValueEnv(env, car(tree));
     }
-    return value;
+    if (idType == FUNCTION_CALL)
+    {
+        LEXEME *returned = eval(car(tree), env);    // FunctionCall
+        return returned;
+    }
+    if (idType == ARRAY_LOOKUP)
+    {
+        LEXEME *array = getValueEnv(env, car(car(tree)));
+        LEXEME *index = cdr(car(tree));
+        return getArrayValueLEXEME(array, getIntLEXEME(index));
+    }
+    fprintf(stderr, "Invalid IDExpr given in UnaryID. Type given: %s\n", getTypeLEXEME(car(tree)));
+    exit(-204);
 }
 
 static LEXEME *evalFunctionCall(LEXEME *tree, LEXEME *env)
@@ -267,18 +247,21 @@ static LEXEME *evalFunctionCall(LEXEME *tree, LEXEME *env)
     char *closureType = getTypeLEXEME(closure);
     LEXEME *args = evalArgs(cdr(tree), env);
     if (closureType == BUILT_IN)    return evalBuiltIn(closure, args);
-    if (closureType == OCLOSURE)    return evalConstructor(closure, env);
+    if (closureType == OCLOSURE)    return evalConstructor(closure);
     if (closureType == CLOSURE)     return evalClosure(closure, args);
     fprintf(stderr, "Invalid closure type given in function call\n");
     exit(-210);
 }
 
-static LEXEME *evalConstructor(LEXEME *closure, LEXEME *env)
+static LEXEME *evalConstructor(LEXEME *closure)
 {
     LEXEME *staticEnv = car(closure);
     LEXEME *extendedEnv = newScopeEnv(staticEnv, NULL, NULL);
     LEXEME *body = cdr(cdr(closure));
+    insertEnvironment(extendedEnv, newLEXEMEstring(ID, "this", -1), extendedEnv);
     evalStatements(body, extendedEnv);
+    //printf("EXTENDED ENVIRONMENT:\n");
+    //displayEnvironment(stdout, extendedEnv);
     return extendedEnv;
 }
 
@@ -302,7 +285,7 @@ static LEXEME *evalClosure(LEXEME *closure, LEXEME *args)
 static LEXEME *evalArgs(LEXEME *args, LEXEME *env)
 {
     if (args == NULL)   return NULL;
-    return cons(EVAL_EXPR, eval(car(args), env), eval(cdr(args), env));
+    return cons(EVAL_EXPR, eval(car(args), env), evalArgs(cdr(args), env));
 }
 
 static LEXEME *evalStatements(LEXEME *tree, LEXEME *env)
@@ -311,11 +294,19 @@ static LEXEME *evalStatements(LEXEME *tree, LEXEME *env)
     while (tree)
     {
         result = eval(car(tree), env);  // Statement - if, else, etc - TODO
+        if (result == NULL) result = newLEXEME(NULL_VALUE, -1);
         if (getTypeLEXEME(result) == RETURNED)
             break;
         tree = cdr(tree);
     }
     return result;
+}
+
+static LEXEME *evalNewObj(LEXEME *tree, LEXEME *env)
+{
+    LEXEME *classClosure = getValueEnv(env, car(tree)); // Find class with ID of car(tree)
+    
+    return evalConstructor(classClosure);
 }
 
 static LEXEME *evalReturn(LEXEME *tree, LEXEME *env)
@@ -332,11 +323,19 @@ static LEXEME *evalLambda(LEXEME *tree, LEXEME *env)
 
 static LEXEME *evalEquals(LEXEME *tree, LEXEME *env)
 {
-    LEXEME *left = eval(car(tree), env);
-    if (getTypeLEXEME(left) != ID)  failExpr("ID", "equals", left);
-    LEXEME *right = eval(cdr(tree), env);
-    setValueEnv(env, left, right);
-    return right;
+    LEXEME *left = car(tree);
+    //printf("left lexeme(%s): ", getTypeLEXEME(left));
+    //displayLEXEME(stdout, left);
+    //printf("\tright lexeme: ");
+    //displayLEXEME(stdout, cdr(tree));
+    //printf("\n");
+    if (getTypeLEXEME(left) == UNARY_ID)
+    {
+        LEXEME *right = eval(cdr(tree), env);
+        setValueEnv(env, car(left), right);
+        return right;
+    }
+    failExpr("ID", "equals", left);
 }
 
 static LEXEME *evalPlus(LEXEME *tree, LEXEME *env)
@@ -680,13 +679,12 @@ static LEXEME *evalBinaryOr(LEXEME *tree, LEXEME *env)
 static LEXEME *evalDot(LEXEME *tree, LEXEME *env)
 {
     LEXEME *object = eval(car(tree), env);
-    LEXEME *field = eval(cdr(tree), env);
-    return getValueEnv(car(getValueEnv(env, object)), field);
+    return eval(cdr(tree), object);
 }
 
 static void failExpr(char *expected, char *exprType, LEXEME *badLex)
 {
-    fprintf(stderr, "Expected type %s in %s expression. Got %s", expected, exprType, getTypeLEXEME(badLex));
+    fprintf(stderr, "Expected type %s in %s expression. Got %s\n", expected, exprType, getTypeLEXEME(badLex));
     exit(-101);
 }
 

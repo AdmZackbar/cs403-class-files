@@ -55,9 +55,15 @@ static void checkComment(FILE *fp, int *lineNum)
     {
         ch = fgetc(fp);
         if(ch == '/') // is a line comment
+        {
             skipLineComment(fp, lineNum);
+            checkComment(fp, lineNum);
+        }
         else if (ch == '*') // is a block comment
+        {
             skipBlockComment(fp, lineNum);
+            checkComment(fp, lineNum);
+        }
         else
         {
             // not a comment: need to re-add those characters

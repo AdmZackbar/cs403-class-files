@@ -8,6 +8,7 @@ extern char *RETURNED;
 extern char *BUILT_IN;
 extern char *EVAL_EXPR;
 extern char *ARRAY;
+extern char *NULL_VALUE;
 
 // Environments
 extern char *ENV;
@@ -17,6 +18,7 @@ extern char *VALUE;
 
 // Parse tree
 extern char *PROG;
+extern char *MAIN_FUNCTION;
 extern char *CLASS_DEF;
 extern char *CLASS_HEADER;
 extern char *CLASS_STATEMENTS;
@@ -56,6 +58,8 @@ extern char *REAL;
 extern char *STRING;
 
 // Reserved
+extern char *MAIN;
+extern char *ARGS;
 extern char *VAR;
 extern char *FUNCTION;
 //extern char *DEFINE;
