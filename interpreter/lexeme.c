@@ -60,6 +60,7 @@ LEXEME *newLEXEMEarray(int size)
 {
     LEXEME *l = newLEXEME(ARRAY, -1);
     l->aVal = malloc(sizeof(LEXEME *) * size);
+    l->iVal = size;
     assert(l->aVal != 0);
     return l;
 }
@@ -104,6 +105,11 @@ void setCdr(LEXEME *parent, LEXEME *child)
 LEXEME *setArrayValueLEXEME(LEXEME *array, int index, LEXEME *value)
 {
     assert(array != 0);
+    if (index < 0 || index >= array->iVal)
+    {
+        fprintf(stderr, "Array out of bounds exception. Array size: %d, index given: %d\n", array->iVal, index);
+        exit(-101);
+    }
     LEXEME *oldVal = array->aVal[index];
     array->aVal[index] = value;
     return oldVal;
@@ -142,6 +148,11 @@ char *getStrLEXEME(LEXEME *lexeme)
 LEXEME *getArrayValueLEXEME(LEXEME *array, int index)
 {
     assert(array != 0);
+    if (index < 0 || index >= array->iVal)
+    {
+        fprintf(stderr, "Array out of bounds exception. Array size: %d, index given: %d\n", array->iVal, index);
+        exit(-101);
+    }
     return array->aVal[index];
 }
 

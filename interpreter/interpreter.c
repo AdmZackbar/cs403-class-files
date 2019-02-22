@@ -336,6 +336,7 @@ static LEXEME *evalEquals(LEXEME *tree, LEXEME *env)
         return right;
     }
     failExpr("ID", "equals", left);
+    exit(-290);
 }
 
 static LEXEME *evalPlus(LEXEME *tree, LEXEME *env)

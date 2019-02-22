@@ -1,0 +1,9 @@
+class Error5
+{
+    var array = newArray(5);
+}
+main(args)
+{
+    var tester = new Error5();
+    return tester.array[6];
+}

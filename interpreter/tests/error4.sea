@@ -1,0 +1,14 @@
+class Error4
+{
+    var x = 4;
+    function increment()
+    {
+        x = x + z;
+    }
+}
+main(args)
+{
+    var tester = Error4();
+    tester.increment();
+    return tester.x;
+}

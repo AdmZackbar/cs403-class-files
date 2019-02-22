@@ -1,0 +1,8 @@
+class Error3
+{
+    var hello = "there";
+}
+function error()
+{
+    return 1;
+}

@@ -1,0 +1,10 @@
+class Error2
+{
+    function tester()
+    {
+        a[2] = d;
+        x < 4;
+        while (x == 2)
+            doSomething();
+    }
+}
