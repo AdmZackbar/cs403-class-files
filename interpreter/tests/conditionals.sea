@@ -1,6 +1,26 @@
 class Conditional
 {
-
+    function condReturn(x)
+    {
+        if (x)
+        {
+            return -1;
+        }
+        return 0;
+    }
+    
+    function altWhile(len)
+    {
+        var i = 0;
+        while (true)
+        {
+            if (i >= len)
+            {
+                return i;
+            }
+        }
+        return "unreachable";
+    }
 }
 
 main(args)
@@ -27,12 +47,17 @@ main(args)
     
     do
     {
-        print("printing once in do while");
+        println("printing once in do while");
     } while (false);
+    
+    var test = Conditional();
+    
+    println(test.condReturn(true), " ", test.condReturn(false));
+    println(test.altWhile(10));
     
     while (true)
     {
-        print("breaking out of infinite loop");
+        println("breaking out of infinite loop");
         return 0;
     }
 }

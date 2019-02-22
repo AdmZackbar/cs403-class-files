@@ -359,15 +359,15 @@ static LEXEME *evalWhile(LEXEME *tree, LEXEME *env)
 
 static LEXEME *evalDoWhile(LEXEME *tree, LEXEME *env)
 {
-    LEXEME *exprResult, *bodyResult = eval(cdr(tree), env);
+    LEXEME *exprResult, *bodyResult = eval(car(tree), env);
     if (getTypeLEXEME(bodyResult) == RETURNED)  return bodyResult;
-    exprResult = eval(car(tree), env);
+    exprResult = eval(cdr(tree), env);
     assert(getTypeLEXEME(exprResult) == INTEGER);   // Should be a boolean(int)
     while (getIntLEXEME(exprResult))
     {
-        bodyResult = eval(cdr(tree), env);
+        bodyResult = eval(car(tree), env);
         if (getTypeLEXEME(bodyResult) == RETURNED)  return bodyResult;
-        exprResult = eval(car(tree), env);
+        exprResult = eval(cdr(tree), env);
     }
     return bodyResult;
 }
