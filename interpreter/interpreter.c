@@ -31,6 +31,7 @@ static LEXEME *evalIf(LEXEME *tree, LEXEME *env);
 static LEXEME *evalElse(LEXEME *tree, LEXEME *env);
 static LEXEME *evalWhile(LEXEME *tree, LEXEME *env);
 static LEXEME *evalDoWhile(LEXEME *tree, LEXEME *env);
+static LEXEME *evalCondStatements(LEXEME *tree, LEXEME *env);
 static LEXEME *evalReturn(LEXEME *tree, LEXEME *env);
 static LEXEME *evalLambda(LEXEME *tree, LEXEME *env);
 // evalOperator

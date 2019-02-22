@@ -1,0 +1,31 @@
+class Function
+{
+    function nested(x)
+    {
+        return 1 + x;
+    }
+    function returnNested()
+    {
+        return nested;
+    }
+}
+
+main(args)
+{
+    var func = Function();
+    var funcNest = func.returnNested();
+    println(funcNest(2));
+    
+    function levelOne(x)
+    {
+        function levelTwo(y)
+        {
+            return 3 * y;
+        }
+        return levelTwo(2) + x;
+    }
+    
+    println(levelOne(4));
+    
+    return 0;
+}
