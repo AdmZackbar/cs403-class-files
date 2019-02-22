@@ -432,6 +432,13 @@ static LEXEME *evalEquals(LEXEME *tree, LEXEME *env)
         else    failExpr("ID or ArrayLookup", "equals", car(left));
         return right;
     }
+    if (getTypeLEXEME(left) == DOT)
+    {
+        LEXEME *right = eval(cdr(tree), env);
+        LEXEME *object = eval(car(left), env);
+        LEXEME *id = eval(cdr(left), env);
+        setValEnv(object, id, right);
+    }
     failExpr("UnaryID", "equals", left);
     exit(-290);
 }

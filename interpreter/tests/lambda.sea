@@ -10,7 +10,7 @@ main(args)
     test.store = lambda(x)
     {
         return x + 3;
-    }
+    };
     
     println(test.store(2));
     
