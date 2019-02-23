@@ -183,22 +183,48 @@ class AVL
         }
         print("\n");
     }
-
-    function rotateLeft(node)
+    
+    function rotate(pivot)
     {
-        var oldRight = node.right;
-        node.right = node.right.left;
-        if (oldRight.left != NULL)
+        if (pivot.isLeft())
         {
-            oldRight.left.parent = this;
+            rotateRight(pivot);
         }
+        else
+        {
+            rotateLeft(pivot);
+        }
+    }
+
+    function rotateLeft(pivot)
+    {
+        var parent = pivot.parent;
+        pivot.parent = parent.parent;
+        if (pivot.parent != NULL)
+        {
+            if (pivot.isLeft())
+            {
+                pivot.parent.left = pivot;
+            }
+            else
+            {
+                pivot.parent.right = pivot;
+            }
+        }
+        parent.parent = pivot;
+        var oldLeft = pivot.left
+        pivot.left = parent;
+        parent.right = oldLeft;
+        oldLeft.parent = parent;
+    }
+    function rotateRight(pivot)
+    {
+        var parent = pivot.parent;
+        pivot.parent = parent.parent;
+        parent.parent = pivot;
+        var oldRight = pivot.right;
+        parent.left = oldRight;
         oldRight.parent = parent;
-        if (node.parent == NULL)    // node is root
-        {
-            root = oldRight;
-            root.parent = NULL;
-        }
-        // TODO finish
     }
 }
 
