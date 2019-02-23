@@ -54,6 +54,9 @@ static LEXEME *evalBinaryAnd(LEXEME *tree, LEXEME *env);
 static LEXEME *evalBinaryOr(LEXEME *tree, LEXEME *env);
 static LEXEME *evalDot(LEXEME *tree, LEXEME *env);
 // evalBuiltIn
+static LEXEME *evalOpen(LEXEME *args);
+static LEXEME *evalClose(LEXEME *args);
+static LEXEME *evalReadInt(LEXEME *args);
 static LEXEME *evalNewArray(LEXEME *args);
 static LEXEME *evalGetArray(LEXEME *args);
 static LEXEME *evalSetArray(LEXEME *args);
@@ -62,7 +65,7 @@ static LEXEME *evalPrintLn(LEXEME *args);
 
 static void failExpr(char *expected, char *exprType, LEXEME *badLex);
 
-LEXEME *mainArgs = NULL;
+LEXEME *mainArgs;
 
 int main(int argc, char **argv)
 {
@@ -92,11 +95,10 @@ static char *parseFileArg(int argc, char **argv)
         exit(-1);
     }
     
-    LEXEME *arg;
-    for (int i=argc-1; i>=2; i--)
+    mainArgs = newLEXEMEarray(argc-1);
+    for (int i = 1; i < argc; i++)
     {
-        arg = newLEXEMEstring(STRING, argv[i], -1);
-        mainArgs = cons(VAR_LIST, arg, mainArgs);
+        setArrayValueLEXEME(mainArgs, i-1, newLEXEMEstring(STRING, argv[i], -1));
     }
     
     return argv[1];
@@ -105,12 +107,16 @@ static char *parseFileArg(int argc, char **argv)
 static void addBuiltIn(LEXEME *env)
 {
     // Functions
+    insertEnvironment(env, newLEXEMEstring(ID, "open", -1), newLEXEMEfunction(BUILT_IN, evalOpen));
+    insertEnvironment(env, newLEXEMEstring(ID, "close", -1), newLEXEMEfunction(BUILT_IN, evalClose));
+    insertEnvironment(env, newLEXEMEstring(ID, "readInt", -1), newLEXEMEfunction(BUILT_IN, evalReadInt));
     insertEnvironment(env, newLEXEMEstring(ID, "newArray", -1), newLEXEMEfunction(BUILT_IN, evalNewArray));
     insertEnvironment(env, newLEXEMEstring(ID, "getArray", -1), newLEXEMEfunction(BUILT_IN, evalGetArray));
     insertEnvironment(env, newLEXEMEstring(ID, "setArray", -1), newLEXEMEfunction(BUILT_IN, evalSetArray));
     insertEnvironment(env, newLEXEMEstring(ID, "print", -1), newLEXEMEfunction(BUILT_IN, evalPrint));
     insertEnvironment(env, newLEXEMEstring(ID, "println", -1), newLEXEMEfunction(BUILT_IN, evalPrintLn));
     // Variables
+    insertEnvironment(env, newLEXEMEstring(ID, "args", -1), mainArgs);
     insertEnvironment(env, newLEXEMEstring(ID, "false", -1), newLEXEMEint(0, -1));
     insertEnvironment(env, newLEXEMEstring(ID, "true", -1), newLEXEMEint(1, -1));
 }
@@ -160,6 +166,7 @@ static LEXEME *eval(LEXEME *tree, LEXEME *env)
     if (type == BINARY_AND) return evalBinaryAnd(tree, env);
     if (type == BINARY_OR)  return evalBinaryOr(tree, env);
     if (type == DOT)    return evalDot(tree, env);
+    if (type == NULL_VALUE) return tree;
     fprintf(stderr, "Unhandled LEXEME in eval(). Type %s\n", getTypeLEXEME(tree));
     exit(-500);
 }
@@ -436,10 +443,11 @@ static LEXEME *evalEquals(LEXEME *tree, LEXEME *env)
     {
         LEXEME *right = eval(cdr(tree), env);
         LEXEME *object = eval(car(left), env);
-        LEXEME *id = eval(cdr(left), env);
-        setValEnv(object, id, right);
+        LEXEME *id = car(cdr(left));    // unary id -> id
+        setValueEnv(object, id, right);
+        return right;
     }
-    failExpr("UnaryID", "equals", left);
+    failExpr("UnaryID or DOT", "equals", left);
     exit(-290);
 }
 
@@ -583,17 +591,26 @@ static LEXEME *evalEqualsEquals(LEXEME *tree, LEXEME *env)
         if (rightType == INTEGER)   return newLEXEMEint(getIntLEXEME(left) == getIntLEXEME(right), -1);
         if (rightType == REAL)  return newLEXEMEint(getIntLEXEME(left) == getRealLEXEME(right), -1);
         //if (rightType == STRING)    return newLEXEMEstring
-        failExpr("INTEGER or REAL", "==", right);
+        if (rightType == NULL_VALUE)    return newLEXEMEint(1, -1);
+        failExpr("INTEGER, REAL, or NULL", "==", right);
     }
     if (leftType == REAL)
     {
         if (rightType == INTEGER)   return newLEXEMEint(getRealLEXEME(left) == getIntLEXEME(right), -1);
         if (rightType == REAL)  return newLEXEMEint(getRealLEXEME(left) == getRealLEXEME(right), -1);
         //if (rightType == STRING)    return newLEXEMEstring
-        failExpr("INTEGER or REAL", "==", right);
+        if (rightType == NULL_VALUE)    return newLEXEMEint(1, -1);
+        failExpr("INTEGER, REAL, or NULL", "==", right);
     }
-    failExpr("INTEGER or REAL", "==", left);
-    return NULL;    // Unreachable - for compiler
+    if (leftType == NULL_VALUE)
+    {
+        if (rightType == NULL_VALUE)    return newLEXEMEint(1, -1);
+        return newLEXEMEint(0, -1);
+    }
+    if (leftType == rightType)  return newLEXEMEint(1, -1);
+    //failExpr("INTEGER or REAL", "==", left);
+    return newLEXEMEint(0, -1);
+    //return NULL;    // Unreachable - for compiler
 }
 
 static LEXEME *evalNotEquals(LEXEME *tree, LEXEME *env)
@@ -606,17 +623,27 @@ static LEXEME *evalNotEquals(LEXEME *tree, LEXEME *env)
         if (rightType == INTEGER)   return newLEXEMEint(getIntLEXEME(left) != getIntLEXEME(right), -1);
         if (rightType == REAL)  return newLEXEMEint(getIntLEXEME(left) != getRealLEXEME(right), -1);
         //if (rightType == STRING)    return newLEXEMEstring
-        failExpr("INTEGER or REAL", "!=", right);
+        if (rightType == NULL_VALUE)    return newLEXEMEint(1, -1);
+        failExpr("INTEGER, REAL, or NULL", "!=", right);
     }
     if (leftType == REAL)
     {
         if (rightType == INTEGER)   return newLEXEMEint(getRealLEXEME(left) != getIntLEXEME(right), -1);
         if (rightType == REAL)  return newLEXEMEint(getRealLEXEME(left) != getRealLEXEME(right), -1);
         //if (rightType == STRING)    return newLEXEMEstring
-        failExpr("INTEGER or REAL", "!=", right);
+        if (rightType == NULL_VALUE)    return newLEXEMEint(1, -1);
+        failExpr("INTEGER, REAL, or NULL", "!=", right);
     }
-    failExpr("INTEGER or REAL", "!=", left);
-    return NULL;    // Unreachable - for compiler
+    if (leftType == NULL_VALUE)
+    {
+        if (rightType == NULL_VALUE)    return newLEXEMEint(0, -1);
+        return newLEXEMEint(1, -1);
+    }
+    if (leftType == rightType)  return newLEXEMEint(0, -1);
+    return newLEXEMEint(1, -1);
+    //printf("left(%s), right(%s)\n", leftType, rightType);
+    //failExpr("INTEGER, REAL, or NULL", "!=", left);
+    //return NULL;    // Unreachable - for compiler
 }
 
 static LEXEME *evalLessThan(LEXEME *tree, LEXEME *env)
@@ -728,6 +755,10 @@ static LEXEME *evalLogicalAnd(LEXEME *tree, LEXEME *env)
         if (rightType == REAL)  return newLEXEMEint(getRealLEXEME(left) && getRealLEXEME(right), -1);
         failExpr("INTEGER or REAL", "&&", right);
     }
+    if (leftType == NULL_VALUE)
+    {
+        return newLEXEMEint(0, -1);
+    }
     failExpr("INTEGER or REAL", "&&", left);
     return NULL;    // Unreachable - for compiler
 }
@@ -748,6 +779,11 @@ static LEXEME *evalLogicalOr(LEXEME *tree, LEXEME *env)
         if (rightType == INTEGER)   return newLEXEMEint(getRealLEXEME(left) || getIntLEXEME(right), -1);
         if (rightType == REAL)  return newLEXEMEint(getRealLEXEME(left) || getRealLEXEME(right), -1);
         failExpr("INTEGER or REAL", "||", right);
+    }
+    if (leftType == NULL_VALUE)
+    {
+        if (rightType == NULL_VALUE)    return newLEXEMEint(0, -1);
+        return newLEXEMEint(1, -1);
     }
     failExpr("INTEGER or REAL", "||", left);
     return NULL;    // Unreachable - for compiler
@@ -791,6 +827,31 @@ static void failExpr(char *expected, char *exprType, LEXEME *badLex)
 {
     fprintf(stderr, "Expected type %s in %s expression. Got %s\n", expected, exprType, getTypeLEXEME(badLex));
     exit(-101);
+}
+
+
+static LEXEME *evalOpen(LEXEME *args)
+{
+    assert(cdr(args) == NULL);  // 1 argument
+    LEXEME *filename = car(args);
+    assert(getTypeLEXEME(filename) == STRING);  // Argument is a string
+    return newLEXEMEfile(getStrLEXEME(filename));
+}
+
+static LEXEME *evalClose(LEXEME *args)
+{
+    assert(cdr(args) == NULL);  // 1 argument
+    LEXEME *file = car(args);
+    assert(getTypeLEXEME(file) == FILE_POINTER);  // Argument is a file pointer
+    return newLEXEMEint(closeFileLEXEME(file), -1);
+}
+
+static LEXEME *evalReadInt(LEXEME *args)
+{
+    assert(cdr(args) == NULL);  // 1 argument
+    LEXEME *file = car(args);
+    assert(getTypeLEXEME(file) == FILE_POINTER);  // Argument is a file
+    return readIntLEXEME(file);
 }
 
 static LEXEME *evalNewArray(LEXEME *args)

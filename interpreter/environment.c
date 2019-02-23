@@ -21,7 +21,7 @@ LEXEME *getValueEnv(LEXEME *env, LEXEME *id)
     LEXEME *vars, *vals;
     
     //printf("Looking for: %s\n", getStrLEXEME(id));
-    //displayEnvironment(stdout, env); // TODO REMOVE
+    //displayLocalEnv(stdout, env); // TODO REMOVE
 
     while (env != NULL)
     {

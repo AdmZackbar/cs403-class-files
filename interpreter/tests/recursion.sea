@@ -14,7 +14,7 @@ class Recursion
     }
 }
 
-main(args)
+main()
 {
     var recurse = Recursion(), i = 0;
     while (i < 14)

@@ -10,7 +10,7 @@ class FunctionTester
     }
 }
 
-main(args)
+main()
 {
     var func = FunctionTester();
     var funcNest = func.returnNested();

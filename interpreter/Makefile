@@ -7,7 +7,38 @@ interpreter : $(OBJS)
 	gcc $(OBJS) -o interpreter -lm
 
 test : interpreter
-	@interpreter test.sea || true
+	@make errors
+	@make features
+	@make problem
+	@make problemx
+
+errors :
+	@make error1
+	@make error1x
+	@make error2
+	@make error2x
+	@make error3
+	@make error3x
+	@make error4
+	@make error4x
+	@make error5
+	@make error5x
+
+features :
+	@make arrays
+	@make arraysx
+	@make conditionals
+	@make conditionalsx
+	@make recursion
+	@make recursionx
+	@make iteration
+	@make iterationx
+	@make functions
+	@make functionsx
+	@make lambda
+	@make lambdax
+	@make objects
+	@make objectsx
 
 error1 :
 	cat ./tests/error1.sea
@@ -66,9 +97,9 @@ objectsx : interpreter
 	interpreter ./tests/objects.sea
 
 problem :
-	cat ./tests/problem.sea
+	cat iAVL
 problemx : interpreter
-	interpreter ./tests/problem.sea
+	interpreter iAVL commands
 
 interpreter.o : interpreter.c parser.h
 	gcc $(OPTS) $(FLAGS) interpreter.c

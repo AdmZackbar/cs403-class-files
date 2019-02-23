@@ -123,7 +123,6 @@ static LEXEME *mainFunc()
 {
     match(MAIN);
     match(OPAREN);
-    match(ARGS);
     match(CPAREN);
     return cons(MAIN_FUNCTION, block(), NULL);
 }
@@ -443,7 +442,10 @@ static LEXEME *unary()
         return cons(UNARY_PAREN, exprLex, NULL);
     }
     else if (check(NULL_WORD))
-        return advance();
+    {
+        advance();
+        return newLEXEME(NULL_VALUE, -1);
+    }
     else if (check(NEW))
     {
         LEXEME *idLex, *exprListLex;

@@ -3,7 +3,25 @@ class Iteration
     
 }
 
-main(args)
+main()
 {
+    println("Printing 1-10");
+    var i = 1;
+    while (i <= 10)
+    {
+        println(i);
+        i = i + 1;
+    }
+
+    while (false)
+    {
+        print("not going to print");
+    }
     
+    do
+    {
+        println("printing once in do while");
+    } while (false);
+
+    return 0;
 }

@@ -13,9 +13,10 @@ char *CLOSURE = "closure";
 char *OCLOSURE = "object closure";
 char *RETURNED = "returned";
 char *BUILT_IN = "built in function";
+char *FILE_POINTER = "file";
 char *EVAL_EXPR = "eval expr";
 char *ARRAY = "array";
-char *NULL_VALUE = "null";
+char *NULL_VALUE = "null value";
 
 // Environments
 char *ENV = "environment";
@@ -68,7 +69,6 @@ char *STRING = "string";
 
 // Reserved
 char *MAIN = "main";
-char *ARGS = "args";
 char *VAR = "var";
 char *FUNCTION = "function";
 //char *DEFINE = "define";

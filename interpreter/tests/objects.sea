@@ -1,0 +1,27 @@
+class Objects
+{
+    var a, b = 3;
+    function setA(x)
+    {
+        var oldA = a;
+        a = x;
+        return oldA;
+    }
+    function getA()
+    {
+        return a;
+    }
+}
+
+main()
+{
+    var obj = Objects();
+
+    println("b: ", obj.b);
+
+    println("Setting a to 'hello'...");
+    obj.setA("hello");
+    println("a: ", obj.getA());
+    
+    return 0;
+}

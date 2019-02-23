@@ -231,8 +231,6 @@ static LEXEME *lexWord(LEXER *lexer, int ch)
     char *word = strToLower(originalWord, wordSize);
     if (wordIs(MAIN, word))
         return newLEXEME(MAIN, lexer->lineNum);
-    if (wordIs(ARGS, word))
-        return newLEXEME(ARGS, lexer->lineNum);
     if (wordIs(VAR, word))
         return newLEXEME(VAR, lexer->lineNum);
     if (wordIs(FUNCTION, word))

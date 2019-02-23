@@ -2,8 +2,10 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#include <ctype.h>
 #include "lexeme.h"
 #include "types.h"
+#include "stringBuffer.h"
 
 /*
  * Author:  Zach Wassynger
@@ -21,6 +23,7 @@ struct lexeme
     char *sVal;                 // Holds string values
     LEXEME **aVal;              // Holds array values
     LEXEME *(*fVal)(LEXEME *);  // Holds a function
+    FILE *fp;                   // Holds a file pointer
     LEXEME *left, *right;       // Points to the children of the lexeme
 };
 
@@ -68,6 +71,15 @@ LEXEME *newLEXEMEfunction(char *type, LEXEME *(*fVal)(LEXEME *))
 {
     LEXEME *l = newLEXEME(type, -1);
     l->fVal = fVal;
+    return l;
+}
+
+LEXEME *newLEXEMEfile(char *filename)
+{
+    LEXEME *l = newLEXEME(FILE_POINTER, -1);
+    l->fp = fopen(filename, "r");
+    l->sVal = filename;
+
     return l;
 }
 
@@ -159,6 +171,36 @@ LEXEME *getArrayValueLEXEME(LEXEME *array, int index)
 LEXEME *evalFunctionLEXEME(LEXEME *lexeme, LEXEME *args)
 {
     return lexeme->fVal(args);
+}
+
+int closeFileLEXEME(LEXEME *file)
+{
+    return fclose(file->fp);
+}
+
+LEXEME *readIntLEXEME(LEXEME *file)
+{
+    int ch;
+    STRING_BUFFER *buffer = newSTRINGBUFFER();
+
+    ch = fgetc(file->fp);
+    //Read characters until digit is found
+    while(ch != EOF && !isdigit(ch))
+    {
+        ch = fgetc(file->fp);
+    }
+
+    if(ch == EOF)
+        return newLEXEME(NULL_VALUE, -1);
+    
+    while (isdigit(ch))
+    {
+        addCharBUFFER(buffer, ch);
+        ch = fgetc(file->fp);
+    }
+
+    char *strInt = returnStringBUFFER(buffer);
+    return newLEXEMEint(atoi(strInt), -1);
 }
 
 int sameVar(LEXEME *var1, LEXEME *var2)

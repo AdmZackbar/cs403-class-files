@@ -1,9 +1,17 @@
 class LambdaTester
 {
     var store;
+
+    function multiplier(n)
+    {
+        return lambda(x)
+        {
+            return x * n;
+        };
+    }
 }
 
-main(args)
+main()
 {
     var test = LambdaTester();
     
@@ -13,6 +21,15 @@ main(args)
     };
     
     println(test.store(2));
+
+    var doubler = test.multiplier(2), tripler = test.multiplier(3);
+
+    var i = 1;
+    while (i < 10)
+    {
+        println(i, ": ", doubler(i), ", ", tripler(i));
+        i = i + 1;
+    }
     
     return 0;
 }

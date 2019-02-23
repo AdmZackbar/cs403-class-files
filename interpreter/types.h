@@ -6,6 +6,7 @@ extern char *CLOSURE;
 extern char *OCLOSURE;
 extern char *RETURNED;
 extern char *BUILT_IN;
+extern char *FILE_POINTER;
 extern char *EVAL_EXPR;
 extern char *ARRAY;
 extern char *NULL_VALUE;
@@ -61,7 +62,6 @@ extern char *STRING;
 
 // Reserved
 extern char *MAIN;
-extern char *ARGS;
 extern char *VAR;
 extern char *FUNCTION;
 //extern char *DEFINE;

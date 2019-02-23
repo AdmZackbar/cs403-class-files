@@ -1,0 +1,232 @@
+class Node
+{
+    var value, balance, height, leftHeight, rightHeight;
+    var parent, left, right;
+
+    function displayInorder()
+    {
+        if (left != NULL)
+        {
+            left.displayInorder();
+            print(" ");
+        }
+        print(value);
+        printBalance();
+        print("(");
+        print(parent.value);
+        parent.printBalance();
+        print(")");
+        if (right != NULL)
+        {
+            print(" ");
+            right.displayInorder();
+        }
+    }
+
+    function printBalance()
+    {
+        if (balance < 0)
+        {
+            print("+");
+        }
+        else if (balance > 0)
+        {
+            print("-");
+        }
+    }
+
+    function isLeft()
+    {
+        return parent.left == this;
+    }
+    function isRight()
+    {
+        return parent.right == this;
+    }
+
+    function isFavorite()
+    {
+        if ((isLeft() && parent.balance > 0) || (isRight() && parent.balance < 0))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    function setBalance()
+    {
+        if (left == NULL)
+        {
+            leftHeight = 0;
+        }
+        else
+        {
+            leftHeight = left.setBalance();
+        }
+        if (right == NULL)
+        {
+            rightHeight = 0;
+        }
+        else
+        {
+            rightHeight = right.setBalance();
+        }
+        if (leftHeight < rightHeight)
+        {
+            height = rightHeight + 1;
+        }
+        else
+        {
+            height = leftHeight + 1;
+        }
+        balance = rightHeight - leftHeight;
+        return height;
+    }
+
+    function isLinear()
+    {
+        return (isLeft() && parent.isLeft()) || (isRight && parent.isRight());
+    }
+}
+
+class AVL
+{
+    var root;
+
+    function insert(number)
+    {
+        var node = Node();
+        node.value = number;
+        node.balance = 0;
+
+        if (root == NULL)
+        {
+            root = node;
+        }
+        else
+        {
+            node = insertBinary(root, node);
+            insertionFixup(node);
+        }
+    }
+
+    function insertBinary(head, node)
+    {
+        if (head.value < node.value)
+        {
+            if (head.right == NULL)
+            {
+                head.right = node;
+                node.parent = head;
+                return node;
+            }
+            else
+            {
+                return insertBinary(head.right, node);
+            }
+        }
+        else
+        {
+            if (head.left == NULL)
+            {
+                head.left = node;
+                node.parent = head;
+                return node;
+            }
+            else
+            {
+                return insertBinary(head.left, node);
+            }
+        }
+    }
+
+    function insertionFixup(x)
+    {
+        while (true)
+        {
+            if (x.parent == NULL)   // x is root
+            {
+                return true;
+            }
+            else if (x.isFavorite())      // x is favorite of parent
+            {
+                // TODO
+                return true;
+            }
+            else if (x.parent.balance == 0) // x's parent has no favorites
+            {
+                x = x.parent;
+            }
+            else    // x's parent favors sibling
+            {
+                x.parent.setBalance();
+                return true;
+            }
+        }
+    }
+
+    function display()
+    {
+        root.setBalance();      // TODO REMOVE
+        if (root.left != NULL)
+        {
+            root.left.displayInorder();
+            print(" ");
+        }
+        print("[", root.value);
+        root.printBalance();
+        print("]");
+        if (root.right != NULL)
+        {
+            print(" ");
+            root.right.displayInorder();
+        }
+        print("\n");
+    }
+
+    function rotateLeft(node)
+    {
+        var oldRight = node.right;
+        node.right = node.right.left;
+        if (oldRight.left != NULL)
+        {
+            oldRight.left.parent = this;
+        }
+        oldRight.parent = parent;
+        if (node.parent == NULL)    // node is root
+        {
+            root = oldRight;
+            root.parent = NULL;
+        }
+        // TODO finish
+    }
+}
+
+main()
+{
+    var fp = open(args[1]);
+    var tree = AVL();
+    
+    var command = readInt(fp), number;
+    while (command != NULL)
+    {
+        if (command == 0)
+        {
+            tree.display();
+        }
+        else if (command == 1)
+        {
+            number = readInt(fp);
+            tree.insert(number);
+        }
+        else
+        {
+            println("Invalid command given(", command, ")");
+            return -1;
+        }
+        command = readInt(fp);
+    }
+
+    close(fp);
+    return 0;
+}
