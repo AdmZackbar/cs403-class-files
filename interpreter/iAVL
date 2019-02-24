@@ -200,15 +200,15 @@ class AVL
     {
         var parent = pivot.parent;
         pivot.parent = parent.parent;
-        if (pivot.parent != NULL)
+        if (parent.parent != NULL)
         {
-            if (pivot.isLeft())
+            if (parent.isLeft())
             {
-                pivot.parent.left = pivot;
+                parent.parent.left = pivot;
             }
             else
             {
-                pivot.parent.right = pivot;
+                parent.parent.right = pivot;
             }
         }
         parent.parent = pivot;
@@ -221,6 +221,17 @@ class AVL
     {
         var parent = pivot.parent;
         pivot.parent = parent.parent;
+        if (parent.parent != NULL)
+        {
+            if (parent.isLeft())
+            {
+                parent.parent.left = pivot;
+            }
+            else
+            {
+                parent.parent.right = pivot;
+            }
+        }
         parent.parent = pivot;
         var oldRight = pivot.right;
         parent.left = oldRight;
