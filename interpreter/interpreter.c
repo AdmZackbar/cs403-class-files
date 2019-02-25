@@ -607,7 +607,11 @@ static LEXEME *evalEqualsEquals(LEXEME *tree, LEXEME *env)
         if (rightType == NULL_VALUE)    return newLEXEMEint(1, -1);
         return newLEXEMEint(0, -1);
     }
-    if (leftType == rightType)  return newLEXEMEint(1, -1);
+    if (leftType == rightType)
+    {
+        if (left == right)  return newLEXEMEint(1, -1);
+        return newLEXEMEint(0, -1);
+    }
     //failExpr("INTEGER or REAL", "==", left);
     return newLEXEMEint(0, -1);
     //return NULL;    // Unreachable - for compiler
@@ -639,7 +643,11 @@ static LEXEME *evalNotEquals(LEXEME *tree, LEXEME *env)
         if (rightType == NULL_VALUE)    return newLEXEMEint(0, -1);
         return newLEXEMEint(1, -1);
     }
-    if (leftType == rightType)  return newLEXEMEint(0, -1);
+    if (leftType == rightType)
+    {
+        if (left != right)  return newLEXEMEint(1, -1);
+        return newLEXEMEint(0, -1);
+    }
     return newLEXEMEint(1, -1);
     //printf("left(%s), right(%s)\n", leftType, rightType);
     //failExpr("INTEGER, REAL, or NULL", "!=", left);

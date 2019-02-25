@@ -184,15 +184,19 @@ class AVL
         print("\n");
     }
     
-    function rotate(pivot)
+    function rotate(pivot, parent)
     {
-        if (pivot.isLeft())
+        if (pivot == parent.left)
         {
             rotateRight(pivot);
         }
-        else
+        else if (pivot == parent.right)
         {
             rotateLeft(pivot);
+        }
+        else
+        {
+            println("Error in rotate, pivot not child of parent");
         }
     }
 
