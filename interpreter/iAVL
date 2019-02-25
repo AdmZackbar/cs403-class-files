@@ -46,7 +46,7 @@ class Node
 
     function isFavorite()
     {
-        if ((isLeft() && parent.balance > 0) || (isRight() && parent.balance < 0))
+        if (self == parent.getFavoriteChild())
         {
             return true;
         }
@@ -61,7 +61,7 @@ class Node
         }
         else
         {
-            leftHeight = left.setBalance();
+            leftHeight = left.balance;
         }
         if (right == NULL)
         {
@@ -69,7 +69,7 @@ class Node
         }
         else
         {
-            rightHeight = right.setBalance();
+            rightHeight = right.balance;
         }
         if (leftHeight < rightHeight)
         {
@@ -86,6 +86,19 @@ class Node
     function isLinear()
     {
         return (isLeft() && parent.isLeft()) || (isRight && parent.isRight());
+    }
+    
+    function getFavoriteChild()
+    {
+        if (balance < 0)
+        {
+            return right;
+        }
+        else if (balance > 0)
+        {
+            return left;
+        }
+        return NULL;
     }
 }
 
@@ -150,7 +163,22 @@ class AVL
             }
             else if (x.isFavorite())      // x is favorite of parent
             {
-                // TODO
+                var y = x.getFavoriteChild();
+                var p = x.parent;
+                if (y != NULL && y.isLinear() == 0)
+                {
+                    rotate(y, x);
+                    rotate(y, p);
+                    x.setBalance();
+                    p.setBalance();
+                    y.setBalance();
+                }
+                else
+                {
+                    rotate(x, p);
+                    p.setBalance();
+                    x.setBalance();
+                }
                 return true;
             }
             else if (x.parent.balance == 0) // x's parent has no favorites
@@ -197,6 +225,7 @@ class AVL
         else
         {
             println("Error in rotate, pivot not child of parent");
+            exit(2);
         }
     }
 
@@ -216,7 +245,7 @@ class AVL
             }
         }
         parent.parent = pivot;
-        var oldLeft = pivot.left
+        var oldLeft = pivot.left;
         pivot.left = parent;
         parent.right = oldLeft;
         oldLeft.parent = parent;

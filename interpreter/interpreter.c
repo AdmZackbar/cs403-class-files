@@ -62,6 +62,7 @@ static LEXEME *evalGetArray(LEXEME *args);
 static LEXEME *evalSetArray(LEXEME *args);
 static LEXEME *evalPrint(LEXEME *args);
 static LEXEME *evalPrintLn(LEXEME *args);
+static LEXEME *evalExit(LEXEME *args);
 
 static void failExpr(char *expected, char *exprType, LEXEME *badLex);
 
@@ -115,6 +116,7 @@ static void addBuiltIn(LEXEME *env)
     insertEnvironment(env, newLEXEMEstring(ID, "setArray", -1), newLEXEMEfunction(BUILT_IN, evalSetArray));
     insertEnvironment(env, newLEXEMEstring(ID, "print", -1), newLEXEMEfunction(BUILT_IN, evalPrint));
     insertEnvironment(env, newLEXEMEstring(ID, "println", -1), newLEXEMEfunction(BUILT_IN, evalPrintLn));
+    insertEnvironment(env, newLEXEMEstring(ID, "exit", -1), newLEXEMEfunction(BUILT_IN, evalExit));
     // Variables
     insertEnvironment(env, newLEXEMEstring(ID, "args", -1), mainArgs);
     insertEnvironment(env, newLEXEMEstring(ID, "false", -1), newLEXEMEint(0, -1));
@@ -932,3 +934,10 @@ static LEXEME *evalPrintLn(LEXEME *args)
     return output;
 }
 
+static LEXEME *evalExit(LEXEME *args)
+{
+    assert(cdr(args) == NULL);  // 1 argument
+    LEXEME *exitCode = car(args);
+    assert(getTypeLEXEME(exitCode) == INTEGER);  // Argument is an integer
+    exit(getIntLEXEME(exitCode));
+}
