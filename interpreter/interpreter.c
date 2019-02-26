@@ -264,7 +264,7 @@ static LEXEME *evalUnaryID(LEXEME *tree, LEXEME *env)
     if (idType == ARRAY_LOOKUP)
     {
         LEXEME *array = getValueEnv(env, car(car(tree)));
-        LEXEME *index = cdr(car(tree));
+        LEXEME *index = eval(cdr(car(tree)), env);
         return getArrayValueLEXEME(array, getIntLEXEME(index));
     }
     fprintf(stderr, "Invalid IDExpr given in UnaryID. Type given: %s\n", getTypeLEXEME(car(tree)));
@@ -886,7 +886,9 @@ static LEXEME *evalGetArray(LEXEME *args)
     LEXEME *array = car(args);  // 1st arg is the array
     LEXEME *index = car(cdr(args)); // 2nd arg is the array index
     assert(getTypeLEXEME(array) == ARRAY && getTypeLEXEME(index) == INTEGER);
-    return getArrayValueLEXEME(array, getIntLEXEME(index));
+    LEXEME *value = getArrayValueLEXEME(array, getIntLEXEME(index));
+    if (value == NULL)  return newLEXEME(NULL_VALUE, -1);
+    return value;
 }
 
 /*
@@ -900,7 +902,9 @@ static LEXEME *evalSetArray(LEXEME *args)
     LEXEME *index = car(cdr(args)); // 2nd arg is the array index
     LEXEME *newVal = car(cdr(cdr(args)));   // 3rd arg is the new value
     assert(getTypeLEXEME(array) == ARRAY && getTypeLEXEME(index) == INTEGER);
-    return setArrayValueLEXEME(array, getIntLEXEME(index), newVal);
+    LEXEME *oldValue = setArrayValueLEXEME(array, getIntLEXEME(index), newVal);
+    if (oldValue == NULL)  return newLEXEME(NULL_VALUE, -1);
+    return oldValue;
 }
 
 static LEXEME *evalPrint(LEXEME *args)
