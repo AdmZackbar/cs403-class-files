@@ -41,65 +41,65 @@ features :
 	@make objectsx
 
 error1 :
-	cat ./tests/error1.sea
+	cat tests/error1.sea
 error1x : interpreter
-	@interpreter ./tests/error1.sea || true
+	./interpreter tests/error1.sea || true
 error2 :
-	cat ./tests/error2.sea
+	cat tests/error2.sea
 error2x : interpreter
-	@interpreter ./tests/error2.sea || true
+	./interpreter tests/error2.sea || true
 error3 :
-	cat ./tests/error3.sea
+	cat tests/error3.sea
 error3x : interpreter
-	@interpreter ./tests/error3.sea || true
+	./interpreter tests/error3.sea || true
 error4 :
-	cat ./tests/error4.sea
+	cat tests/error4.sea
 error4x : interpreter
-	@interpreter ./tests/error4.sea || true
+	./interpreter tests/error4.sea || true
 error5 :
-	cat ./tests/error5.sea
+	cat tests/error5.sea
 error5x : interpreter
-	@interpreter ./tests/error5.sea || true
+	./interpreter tests/error5.sea || true
 
 arrays :
-	cat ./tests/arrays.sea
+	cat tests/arrays.sea
 arraysx : interpreter
-	interpreter ./tests/arrays.sea
+	./interpreter ./tests/arrays.sea
 
 conditionals :
-	cat ./tests/conditionals.sea
+	cat tests/conditionals.sea
 conditionalsx : interpreter
-	interpreter ./tests/conditionals.sea
+	./interpreter ./tests/conditionals.sea
 
 recursion :
-	cat ./tests/recursion.sea
+	cat tests/recursion.sea
 recursionx : interpreter
-	interpreter ./tests/recursion.sea
+	./interpreter ./tests/recursion.sea
 
 iteration :
-	cat ./tests/iteration.sea
+	cat tests/iteration.sea
 iterationx : interpreter
-	interpreter ./tests/iteration.sea
+	./interpreter ./tests/iteration.sea
 
 functions :
-	cat ./tests/functions.sea
+	cat tests/functions.sea
 functionsx : interpreter
-	interpreter ./tests/functions.sea
+	./interpreter ./tests/functions.sea
 
 lambda :
-	cat ./tests/lambda.sea
+	cat tests/lambda.sea
 lambdax : interpreter
-	interpreter ./tests/lambda.sea
+	./interpreter ./tests/lambda.sea
 
 objects :
-	cat ./tests/objects.sea
+	cat tests/objects.sea
 objectsx : interpreter
-	interpreter ./tests/objects.sea
+	./interpreter ./tests/objects.sea
 
 problem :
 	cat iAVL
 problemx : interpreter
-	interpreter iAVL commands
+	./interpreter iAVL commands
 
 interpreter.o : interpreter.c parser.h
 	gcc $(OPTS) $(FLAGS) interpreter.c

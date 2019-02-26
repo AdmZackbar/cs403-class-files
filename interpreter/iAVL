@@ -25,11 +25,11 @@ class Node
 
     function printBalance()
     {
-        if (balance < 0)
+        if (balance > 0)
         {
             print("+");
         }
-        else if (balance > 0)
+        else if (balance < 0)
         {
             print("-");
         }
@@ -48,8 +48,10 @@ class Node
     {
         if ((isLeft() && parent.balance > 0) || (isRight() && parent.balance < 0))
         {
+            //println(value, " is favorite of ", parent.value);
             return true;
         }
+        //println(value, " is not favorite of ", parent.value);
         return false;
     }
 
@@ -79,13 +81,14 @@ class Node
         {
             height = leftHeight + 1;
         }
-        balance = rightHeight - leftHeight;
+        balance = leftHeight - rightHeight;
         return height;
     }
 
     function isLinear()
     {
-        return (isLeft() && parent.isLeft()) || (isRight && parent.isRight());
+        //println("In isLinear()");
+        return (isLeft() && parent.isLeft()) || (isRight() && parent.isRight());
     }
     
     function getFavoriteChild()
@@ -120,7 +123,6 @@ class AVL
         else
         {
             node = insertBinary(root, node);
-            node.parent.setBalance();
             insertionFixup(node);
         }
     }
@@ -185,6 +187,7 @@ class AVL
             }
             else if (x.parent.balance == 0) // x's parent has no favorites
             {
+                x.parent.setBalance();
                 x = x.parent;
             }
             else    // x's parent favors sibling
@@ -244,20 +247,33 @@ class AVL
             {
                 parent.parent.left = pivot;
             }
-            else
+            else if (parent.isRight())
             {
                 parent.parent.right = pivot;
             }
+            else
+            {
+                println("Error in rotation, parent is not left or right child");
+                exit(3);
+            }
+        }
+        else    // parent is root
+        {
+            root = pivot;
         }
         parent.parent = pivot;
         var oldLeft = pivot.left;
         pivot.left = parent;
         parent.right = oldLeft;
-        oldLeft.parent = parent;
+        if (oldLeft != NULL)
+        {
+            oldLeft.parent = parent;
+        }
     }
     function rotateRight(pivot)
     {
         var parent = pivot.parent;
+        //println("pivot value: ", pivot.value, "; parent value: ", parent.value);
         pivot.parent = parent.parent;
         if (parent.parent != NULL)
         {
@@ -265,15 +281,28 @@ class AVL
             {
                 parent.parent.left = pivot;
             }
-            else
+            else if (parent.isRight())
             {
                 parent.parent.right = pivot;
             }
+            else
+            {
+                println("Error in rotation, parent is not left or right child");
+                exit(3);
+            }
+        }
+        else    // parent is root
+        {
+            root = pivot;
         }
         parent.parent = pivot;
         var oldRight = pivot.right;
+        pivot.right = parent;
         parent.left = oldRight;
-        oldRight.parent = parent;
+        if (oldRight != NULL)
+        {
+            oldRight.parent = parent;
+        }
     }
 }
 

@@ -125,6 +125,7 @@ static void addBuiltIn(LEXEME *env)
 
 static LEXEME *eval(LEXEME *tree, LEXEME *env)
 {
+    if (tree == NULL)   return newLEXEME(NULL_VALUE, -1);
     char *type = getTypeLEXEME(tree);
     if (isPrimative(tree))  return tree;    // Int, real, or str
     //if (type == ID) return getValueEnv(env, tree);
@@ -624,6 +625,7 @@ static LEXEME *evalNotEquals(LEXEME *tree, LEXEME *env)
     LEXEME *left = eval(car(tree), env);
     LEXEME *right = eval(cdr(tree), env);
     char *leftType = getTypeLEXEME(left), *rightType = getTypeLEXEME(right);
+    //printf("Comparing types %s and %s in !=\n", leftType, rightType);
     if (leftType == INTEGER)
     {
         if (rightType == INTEGER)   return newLEXEMEint(getIntLEXEME(left) != getIntLEXEME(right), -1);
@@ -751,26 +753,32 @@ static LEXEME *evalGreaterTE(LEXEME *tree, LEXEME *env)
 static LEXEME *evalLogicalAnd(LEXEME *tree, LEXEME *env)
 {
     LEXEME *left = eval(car(tree), env);
-    LEXEME *right = eval(cdr(tree), env);
-    char *leftType = getTypeLEXEME(left), *rightType = getTypeLEXEME(right);
-    if (leftType == INTEGER)
+    char *leftType = getTypeLEXEME(left);
+    if (leftType == INTEGER && getIntLEXEME(left))
     {
+        LEXEME *right = eval(cdr(tree), env);
+        char *rightType = getTypeLEXEME(right);
         if (rightType == INTEGER)   return newLEXEMEint(getIntLEXEME(left) && getIntLEXEME(right), -1);
         if (rightType == REAL)  return newLEXEMEint(getIntLEXEME(left) && getRealLEXEME(right), -1);
+        if (rightType == NULL_VALUE) return newLEXEMEint(0, -1);
         failExpr("INTEGER or REAL", "&&", right);
     }
-    if (leftType == REAL)
+    if (leftType == REAL && getRealLEXEME(left))
     {
+        LEXEME *right = eval(cdr(tree), env);
+        char *rightType = getTypeLEXEME(right);
         if (rightType == INTEGER)   return newLEXEMEint(getRealLEXEME(left) && getIntLEXEME(right), -1);
         if (rightType == REAL)  return newLEXEMEint(getRealLEXEME(left) && getRealLEXEME(right), -1);
+        if (rightType == NULL_VALUE) return newLEXEMEint(0, -1);
         failExpr("INTEGER or REAL", "&&", right);
     }
     if (leftType == NULL_VALUE)
     {
         return newLEXEMEint(0, -1);
     }
-    failExpr("INTEGER or REAL", "&&", left);
-    return NULL;    // Unreachable - for compiler
+    //printf("Left side failed test in &&\n");
+    //failExpr("INTEGER or REAL", "&&", left);
+    return newLEXEMEint(0, -1);
 }
 
 static LEXEME *evalLogicalOr(LEXEME *tree, LEXEME *env)
