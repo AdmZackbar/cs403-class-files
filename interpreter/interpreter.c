@@ -909,7 +909,11 @@ static LEXEME *evalSetArray(LEXEME *args)
 
 static LEXEME *evalPrint(LEXEME *args)
 {
-    assert(car(args));  // Make sure there is an argument
+    if (car(args) == NULL)
+    {
+        printf("NULL");
+        return NULL;
+    }
     LEXEME *output = car(args);  // 1st arg is the output string
     char *outType = getTypeLEXEME(output);
     if (outType == STRING)        printf("%s", getStrLEXEME(output));
@@ -928,7 +932,11 @@ static LEXEME *evalPrint(LEXEME *args)
 
 static LEXEME *evalPrintLn(LEXEME *args)
 {
-    assert(car(args));  // Make sure there is an argument
+    if (car(args) == NULL)
+    {
+        printf("NULL\n");
+        return NULL;
+    }
     LEXEME *output = car(args);  // 1st arg is the output string
     char *outType = getTypeLEXEME(output);
     if (outType == STRING)        printf("%s", getStrLEXEME(output));
