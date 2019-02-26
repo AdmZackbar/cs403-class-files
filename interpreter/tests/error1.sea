@@ -1,4 +1,5 @@
 class Error
 {
+    // incorrect syntax - should be var (ID) ; or var (ID) = (expr) ;
     var i + 4;
 }

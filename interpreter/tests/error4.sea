@@ -3,9 +3,11 @@ class Error4
     var x = 4;
     function increment()
     {
+        // semantic error - z is not declared
         x = x + z;
     }
 }
+
 main()
 {
     var tester = Error4();

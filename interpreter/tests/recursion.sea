@@ -1,5 +1,6 @@
 class Recursion
 {
+    // naive fibonacci function
     function fib(x)
     {
         if (x == 1)

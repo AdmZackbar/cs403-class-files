@@ -4,6 +4,7 @@ class Error2
     {
         a[2] = d;
         x < 4;
+        // incorrect syntax - while loops need a block -> while ( (expr) ) { (statements) }
         while (x == 2)
             doSomething();
     }

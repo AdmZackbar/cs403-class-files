@@ -2,6 +2,8 @@ class Error3
 {
     var hello = "there";
 }
+
+// incorrect syntax - functions must be enclosed within classes or blocks
 function error()
 {
     return 1;
