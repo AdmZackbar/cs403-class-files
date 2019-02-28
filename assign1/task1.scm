@@ -1,0 +1,23 @@
+(define pi 3.14159265358979323864)
+(define (round x)
+    (int (+ x 0.00000001))
+    )
+
+(define (cyan x)
+    (round (* 255 (sin (+ (* x (/ pi 200)) (/ pi 2)))))
+    )
+(define (yellow x)
+    (round (+ (* 255 (sin (/ (* (- 0 x) pi) 100))) 255))
+    )
+(define (magenta x)
+    (round (+ (* 127.5 (cos (/ (* (* x 3) pi) 200))) 127.5))
+    )
+
+(define (main)
+    (setPort (open (getElement ScamArgs 1) 'read))
+    (define arg (readExpr))
+    (inspect (cyan arg))
+    (inspect (yellow arg))
+    (inspect (magenta arg))
+    )
+
