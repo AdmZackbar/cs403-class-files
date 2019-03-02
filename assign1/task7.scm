@@ -1,0 +1,57 @@
+(define (halve x)
+    (define (iter n delta numIter iterDelta)
+        (cond
+            ((> n x) (iter (- n delta) (- delta 2) (- numIter iterDelta) (- iterDelta 1)))
+            ((>= n (- x 1)) numIter)
+            (else
+                (iter (+ n delta) (+ delta 2) (+ numIter iterDelta) (+ iterDelta 1))
+                )
+            )
+        )
+    (iter 0 2 0 1)
+    )
+
+(define (double x)
+    (+ x x)
+    )
+
+(define (div2? x)
+    (define (iter n delta)
+    (cond
+        ((> n x) (iter (- n delta) (- delta 2)))
+        ((= n x) #t)
+        ((= n (- x 1)) #f)
+        (else
+            (iter (+ n delta) (+ delta 2))
+            )
+        )
+    )
+    (iter 0 2)
+    )
+
+(define (ethiop a b)
+    (define (buildList x y list)
+        (cond
+            ((= y 1) (cons x list))
+            ((div2? y) (buildList (double x) (halve y) list))
+            (else (cons x (buildList (double x) (halve y) list)))
+            )
+        )
+    (define (sumList list)
+        (cond
+            ((null? list) 0)
+            (else (+ (car list) (sumList (cdr list))))
+            )
+        )
+    (sumList (buildList a b nil))
+    )
+
+(define (main)
+    (setPort (open (getElement ScamArgs 1) 'read))
+    (define arg1 (readInt))
+    (define arg2 (readInt))
+    (println "(halve " arg1 ") is " (halve arg1))
+    (println "(double " arg1 ") is " (double arg1))
+    (println "(div2? " arg1 ") is " (div2? arg1))
+    (println "(ethiop " arg1 " " arg2 ") is " (ethiop arg1 arg2))
+    )
