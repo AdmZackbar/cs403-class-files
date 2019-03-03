@@ -14,15 +14,15 @@ test : interpreter
 
 errors :
 	@make error1
-	@make error1x
+	@make error1x || true
 	@make error2
-	@make error2x
+	@make error2x || true
 	@make error3
-	@make error3x
+	@make error3x || true
 	@make error4
-	@make error4x
+	@make error4x || true
 	@make error5
-	@make error5x
+	@make error5x || true
 
 features :
 	@make arrays
@@ -43,63 +43,63 @@ features :
 error1 :
 	cat tests/error1.sea
 error1x : interpreter
-	./interpreter tests/error1.sea || true
+	./run tests/error1.sea
 error2 :
 	cat tests/error2.sea
 error2x : interpreter
-	./interpreter tests/error2.sea || true
+	./run tests/error2.sea
 error3 :
 	cat tests/error3.sea
 error3x : interpreter
-	./interpreter tests/error3.sea || true
+	./run tests/error3.sea
 error4 :
 	cat tests/error4.sea
 error4x : interpreter
-	./interpreter tests/error4.sea || true
+	./run tests/error4.sea
 error5 :
 	cat tests/error5.sea
 error5x : interpreter
-	./interpreter tests/error5.sea || true
+	./run tests/error5.sea
 
 arrays :
 	cat tests/arrays.sea
 arraysx : interpreter
-	./interpreter ./tests/arrays.sea
+	./run ./tests/arrays.sea
 
 conditionals :
 	cat tests/conditionals.sea
 conditionalsx : interpreter
-	./interpreter ./tests/conditionals.sea
+	./run ./tests/conditionals.sea
 
 recursion :
 	cat tests/recursion.sea
 recursionx : interpreter
-	./interpreter ./tests/recursion.sea
+	./run ./tests/recursion.sea
 
 iteration :
 	cat tests/iteration.sea
 iterationx : interpreter
-	./interpreter ./tests/iteration.sea
+	./run ./tests/iteration.sea
 
 functions :
 	cat tests/functions.sea
 functionsx : interpreter
-	./interpreter ./tests/functions.sea
+	./run ./tests/functions.sea
 
 lambda :
 	cat tests/lambda.sea
 lambdax : interpreter
-	./interpreter ./tests/lambda.sea
+	./run ./tests/lambda.sea
 
 objects :
 	cat tests/objects.sea
 objectsx : interpreter
-	./interpreter ./tests/objects.sea
+	./run ./tests/objects.sea
 
 problem :
 	cat iAVL
 problemx : interpreter
-	./interpreter iAVL commands
+	./run iAVL commands
 
 interpreter.o : interpreter.c parser.h
 	gcc $(OPTS) $(FLAGS) interpreter.c
