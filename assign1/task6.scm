@@ -3,7 +3,7 @@
         (cond
             ((> n i) list)
             (else
-                (iter (+ n 1) (cons (+ (function n) (car list)) list))
+                (iter (+ n 1) (cons (+ (function n) 0.0 (car list)) list))
                 )
             )
         )

@@ -1,23 +1,10 @@
-(define (power base power)
-    (define (iter x n)
-        (cond
-            ((= n 1) x)
-            ((= n 0) 1)
-            (else
-                (* x (iter x (- n 1)))
-                )
-            )
-        )
-    (iter base power)
-    )
-
 (define (root-n n)
     (lambda (x)
         (define (close? y oldY)
-            (< (abs (- y oldY)) 0.00001)
+            (< (abs (- y oldY)) 0.0000001)
             )
         (define (improve y)
-            (/ (+ (* (- n 1) y) (/ x (power y (- n 1)))) n)
+            (/ (+ (* (- n 1) y) (/ x (expt y (- n 1)))) n)
             )
         (define (iter y oldY)
             (if (close? y oldY)
@@ -26,7 +13,7 @@
                 )
             )
         (if (= x 0)
-            0
+            0.0
             (iter 1.0 0.0)
             )
         )
