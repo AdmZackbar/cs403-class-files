@@ -2,17 +2,6 @@
 (define (round x)
     (int (+ x 0.00000001))
     )
-(define (int->hex number)
-    (define (iter x results)
-        (cond
-            ((= x 0) results)
-            (else
-                (iter (/ x 16) (cons (% x 16) results))
-                )
-            )
-        )
-    (iter number nil)
-    )
 (define (num->str x)
     (cond
         ((= x 0) "0")
@@ -35,16 +24,16 @@
             "BAD_NUMBER")
         )
     )
-(define (hex->str number)
-    (define (iter x result)
+(define (int->hex number)
+    (define (iter x)
         (cond
-            ((null? x) result)
+            ((= x 0) "")
             (else
-                (iter (cdr x) (string+ result (num->str (car x))))
+                (string+ (iter (/ x 16)) (num->str (% x 16)))
                 )
             )
         )
-    (iter number nil)
+    (iter number)
     )
 (define (padHex hex)
     (define (iter x len)
@@ -69,9 +58,9 @@
     )
 (define (cym x)
     (string+ "#"
-        (padHex (hex->str (int->hex (cyan x))))
-        (padHex (hex->str (int->hex (yellow x))))
-        (padHex (hex->str (int->hex (magenta x))))
+        (padHex (int->hex (cyan x)))
+        (padHex (int->hex (yellow x)))
+        (padHex (int->hex (magenta x)))
         )
     )
 

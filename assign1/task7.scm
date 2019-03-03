@@ -30,20 +30,14 @@
     )
 
 (define (ethiop a b)
-    (define (buildList x y list)
+    (define (iter x y value)
         (cond
-            ((= y 1) (cons x list))
-            ((div2? y) (buildList (double x) (halve y) list))
-            (else (cons x (buildList (double x) (halve y) list)))
+            ((= y 1) (+ x value))
+            ((div2? y) (iter (double x) (halve y) value))
+            (else (iter (double x) (halve y) (+ x value)))
             )
         )
-    (define (sumList list)
-        (cond
-            ((null? list) 0)
-            (else (+ (car list) (sumList (cdr list))))
-            )
-        )
-    (sumList (buildList a b nil))
+    (iter a b 0)
     )
 
 (define (main)

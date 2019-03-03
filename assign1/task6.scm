@@ -1,25 +1,21 @@
-(define (makeS function i)
-    (define (iter n list)
-        (cond
-            ((> n i) list)
-            (else
-                (iter (+ n 1) (cons (+ (function n) 0.0 (car list)) list))
-                )
+(define (S function start stop prev)
+    (define (iter i n value)
+        (if (>= i n)
+            (+ value (function i))
+            (iter (+ i 1) n (+ value (function i)))
             )
         )
-    (iter 0 (list 0))
-    )
-
-(define (S function i)
-    (car (makeS function i))
+    (iter start stop prev)
     )
 
 (define (w function i)
     (cond
         ((= i 0) (function i))
         (else
-            (define sArray (makeS function (+ i 1)))
-            (/ (- (* (car sArray) (car (cdr (cdr sArray)))) (* (car (cdr sArray)) (car (cdr sArray)))) (+ (- (car sArray) (* 2 (car (cdr sArray)))) (car (cdr (cdr sArray)))))
+            (define sMinus1 (S function 0 (- i 1) 0))
+            (define s (S function i i sMinus1))
+            (define sPlus1 (S function (+ i 1) (+ i 1) s))
+            (/ (- (* sPlus1 sMinus1) (* s s)) (+ (- sPlus1 (* 2 s)) sMinus1))
             )
         )
     )
@@ -28,6 +24,6 @@
     (setPort (open (getElement ScamArgs 1) 'read))
     (define argFunction (eval (readExpr) this))
     (define arg1 (readInt))
-    (println "(S " argFunction " " arg1 ") is " (fmt "%.15f" (S argFunction arg1)))
+    (println "(S " argFunction " " arg1 ") is " (fmt "%.15f" (S argFunction 0 arg1 0)))
     (println "(w " argFunction " " arg1 ") is " (fmt "%.15f" (w argFunction arg1)))
     )

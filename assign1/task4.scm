@@ -1,69 +1,40 @@
-(define (reverse-list list)
-    (define (iter store src)
-        (cond
-            ((null? src) store)
-            (else
-                (iter (cons (car src) store) (cdr src))
-                )
+(define (addSpaces num)
+    (define (iter x)
+        (if (= x 0)
+            ""
+            (string+ (iter (- x 1)) " ")
             )
         )
-    (iter nil list)
-    )
-
-(define (print-list list)
-    (define (iter items)
-        (if (null? items)
-            "\n"
-            (string+ " " (car items) (iter (cdr items)))
-            )
-        )
-    (if (null? list)
-        ""
-        (print (car list) (iter (cdr list)))
-        )
-    )
-
-(define (printSpaces numSpaces)
-    (cond
-        ((<= numSpaces 0) "")
-        (else
-            (string+ " " (printSpaces (- numSpaces 1)))
-            )
-        )
+    (string+ (iter num))
     )
 
 (define (crazyTriangle left right)
     (lambda (levels)
-        (define (generateList oldList)
-            (define (iter newListPtr oldListPtr)
-                (cond
-                    ((null? (cdr oldListPtr))
-                        (cons right newListPtr)
-                        )
-                    (else
-                        (iter (cons (+ (car oldListPtr) (car (cdr oldListPtr))) newListPtr) (cdr oldListPtr))
-                        )
-                    )
-                )
-            (iter (list left) oldList)
-            )
-        (define (iter level prevList)
-            (print (printSpaces (- levels level)))
+        (define (getValue level index)
             (cond
-                ((and (= level 1) (> levels 0))
-                    (println left)
-                    (iter (+ level 1) (list left right))
-                    )
-                ((< level levels)
-                    (print-list prevList)
-                    (iter (+ level 1) (reverse-list (generateList prevList)))
-                    )
-                ((= level levels)
-                    (print-list prevList)
+                ((<= index 0) left)
+                ((>= index (- level 1)) right)
+                (else
+                    (+ (getValue (- level 1) (- index 1)) (getValue (- level 1) index))
                     )
                 )
             )
-        (iter 1 nil)
+        (define (iterPrintValues level index)
+            (cond
+                ((>= index (- level 1)) "")
+                (else
+                    (string+ "" (+ (getValue (- level 1) (- index 1)) (getValue (- level 1) index)) " " (iterPrintValues level (+ index 1)))
+                    )
+                )
+            )
+        (define (iterPrint level)
+            (cond
+                ((= level 1) (string+ (addSpaces (- levels 1)) left "\n"))
+                ((= level 2) (string+ (iterPrint 1) (addSpaces (- levels 2)) left " " right "\n"))
+                (else (string+ (iterPrint (- level 1)) (addSpaces (- levels level)) left " " (iterPrintValues level 1) right "\n"))
+                )
+            )
+        (print (iterPrint levels))
         )
     )
 
