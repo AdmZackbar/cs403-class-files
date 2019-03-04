@@ -1,10 +1,11 @@
 (define (ecfr x)
-    (cond
-        ((<= x 0) 1.0)
-        (else
-            (/ (ecfr (- x 1)) (+ 1 (/ 1 (+ (* 2 x) 1))))
+    (define (recur i)
+        (if (> i x)
+            0
+            (/ 1 (+ 1 (/ 1 (+ (* 2 i) (/ 1 (+ 1 (recur (+ i 1))))))))
             )
         )
+    (+ 2.0 (recur 1.0))
     )
 
 (define (main)

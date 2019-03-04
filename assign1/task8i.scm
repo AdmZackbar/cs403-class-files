@@ -1,11 +1,11 @@
 (define (ecfi x)
-    (define (iter i)
-        (if (> i x)
-            0
-            (/ 1 (+ 1 (/ 1 (+ (* 2 i) (/ 1 (+ 1 (iter (+ i 1))))))))
+    (define (iter term value)
+        (cond
+            ((<= term 0) value)
+            (else (iter (+ term 1) (/ 1 (+ 1 (/ 1 (+ (* 2 term) (/ 1 (+ 1 value)))))))))
             )
         )
-    (+ 2.0 (iter 1.0))
+    (+ 2 (iter x 0)
     )
 
 (define (main)

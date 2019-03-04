@@ -54,7 +54,7 @@
     (round (+ (* 255 (sin (/ (* (- 0 x) pi) 100))) 255))
     )
 (define (magenta x)
-    (round (+ (* 127.5 (cos (/ (* (* x 3) pi) 200))) 127.5))
+    (round (+ (* 127.5 (cos (/ (* x 3 pi) 200))) 127.5))
     )
 (define (cym x)
     (string+ "#"
