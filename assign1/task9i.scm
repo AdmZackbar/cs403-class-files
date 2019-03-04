@@ -14,13 +14,10 @@
             ((< term 0) value)
             ((= term x) (iter (- term 1) (string+ "" (+ 1 term) "\\cdot\\sqrt{" (+ 6 term) "}")))
             (else (iter (- term 1) (string+ "" (+ 1 term) "\\cdot\\sqrt{" (+ 6 term) "+" value "}")))
-        )
-    (iter x nil)
+            )
+	)
+    (string+ "$" (iter x nil) "$")
     )
-
-(string+ "" (+ 1 i) "\\cdot\\sqrt{" (+ 6 i) "}")
-(string+ "" (+ 1 i) "\\cdot\\sqrt{" (+ 6 i) "+" (recur (+ i 1)) "}")
-
 
 (define (main)
     (setPort (open (getElement ScamArgs 1) 'read))
