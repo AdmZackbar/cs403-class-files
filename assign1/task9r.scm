@@ -29,5 +29,5 @@
     (setPort (open (getElement ScamArgs 1) 'read))
     (define arg1 (readInt))
     (println "(ramanujanr " arg1 ") is " (fmt "%.25f" (ramanujanr arg1)))
-    (println (latexR arg1))
+    (println "$4$")
     )
