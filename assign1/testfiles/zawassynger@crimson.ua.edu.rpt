@@ -1,0 +1,1968 @@
+zawassynger@crimson.ua.edu
+
+nothing to build
+testing results...
+
+
+THESE TESTS ARE SUPPLIED AS A CONVENIENCE TO YOU. THE RESULTS GENERATED
+FOR THIS REPORT MAY BE IN CONFLICT WITH THE ASSIGNMENT SPECIFICATION.
+ALWAYS CODE TO THE ASSIGNMENT SPECIFICATION, NOT TO THE RESULTS FOUND
+HEREIN.
+
+NOTE: your mail client may reformat this report. Do not use a mailed report
+for debugging purposes.
+
+Test files can be retrieved with:
+
+     wget beastie.cs.ua.edu/proglan/testing/1/submission0.tgz
+
+
+TESTING AUTHOR
+
+AUTHOR: Zach Wassynger zawassynger@crimson.ua.edu
+
+AUTHOR the test succeeded
+
+TESTING TASK #1
+
+
+TEST #1
+     scam -r task1.scm task1.0 (time allowed: 1s)
+
+task1.0 contains:
+52
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(cyan 52) is 174
+(yellow 52) is 0
+(magenta 52) is 29
+(cym 52) is #AE001D
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #2
+     scam -r task1.scm task1.1 (time allowed: 1s)
+
+task1.1 contains:
+91
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(cyan 91) is 35
+(yellow 91) is 183
+(magenta 91) is 75
+(cym 91) is #23B74B
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #3
+     scam -r task1.scm task1.2 (time allowed: 1s)
+
+task1.2 contains:
+18
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(cyan 18) is 244
+(yellow 18) is 118
+(magenta 18) is 211
+(cym 18) is #F476D3
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #4
+     scam -r task1.scm task1.3 (time allowed: 1s)
+
+task1.3 contains:
+11
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(cyan 11) is 251
+(yellow 11) is 168
+(magenta 11) is 238
+(cym 11) is #FBA8EE
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #5
+     scam -r task1.scm task1.4 (time allowed: 1s)
+
+task1.4 contains:
+72
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(cyan 72) is 108
+(yellow 72) is 58
+(magenta 72) is 4
+(cym 72) is #6C3A04
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #6
+     scam -r task1.scm task1.5 (time allowed: 1s)
+
+task1.5 contains:
+9
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(cyan 9) is 252
+(yellow 9) is 183
+(magenta 9) is 243
+(cym 9) is #FCB7F3
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #7
+     scam -r task1.scm task1.6 (time allowed: 1s)
+
+task1.6 contains:
+65
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(cyan 65) is 133
+(yellow 65) is 27
+(magenta 65) is 0
+(cym 65) is #851B00
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #8
+     scam -r task1.scm task1.7 (time allowed: 1s)
+
+task1.7 contains:
+40
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(cyan 40) is 206
+(yellow 40) is 12
+(magenta 40) is 88
+(cym 40) is #CE0C58
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #9
+     scam -r task1.scm task1.8 (time allowed: 1s)
+
+task1.8 contains:
+48
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(cyan 48) is 185
+(yellow 48) is 0
+(magenta 48) is 46
+(cym 48) is #B9002E
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #10
+     scam -r task1.scm task1.9 (time allowed: 1s)
+
+task1.9 contains:
+46
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(cyan 46) is 191
+(yellow 46) is 2
+(magenta 46) is 55
+(cym 46) is #BF0237
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #11
+     scam -r task1.scm task1.10 (time allowed: 1s)
+
+task1.10 contains:
+41
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(cyan 41) is 203
+(yellow 41) is 10
+(magenta 41) is 82
+(cym 41) is #CB0A52
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TESTING TASK #2
+
+
+TEST #12
+     scam -r task2.scm task2.0 (time allowed: 2s)
+
+task2.0 contains:
+8076 -0.4200000000 1.4500000000
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((mandelbrot 8076) -0.4200000000 1.4500000000) is 2
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #13
+     scam -r task2.scm task2.1 (time allowed: 2s)
+
+task2.1 contains:
+100 0.5 0.5
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((mandelbrot 100) 0.5000000000 0.5000000000) is 5
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #14
+     scam -r task2.scm task2.2 (time allowed: 2s)
+
+task2.2 contains:
+777 0.6900000000 1.2600000000
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((mandelbrot 777) 0.6900000000 1.2600000000) is 2
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #15
+     scam -r task2.scm task2.3 (time allowed: 2s)
+
+task2.3 contains:
+2085 0.7500000000 0.6700000000
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((mandelbrot 2085) 0.7500000000 0.6700000000) is 3
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #16
+     scam -r task2.scm task2.4 (time allowed: 2s)
+
+task2.4 contains:
+3387 0.8000000000 1.0700000000
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((mandelbrot 3387) 0.8000000000 1.0700000000) is 2
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #17
+     scam -r task2.scm task2.5 (time allowed: 2s)
+
+task2.5 contains:
+4632 -0.1600000000 0.4600000000
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((mandelbrot 4632) -0.1600000000 0.4600000000) is 0
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #18
+     scam -r task2.scm task2.6 (time allowed: 2s)
+
+task2.6 contains:
+5937 0.9000000000 0.8700000000
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((mandelbrot 5937) 0.9000000000 0.8700000000) is 2
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #19
+     scam -r task2.scm task2.7 (time allowed: 2s)
+
+task2.7 contains:
+2280 -0.0500000000 1.2700000000
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((mandelbrot 2280) -0.0500000000 1.2700000000) is 2
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #20
+     scam -r task2.scm task2.8 (time allowed: 2s)
+
+task2.8 contains:
+3582 0.000000e+00 -0.3300000000
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((mandelbrot 3582) 0.000000e+00 -0.3300000000) is 0
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #21
+     scam -r task2.scm task2.9 (time allowed: 2s)
+
+task2.9 contains:
+4904 1.0700000000 0.0800000000
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((mandelbrot 4904) 1.0700000000 0.0800000000) is 2
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #22
+     scam -r task2.scm task2.10 (time allowed: 2s)
+
+task2.10 contains:
+1169 1.1000000000 0.4600000000
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((mandelbrot 1169) 1.1000000000 0.4600000000) is 2
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TESTING TASK #3
+
+
+TEST #23
+     scam -r task3.scm task3.0 (time allowed: 1s)
+
+task3.0 contains:
+2 144
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((root-n 2) 144) is 12.000000000000000
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #24
+     scam -r task3.scm task3.1 (time allowed: 1s)
+
+task3.1 contains:
+12 2
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((root-n 12) 2) is 1.059463094359295
+
+--------------------------------------------------------------
+Files task3.1.expected and task3.1.yours differ
+YOUR RESULTS:
+--------------------------------------------------------------
+((root-n 12) 2) is 1.059463094359296
+--------------------------------------------------------------
+Output does not match exactly; the test FAILED
+
+
+TEST #25
+     scam -r task3.scm task3.2 (time allowed: 1s)
+
+task3.2 contains:
+2 5.970000e-29
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((root-n 2) 5.970000e-29) is 0.000000000000008
+
+--------------------------------------------------------------
+Files task3.2.expected and task3.2.yours differ
+YOUR RESULTS:
+--------------------------------------------------------------
+((root-n 2) 5) is 2.236067977499790
+--------------------------------------------------------------
+Output does not match exactly; the test FAILED
+
+
+TEST #26
+     scam -r task3.scm task3.3 (time allowed: 1s)
+
+task3.3 contains:
+2 6.260000e-29
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((root-n 2) 6.260000e-29) is 0.000000000000008
+
+--------------------------------------------------------------
+Files task3.3.expected and task3.3.yours differ
+YOUR RESULTS:
+--------------------------------------------------------------
+((root-n 2) 6) is 2.449489742783178
+--------------------------------------------------------------
+Output does not match exactly; the test FAILED
+
+
+TEST #27
+     scam -r task3.scm task3.4 (time allowed: 1s)
+
+task3.4 contains:
+2 6.530000e-29
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((root-n 2) 6.530000e-29) is 0.000000000000008
+
+--------------------------------------------------------------
+Files task3.4.expected and task3.4.yours differ
+YOUR RESULTS:
+--------------------------------------------------------------
+((root-n 2) 6) is 2.449489742783178
+--------------------------------------------------------------
+Output does not match exactly; the test FAILED
+
+
+TEST #28
+     scam -r task3.scm task3.5 (time allowed: 1s)
+
+task3.5 contains:
+10 172
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((root-n 10) 172) is 1.673219220318481
+
+--------------------------------------------------------------
+Files task3.5.expected and task3.5.yours differ
+YOUR RESULTS:
+--------------------------------------------------------------
+((root-n 10) 172) is 1.673219220318484
+--------------------------------------------------------------
+Output does not match exactly; the test FAILED
+
+
+TEST #29
+     scam -r task3.scm task3.6 (time allowed: 1s)
+
+task3.6 contains:
+12 702
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((root-n 12) 702) is 1.726612017493558
+
+--------------------------------------------------------------
+Files task3.6.expected and task3.6.yours differ
+YOUR RESULTS:
+--------------------------------------------------------------
+((root-n 12) 702) is 1.726612017493570
+--------------------------------------------------------------
+Output does not match exactly; the test FAILED
+
+
+TEST #30
+     scam -r task3.scm task3.7 (time allowed: 1s)
+
+task3.7 contains:
+5 227
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((root-n 5) 227) is 2.959410234836204
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #31
+     scam -r task3.scm task3.8 (time allowed: 1s)
+
+task3.8 contains:
+8 253
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((root-n 8) 253) is 1.997055181181922
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #32
+     scam -r task3.scm task3.9 (time allowed: 1s)
+
+task3.9 contains:
+10 786
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((root-n 10) 786) is 1.947790550656805
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #33
+     scam -r task3.scm task3.10 (time allowed: 1s)
+
+task3.10 contains:
+3 802
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((root-n 3) 802) is 9.290907210902541
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TESTING TASK #4
+
+
+TEST #34
+     scam -r task4.scm task4.0 (time allowed: 1s)
+
+task4.0 contains:
+1 1 5
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((crazyTriangle 1 1) 5)
+    1
+   1 1
+  1 2 1
+ 1 3 3 1
+1 4 6 4 1
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #35
+     scam -r task4.scm task4.1 (time allowed: 1s)
+
+task4.1 contains:
+1 1 1
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((crazyTriangle 1 1) 1)
+1
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #36
+     scam -r task4.scm task4.2 (time allowed: 1s)
+
+task4.2 contains:
+0 0 8
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((crazyTriangle 0 0) 8)
+       0
+      0 0
+     0 0 0
+    0 0 0 0
+   0 0 0 0 0
+  0 0 0 0 0 0
+ 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #37
+     scam -r task4.scm task4.3 (time allowed: 1s)
+
+task4.3 contains:
+-12 5 7
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((crazyTriangle -12 5) 7)
+      -12
+     -12 5
+    -12 -7 5
+   -12 -19 -2 5
+  -12 -31 -21 3 5
+ -12 -43 -52 -18 8 5
+-12 -55 -95 -70 -10 13 5
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #38
+     scam -r task4.scm task4.4 (time allowed: 1s)
+
+task4.4 contains:
+-7 6 9
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((crazyTriangle -7 6) 9)
+        -7
+       -7 6
+      -7 -1 6
+     -7 -8 5 6
+    -7 -15 -3 11 6
+   -7 -22 -18 8 17 6
+  -7 -29 -40 -10 25 23 6
+ -7 -36 -69 -50 15 48 29 6
+-7 -43 -105 -119 -35 63 77 35 6
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #39
+     scam -r task4.scm task4.5 (time allowed: 1s)
+
+task4.5 contains:
+-2 -13 5
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((crazyTriangle -2 -13) 5)
+    -2
+   -2 -13
+  -2 -15 -13
+ -2 -17 -28 -13
+-2 -19 -45 -41 -13
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #40
+     scam -r task4.scm task4.6 (time allowed: 1s)
+
+task4.6 contains:
+4 8 8
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((crazyTriangle 4 8) 8)
+       4
+      4 8
+     4 12 8
+    4 16 20 8
+   4 20 36 28 8
+  4 24 56 64 36 8
+ 4 28 80 120 100 44 8
+4 32 108 200 220 144 52 8
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #41
+     scam -r task4.scm task4.7 (time allowed: 1s)
+
+task4.7 contains:
+-11 -11 10
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((crazyTriangle -11 -11) 10)
+         -11
+        -11 -11
+       -11 -22 -11
+      -11 -33 -33 -11
+     -11 -44 -66 -44 -11
+    -11 -55 -110 -110 -55 -11
+   -11 -66 -165 -220 -165 -66 -11
+  -11 -77 -231 -385 -385 -231 -77 -11
+ -11 -88 -308 -616 -770 -616 -308 -88 -11
+-11 -99 -396 -924 -1386 -1386 -924 -396 -99 -11
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #42
+     scam -r task4.scm task4.8 (time allowed: 1s)
+
+task4.8 contains:
+-6 -10 1
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((crazyTriangle -6 -10) 1)
+-6
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #43
+     scam -r task4.scm task4.9 (time allowed: 1s)
+
+task4.9 contains:
+-1 12 3
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((crazyTriangle -1 12) 3)
+  -1
+ -1 12
+-1 11 12
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #44
+     scam -r task4.scm task4.10 (time allowed: 1s)
+
+task4.10 contains:
+-16 12 5
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+((crazyTriangle -16 12) 5)
+    -16
+   -16 12
+  -16 -4 12
+ -16 -20 8 12
+-16 -36 -12 20 12
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TESTING TASK #5
+
+
+TEST #45
+     scam -r task5.scm task5.0 (time allowed: 1s)
+
+task5.0 contains:
+(define (f a b c d) (+ a b c d))
+1 2 3 4
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(((((curry <function f(a b c d)>) 1) 2) 3) 4) is 10
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #46
+     scam -r task5.scm task5.1 (time allowed: 1s)
+
+task5.1 contains:
+(define (f a b c d) (+ a b c d))
+1.1 2.2 3.3 4.4
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(((((curry <function f(a b c d)>) 1.1000000000) 2.2000000000) 3.3000000000) 4.4000000000) is 11.000000000
+
+--------------------------------------------------------------
+Files task5.1.expected and task5.1.yours differ
+YOUR RESULTS:
+--------------------------------------------------------------
+(((((curry <function f(a b c d)>) 1) 0) 0) 0) is 1
+--------------------------------------------------------------
+Output does not match exactly; the test FAILED
+
+
+TEST #47
+     scam -r task5.scm task5.2 (time allowed: 1s)
+
+task5.2 contains:
+(define (f a b c d) (- a b c d))
+1000 100 10 1
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(((((curry <function f(a b c d)>) 1000) 100) 10) 1) is 889
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #48
+     scam -r task5.scm task5.3 (time allowed: 1s)
+
+task5.3 contains:
+(define (g w x y z) (+ w x y z))
+25
+17
+70
+-76
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(((((curry <function g(w x y z)>) 25) 17) 70) -76) is 36
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #49
+     scam -r task5.scm task5.4 (time allowed: 1s)
+
+task5.4 contains:
+(define (g w x y z) (- w x y z))
+31
+58
+38
+-34
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(((((curry <function g(w x y z)>) 31) 58) 38) -34) is -31
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #50
+     scam -r task5.scm task5.5 (time allowed: 1s)
+
+task5.5 contains:
+(define (g w x y z) (- w x y z))
+-66
+-4
+-95
+6
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(((((curry <function g(w x y z)>) -66) -4) -95) 6) is 27
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #51
+     scam -r task5.scm task5.6 (time allowed: 1s)
+
+task5.6 contains:
+(define (g w x y z) (* w x y z))
+41
+37
+74
+49
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(((((curry <function g(w x y z)>) 41) 37) 74) 49) is 5500642
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #52
+     scam -r task5.scm task5.7 (time allowed: 1s)
+
+task5.7 contains:
+(define (g w x y z) (+ w x y z))
+-55
+77
+-59
+90
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(((((curry <function g(w x y z)>) -55) 77) -59) 90) is 53
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #53
+     scam -r task5.scm task5.8 (time allowed: 1s)
+
+task5.8 contains:
+(define (g w x y z) (- w x y z))
+-50
+-83
+10
+-69
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(((((curry <function g(w x y z)>) -50) -83) 10) -69) is 92
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #54
+     scam -r task5.scm task5.9 (time allowed: 1s)
+
+task5.9 contains:
+(define (g w x y z) (- w x y z))
+57
+-42
+79
+-26
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(((((curry <function g(w x y z)>) 57) -42) 79) -26) is 46
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #55
+     scam -r task5.scm task5.10 (time allowed: 1s)
+
+task5.10 contains:
+(define (g w x y z) (+ w x y z))
+61
+-3
+-56
+-87
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(((((curry <function g(w x y z)>) 61) -3) -56) -87) is -85
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TESTING TASK #6
+
+
+TEST #56
+     scam -r task6.scm task6.0 (time allowed: 1s)
+
+task6.0 contains:
+(lambda (x) (/ (if (= (% x 2) 0) 1 -1) (+ x 1.0)))
+0
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(S <function anonymous(x)> 0) is 1.000000000000000
+(w <function anonymous(x)> 0) is 1.000000000000000
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #57
+     scam -r task6.scm task6.1 (time allowed: 1s)
+
+task6.1 contains:
+(lambda (x) (/ (if (= (% x 2) 0) 1 -1) (+ x 1.0)))
+1
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(S <function anonymous(x)> 1) is 0.500000000000000
+(w <function anonymous(x)> 1) is 0.700000000000000
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #58
+     scam -r task6.scm task6.2 (time allowed: 1s)
+
+task6.2 contains:
+(lambda (x) (* (if (= (% x 2) 0) 1 -1) (/ 1.0 (+ x 1)) (^ 0.5 (+ x 1))))
+33
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(S <function anonymous(x)> 33) is 0.405465108107605
+(w <function anonymous(x)> 33) is 0.405467044958533
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #59
+     scam -r task6.scm task6.3 (time allowed: 1s)
+
+task6.3 contains:
+(lambda (x) (/ (if (= (% x 2) 0) 1 -1) (+ x 1.0)))
+1193
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(S <function anonymous(x)> 1193) is 0.692728595451205
+(w <function anonymous(x)> 1193) is 0.693147180633283
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #60
+     scam -r task6.scm task6.4 (time allowed: 1s)
+
+task6.4 contains:
+(lambda (x) (/ (if (= (% x 2) 0) 1 -1) (+ x 1.0)))
+1278
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(S <function anonymous(x)> 1278) is 0.693537958147791
+(w <function anonymous(x)> 1278) is 0.693147180500292
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #61
+     scam -r task6.scm task6.5 (time allowed: 1s)
+
+task6.5 contains:
+(lambda (x) (/ (if (= (% x 2) 0) 1 -1) (+ x 1.0)))
+1356
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(S <function anonymous(x)> 1356) is 0.693515504635209
+(w <function anonymous(x)> 1356) is 0.693147180509973
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #62
+     scam -r task6.scm task6.6 (time allowed: 1s)
+
+task6.6 contains:
+(lambda (x) (/ (if (= (% x 2) 0) 1 -1) (+ x 1.0)))
+1942
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(S <function anonymous(x)> 1942) is 0.693404448358717
+(w <function anonymous(x)> 1942) is 0.693147180542904
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #63
+     scam -r task6.scm task6.7 (time allowed: 1s)
+
+task6.7 contains:
+(lambda (x) (/ (if (= (% x 2) 0) 1 -1) (+ x 1.0)))
+1525
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(S <function anonymous(x)> 1525) is 0.692819633919688
+(w <function anonymous(x)> 1525) is 0.693147180595095
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #64
+     scam -r task6.scm task6.8 (time allowed: 1s)
+
+task6.8 contains:
+(lambda (x) (/ (if (= (% x 2) 0) 1 -1) (+ x 1.0)))
+1609
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(S <function anonymous(x)> 1609) is 0.692836718000615
+(w <function anonymous(x)> 1609) is 0.693147180589891
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #65
+     scam -r task6.scm task6.9 (time allowed: 1s)
+
+task6.9 contains:
+(lambda (x) (/ (if (= (% x 2) 0) 1 -1) (+ x 1.0)))
+1196
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(S <function anonymous(x)> 1196) is 0.693564717021602
+(w <function anonymous(x)> 1196) is 0.693147180487154
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #66
+     scam -r task6.scm task6.10 (time allowed: 1s)
+
+task6.10 contains:
+(lambda (x) (/ (if (= (% x 2) 0) 1 -1) (+ x 1.0)))
+1272
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(S <function anonymous(x)> 1272) is 0.693539799266602
+(w <function anonymous(x)> 1272) is 0.693147180499451
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TESTING TASK #7
+
+
+TEST #67
+     scam -r task7.scm task7.0 (time allowed: 1s)
+
+task7.0 contains:
+1960 56
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(halve 1960) is 980
+(double 1960) is 3920
+(div2? 1960) is #t
+(ethiop 1960 56) is 109760
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #68
+     scam -r task7.scm task7.1 (time allowed: 1s)
+
+task7.1 contains:
+53 45
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(halve 53) is 26
+(double 53) is 106
+(div2? 53) is #f
+(ethiop 53 45) is 2385
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #69
+     scam -r task7.scm task7.2 (time allowed: 1s)
+
+task7.2 contains:
+61 8
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(halve 61) is 30
+(double 61) is 122
+(div2? 61) is #f
+(ethiop 61 8) is 488
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #70
+     scam -r task7.scm task7.3 (time allowed: 1s)
+
+task7.3 contains:
+20 21
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(halve 20) is 10
+(double 20) is 40
+(div2? 20) is #t
+(ethiop 20 21) is 420
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #71
+     scam -r task7.scm task7.4 (time allowed: 1s)
+
+task7.4 contains:
+12786 13320
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(halve 12786) is 6393
+(double 12786) is 25572
+(div2? 12786) is #t
+(ethiop 12786 13320) is 170309520
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #72
+     scam -r task7.scm task7.5 (time allowed: 1s)
+
+task7.5 contains:
+13570 14578
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(halve 13570) is 6785
+(double 13570) is 27140
+(div2? 13570) is #t
+(ethiop 13570 14578) is 197823460
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #73
+     scam -r task7.scm task7.6 (time allowed: 1s)
+
+task7.6 contains:
+19421 15897
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(halve 19421) is 9710
+(double 19421) is 38842
+(div2? 19421) is #f
+(ethiop 19421 15897) is 308735637
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #74
+     scam -r task7.scm task7.7 (time allowed: 1s)
+
+task7.7 contains:
+15252 12202
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(halve 15252) is 7626
+(double 15252) is 30504
+(div2? 15252) is #t
+(ethiop 15252 12202) is 186104904
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #75
+     scam -r task7.scm task7.8 (time allowed: 1s)
+
+task7.8 contains:
+16096 13517
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(halve 16096) is 8048
+(double 16096) is 32192
+(div2? 16096) is #t
+(ethiop 16096 13517) is 217569632
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #76
+     scam -r task7.scm task7.9 (time allowed: 1s)
+
+task7.9 contains:
+11961 14853
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(halve 11961) is 5980
+(double 11961) is 23922
+(div2? 11961) is #f
+(ethiop 11961 14853) is 177656733
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #77
+     scam -r task7.scm task7.10 (time allowed: 1s)
+
+task7.10 contains:
+12727 11080
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(halve 12727) is 6363
+(double 12727) is 25454
+(div2? 12727) is #f
+(ethiop 12727 11080) is 141015160
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TESTING TASK #8
+
+
+TEST #78
+     scam -r task8i.scm task8.0 (time allowed: 1s)
+
+task8.0 contains:
+0
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ecfi 0) is 2.0000000000000000000000000
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #79
+     scam -r task8r.scm task8.0 (time allowed: 1s)
+
+task8.0 contains:
+0
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ecfr 0) is 2.0000000000000000000000000
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #80
+     scam -r task8i.scm task8.1 (time allowed: 1s)
+
+task8.1 contains:
+1
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ecfi 1) is 2.7500000000000000000000000
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #81
+     scam -r task8r.scm task8.1 (time allowed: 1s)
+
+task8.1 contains:
+1
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ecfr 1) is 2.7500000000000000000000000
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #82
+     scam -r task8i.scm task8.2 (time allowed: 1s)
+
+task8.2 contains:
+2
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ecfi 2) is 2.7179487179487180625869769
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #83
+     scam -r task8r.scm task8.2 (time allowed: 1s)
+
+task8.2 contains:
+2
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ecfr 2) is 2.7179487179487180625869769
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #84
+     scam -r task8i.scm task8.3 (time allowed: 1s)
+
+task8.3 contains:
+3
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ecfi 3) is 2.7182835820895521194984212
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #85
+     scam -r task8r.scm task8.3 (time allowed: 1s)
+
+task8.3 contains:
+3
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ecfr 3) is 2.7182835820895521194984212
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #86
+     scam -r task8i.scm task8.4 (time allowed: 1s)
+
+task8.4 contains:
+29
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ecfi 29) is 2.7182818284590455348848081
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #87
+     scam -r task8r.scm task8.4 (time allowed: 1s)
+
+task8.4 contains:
+29
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ecfr 29) is 2.7182818284590455348848081
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #88
+     scam -r task8i.scm task8.5 (time allowed: 1s)
+
+task8.5 contains:
+36
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ecfi 36) is 2.7182818284590455348848081
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #89
+     scam -r task8r.scm task8.5 (time allowed: 1s)
+
+task8.5 contains:
+36
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ecfr 36) is 2.7182818284590455348848081
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TESTING TASK #9
+
+
+TEST #90
+     scam -r task9i.scm task9.0 (time allowed: 1s)
+
+task9.0 contains:
+0
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujani 0) is 2.4494897427831778813356323
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #91
+     scam -r task9r.scm task9.0 (time allowed: 1s)
+
+task9.0 contains:
+0
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujanr 0) is 2.4494897427831778813356323
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #92
+     scam -r task9i.scm task9.1 (time allowed: 1s)
+
+task9.1 contains:
+1
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujani 1) is 3.3602831163652240320516285
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #93
+     scam -r task9r.scm task9.1 (time allowed: 1s)
+
+task9.1 contains:
+1
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujanr 1) is 3.3602831163652240320516285
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #94
+     scam -r task9i.scm task9.2 (time allowed: 1s)
+
+task9.2 contains:
+2
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujani 2) is 3.7242809307825592846086238
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #95
+     scam -r task9r.scm task9.2 (time allowed: 1s)
+
+task9.2 contains:
+2
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujanr 2) is 3.7242809307825592846086238
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #96
+     scam -r task9i.scm task9.3 (time allowed: 1s)
+
+task9.3 contains:
+3
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujani 3) is 3.8777446879222385867080902
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #97
+     scam -r task9r.scm task9.3 (time allowed: 1s)
+
+task9.3 contains:
+3
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujanr 3) is 3.8777446879222385867080902
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #98
+     scam -r task9i.scm task9.4 (time allowed: 1s)
+
+task9.4 contains:
+16
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujani 16) is 3.9999930590531960206135409
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #99
+     scam -r task9r.scm task9.4 (time allowed: 1s)
+
+task9.4 contains:
+16
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujanr 16) is 3.9999930590531960206135409
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #100
+     scam -r task9i.scm task9.5 (time allowed: 1s)
+
+task9.5 contains:
+20
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujani 20) is 3.9999996200104743770964433
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #101
+     scam -r task9r.scm task9.5 (time allowed: 1s)
+
+task9.5 contains:
+20
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujanr 20) is 3.9999996200104743770964433
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #102
+     scam -r task9i.scm task9.6 (time allowed: 1s)
+
+task9.6 contains:
+51
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujani 51) is 4.0000000000000000000000000
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #103
+     scam -r task9r.scm task9.6 (time allowed: 1s)
+
+task9.6 contains:
+51
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujanr 51) is 4.0000000000000000000000000
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #104
+     scam -r task9i.scm task9.7 (time allowed: 1s)
+
+task9.7 contains:
+29
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujani 29) is 3.9999999994125410296419432
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #105
+     scam -r task9r.scm task9.7 (time allowed: 1s)
+
+task9.7 contains:
+29
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujanr 29) is 3.9999999994125410296419432
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #106
+     scam -r task9i.scm task9.8 (time allowed: 1s)
+
+task9.8 contains:
+34
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujani 34) is 3.9999999999834665587172822
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #107
+     scam -r task9r.scm task9.8 (time allowed: 1s)
+
+task9.8 contains:
+34
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujanr 34) is 3.9999999999834665587172822
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #108
+     scam -r task9i.scm task9.9 (time allowed: 1s)
+
+task9.9 contains:
+12
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujani 12) is 3.9998695293549548779310499
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #109
+     scam -r task9r.scm task9.9 (time allowed: 1s)
+
+task9.9 contains:
+12
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujanr 12) is 3.9998695293549548779310499
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #110
+     scam -r task9i.scm task9.10 (time allowed: 1s)
+
+task9.10 contains:
+16
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujani 16) is 3.9999930590531960206135409
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #111
+     scam -r task9r.scm task9.10 (time allowed: 1s)
+
+task9.10 contains:
+16
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+
+(ramanujanr 16) is 3.9999930590531960206135409
+$4$
+
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+
+TESTING COMPLETE.
+
+Your bonus will be 4.69 points.
+
+Tests passed: 105
+Tests failed: 7
+
+There are test failures, you need to resubmit.

@@ -1,0 +1,4 @@
+(halve 53) is 26
+(double 53) is 106
+(div2? 53) is #f
+(ethiop 53 45) is 2385

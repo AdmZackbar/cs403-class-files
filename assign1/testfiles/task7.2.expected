@@ -1,0 +1,4 @@
+(halve 61) is 30
+(double 61) is 122
+(div2? 61) is #f
+(ethiop 61 8) is 488

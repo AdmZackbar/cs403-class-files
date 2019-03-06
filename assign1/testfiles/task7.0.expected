@@ -1,0 +1,4 @@
+(halve 1960) is 980
+(double 1960) is 3920
+(div2? 1960) is #t
+(ethiop 1960 56) is 109760

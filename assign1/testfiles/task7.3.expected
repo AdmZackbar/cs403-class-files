@@ -1,0 +1,4 @@
+(halve 20) is 10
+(double 20) is 40
+(div2? 20) is #t
+(ethiop 20 21) is 420
