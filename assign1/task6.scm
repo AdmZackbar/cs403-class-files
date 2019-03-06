@@ -23,7 +23,7 @@
 (define (main)
     (setPort (open (getElement ScamArgs 1) 'read))
     (define argFunction (eval (readExpr) this))
-    (define arg1 (readInt))
+    (define arg1 (readExpr))
     (println "(S " argFunction " " arg1 ") is " (fmt "%.15f" (S argFunction 0 arg1 0)))
     (println "(w " argFunction " " arg1 ") is " (fmt "%.15f" (w argFunction arg1)))
     )

@@ -15,8 +15,8 @@
 
 (define (main)
     (setPort (open (getElement ScamArgs 1) 'read))
-    (define threshold (readInt))
-    (define x (readReal))
-    (define y (readReal))
+    (define threshold (readExpr))
+    (define x (readExpr))
+    (define y (readExpr))
     (println "((mandelbrot " threshold ") " x " " y ") is " ((mandelbrot threshold) x y))
     )

@@ -40,9 +40,9 @@
 
 (define (main)
     (setPort (open (getElement ScamArgs 1) 'read))
-    (define left (readInt))
-    (define right (readInt))
-    (define levels (readInt))
+    (define left (readExpr))
+    (define right (readExpr))
+    (define levels (readExpr))
     (println "((crazyTriangle " left " " right ") " levels ")")
     ((crazyTriangle left right) levels)
     )

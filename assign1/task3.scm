@@ -21,7 +21,7 @@
 
 (define (main)
     (setPort (open (getElement ScamArgs 1) 'read))
-    (define root (readReal))
-    (define x (readReal))
+    (define root (readExpr))
+    (define x (readExpr))
     (println "((root-n " root ") " x ") is " (fmt "%.15f" ((root-n root) x)))
     )
