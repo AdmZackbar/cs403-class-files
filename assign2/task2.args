@@ -1,3 +1,11 @@
 (define (f a b) (+ a b))
     (inspect ((curry f) 1))
-    (inspect (((curry f) 1) 1))
+    (inspect ((curry f) 1 2))
+    (inspect (((curry f) 1) 2))
+    (inspect ((((curry f)) 1) 2))
+
+(define (f a b c d e f g) (+ a b c d e f g))
+    (inspect ((curry f) 1 2 3 4 5 6 7))
+    (inspect (((curry f) 1 2 3 4) 5 6 7))
+    (inspect ((((curry f) 1 2) 3 4) 5 6 7))
+    (inspect (((((curry f) 1) 2 3 4) 5 6) 7))
