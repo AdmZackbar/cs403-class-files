@@ -1,5 +1,15 @@
-(define (let*->lambdas)
-    
+(define (translate let-statement)
+    (define (add-lambda assignment)
+        (if (nil? assignment)
+            (cddr let-statement)
+            (list (list "lambda" (list (car assignment)) (add-lambda (cdr assignment)) (cadr assignment))
+            )
+        )
+    (add-lambda (cadr let-statement))
+    )
+
+(define (let*->lambdas arg)
+    (list (car arg) (cadr arg) (translate (caddr arg)))
     )
 
 (define (main)
