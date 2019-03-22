@@ -1,0 +1,2 @@
+(println (speek (pop (pop (push (push (push (Stack) 3) 2) 1)))))
+(println (qpeek (dequeue (dequeue (enqueue (enqueue (enqueue (Queue) 1) 2) 3)))))
