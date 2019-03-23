@@ -1,0 +1,4 @@
+(define t0 (newBST 5))
+(define t1 (insertBST t0 2))
+(define t2 (insertBST t1 8))
+(displayBST t2)
