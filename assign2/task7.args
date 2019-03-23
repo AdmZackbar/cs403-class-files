@@ -1,0 +1,3 @@
+(println (transpose '((1 0) (0 1))))
+(println (matrix-*-matrix '((1 2) (3 4)) '((1 0) (0 1))))
+(println (matrix-*-matrix '((2 4 4) (8 2 2) (2 1 6)) '((3 4 2) (1 5 2))))
