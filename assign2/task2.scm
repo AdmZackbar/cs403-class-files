@@ -13,7 +13,6 @@
         (define params nil)
         (define params (car @))
         )
-    (inspect params)
     (if (= (length params) (length (get 'parameters function)))
         (apply function params)
         (lambda (@)
