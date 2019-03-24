@@ -2,3 +2,9 @@
 (println (let*->lambdas sd))
 (inspect ((eval sd this) 3))
 (inspect ((eval (let*->lambdas sd) this) 3))
+
+(define nd `(define (f) (let* ((x 2) (y (+ x 1)) (z 42)) (+ x y z))))
+(println (let*->lambdas nd))
+
+(define xd `(define (f) (+ 2 2)  (let* ((x 2) (y (+ x 1)) (z 42)) (+ x y z)) (- 4 2) (f)))
+(println (let*->lambdas xd))
