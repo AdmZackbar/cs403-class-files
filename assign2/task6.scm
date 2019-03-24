@@ -71,7 +71,7 @@
             (let ((rest (powerSet (cdr s))))
                 (merge rest
                     (map (lambda (x)
-                        (merge (list (car s)) x)
+                        (cons (car s) x)
                         ) rest)
                     )
                 )
