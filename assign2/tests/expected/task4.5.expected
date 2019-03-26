@@ -1,0 +1,4 @@
+(define (g x y) ((lambda (w) ((lambda (z) (inspect w) (inspect z) (+ x y w z)) (* 2 w))) (+ 2 3)))
+w is 5
+z is 10
+((eval (let*->lambdas sd) this) 3 4) is 22

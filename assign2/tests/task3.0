@@ -1,0 +1,1 @@
+(println (speek (pop (pop (push (push (push (Stack) 3) 2) 1)))))

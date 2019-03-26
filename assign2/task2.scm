@@ -9,9 +9,10 @@
     )
 
 (define (curry function @)
-    (if (nil? @)
-        (define params nil)
-        (define params (car @))
+    (if (nil? @) (define params nil)
+        (if (list? (car @)) (define params (car @))
+            (define params @)
+            )
         )
     (if (= (length params) (length (get 'parameters function)))
         (apply function params)

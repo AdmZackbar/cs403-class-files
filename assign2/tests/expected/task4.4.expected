@@ -1,0 +1,1 @@
+(define (g x y) ((lambda (w) (inspect w) (+ x y w)) (+ 2 3)))

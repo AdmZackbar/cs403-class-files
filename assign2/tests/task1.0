@@ -1,0 +1,1 @@
+(for-loop (range 0 9 5) (lambda (x) (inspect x)))

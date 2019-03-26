@@ -1,0 +1,2 @@
+(define (f x) (define y 2) (+ x y))
+((eval (let*->lambdas sd) this) 3) is 5

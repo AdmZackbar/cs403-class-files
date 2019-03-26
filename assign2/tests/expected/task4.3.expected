@@ -1,0 +1,1 @@
+(define (g x y) ((lambda (w) (+ x y w)) (+ 2 3)))

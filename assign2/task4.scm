@@ -1,8 +1,9 @@
 (define (translate statements)
     (define (add-lambda assignment)
-        (if (nil? assignment)
-            (cddr (car statements))
-            (list (append (list 'lambda (list (car (car assignment)))) (add-lambda (cdr assignment))) (cadr (car assignment)))
+        (if (nil? assignment) (cddr (car statements))
+            (if (nil? (cdr assignment)) (list (append (list 'lambda (list (car (car assignment)))) (add-lambda (cdr assignment))) (cadr (car assignment)))
+                (list (append (list 'lambda (list (car (car assignment)))) (list (add-lambda (cdr assignment)))) (cadr (car assignment)))
+                )
             )
         )
     (if (nil? statements) nil

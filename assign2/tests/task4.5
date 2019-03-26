@@ -1,0 +1,3 @@
+(define sd '(define (g x y) (let* ((w (+ 2 3)) (z (* 2 w))) (inspect w) (inspect z) (+ x y w z))))
+(println (let*->lambdas sd))
+(inspect ((eval (let*->lambdas sd) this) 3 4))
