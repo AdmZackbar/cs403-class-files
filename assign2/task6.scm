@@ -1,10 +1,10 @@
 (define (powerSet x)
     (define (isLess a b)
         (if (nil? b) #f
-	    (if (nil? a) #t
-	        (isLess (cdr a) (cdr b))
+	        (if (nil? a) #t
+	            (isLess (cdr a) (cdr b))
+	            )
 	        )
-	    )
         )
     (define (merge A B)
         (if (nil? A) B
@@ -16,19 +16,12 @@
                 )
             )
         )
-    (define (iter s)
-        (if (nil? s)
-            (list nil)
-            (let ((rest (powerSet (cdr s))))
-                (merge rest
-                    (map (lambda (x)
-                        (cons (car s) x)
-                        ) rest)
-		    )
-                )
+    (define (iter s set)
+        (if (nil? s) set
+            (iter (cdr s) (merge set (map (lambda (i) (cons (car s) i)) set))
             )
         )
-    (iter x)
+    (iter x (list nil))
     )
 
 (define (main)
