@@ -1,1 +1,1 @@
-(println (powerSet '(a b c d e f g h i j)))
+(println (powerSet '(a b c d e f g h i j k)))

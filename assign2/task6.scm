@@ -18,10 +18,10 @@
         )
     (define (iter s set)
         (if (nil? s) set
-            (iter (cdr s) (merge set (map (lambda (i) (cons (car s) i)) set))
+            (iter (cdr s) (merge set (map (lambda (i) (cons (car s) i)) set)))
             )
         )
-    (iter x (list nil))
+    (iter (reverse x) (list nil))
     )
 
 (define (main)

@@ -8,12 +8,12 @@ function test_task
 {
     for f in task$1.*
     do
-        scam -r "$TASK_DIR"/task$1.scm $f > "$OUT_DIR"/$f.mine
+        scam -G ms -r "$TASK_DIR"/task$1.scm $f > "$OUT_DIR"/$f.mine
 	diff "$OUT_DIR"/$f.mine "$SOL_DIR"/$f.expected
     done
 }
 
-TASKS="1 2 3 4 5 7 8"
+TASKS="1 2 3 4 5 6 7 8"
 
 for task in $TASKS
 do

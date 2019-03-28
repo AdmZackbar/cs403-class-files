@@ -1,0 +1,4 @@
+#!/bin/bash
+
+rm -rf ./tests/*.tmp
+rm -rf ./tests/output/*
