@@ -38,7 +38,7 @@
                     (define node (cons (cons value store) (cdr store)))
                     (set-cdr! store node)
                     )
-                (iter (cdr store) (+ i 0))
+                (iter (cdr store) (+ i 1))
                 )
             )
         (if (= index 0) (enqueueFront value)
@@ -62,6 +62,24 @@
         (if (= size 0) (set! front nil))
         value
         )
+    (define (dequeueIndex index)
+        (define (iter store i)
+            (if (= i index)
+                (begin
+                    (set-cdr! (cdr (car store)) (cdr store))    ; Set child of the parent of removed
+                    (set-cdr! (cadr store) (cdr (car store)))   ; Set parent of the child of removed
+                    (caar store)    ; Return value
+                    )
+                (iter (cdr store) (- i 1))
+                )
+            )
+        (if (= index 0) (dequeueFront value)
+            (if (= index (- size 1)) (dequeueBack value)
+                (iter front (- size 2))
+                )
+            )
+        (set! size (- size 1))
+        )
     (define (display)
         (define (iter x)
             (if (nil? x) nil
@@ -75,6 +93,12 @@
         (print '[)
         (iter front)
         (print '])
+        )
+    (define (peekFront)
+        (caar front)
+        )
+    (define (peekBack)
+        (caar back)
         )
     this
     )
