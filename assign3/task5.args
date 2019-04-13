@@ -1,0 +1,5 @@
+(define ones (cons-stream 1 ones))
+(inspect ones)
+(ppTable (caddr ones))
+;(sdisplay 12 (smush ones +))
+(println)
