@@ -1,5 +1,39 @@
+(define (smush stream op)
+    (define (smush-streams index value total strm)
+        (define new-strm
+            (cons-stream (+ (stream-car index) 1)
+                (cons-stream (stream-car strm)
+                    (cons-stream (op (stream-car total) (stream-car strm))
+                        (smush-streams new-strm (stream-cdr new-strm) (stream-cdr (stream-cdr new-strm)) (stream-cdr strm))
+                        )
+                    )
+                )
+            )
+        )
+    (define smushed
+        (cons-stream 0
+            (cons-stream (car stream)
+                (cons-stream (car stream)
+                    (smush-streams smushed (stream-cdr smushed) (stream-cdr (stream-cdr smushed)) (stream-cdr stream))
+                    )
+                )
+            )
+        )
+    )
+
 (define (sdisplay num stream)
-    
+    (define (iter i strm)
+        (if (= i num) nil
+            (begin
+                (print (stream-car strm))
+                (if (!= (+ i 1) num) (print ',))
+                (iter (+ i 1) (stream-cdr strm))
+                )
+            )
+        )
+    (print "(")
+    (iter 0 stream)
+    (print ")")
     )
 
 (define (main)
