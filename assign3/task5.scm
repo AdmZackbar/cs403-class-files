@@ -26,14 +26,14 @@
         (if (= i num) nil
             (begin
                 (print (stream-car strm))
-                (if (!= (+ i 1) num) (print ',))
+                (print ',)
                 (iter (+ i 1) (stream-cdr strm))
                 )
             )
         )
     (print "(")
     (iter 0 stream)
-    (print ")")
+    (print "...)")
     )
 
 (define (main)

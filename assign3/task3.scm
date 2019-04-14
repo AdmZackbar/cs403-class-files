@@ -42,7 +42,7 @@
                 )
             )
         (if (= index 0) (enqueueFront value)
-            (if (= index (- size 1)) (enqueueBack value)
+            (if (= index size) (enqueueBack value)
                 (iter front 1)
                 )
             )
