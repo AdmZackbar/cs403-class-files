@@ -1,0 +1,6 @@
+(define x 3)
+(sdisplay 5 (mystery x)) (println)
+(sdisplay 20 (ps-mystery x)) (println)
+(sdisplay 20 (acc-mystery x)) (println)
+(sdisplay 5 (super-mystery x)) (println)
+(symbolic-mystery)
