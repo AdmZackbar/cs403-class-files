@@ -4,6 +4,10 @@
 
 (define the-agenda (make-agenda))
 
+(define (or-gate a1 a2 output)
+    
+    )
+
 (define (main)
     (setPort (open (getElement ScamArgs 1) 'read))
     (define env this)

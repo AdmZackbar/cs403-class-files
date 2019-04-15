@@ -66,15 +66,15 @@
         (define (iter store i)
             (if (= i index)
                 (begin
-                    (set-cdr! (cdr (car store)) (cdr store))    ; Set child of the parent of removed
+                    (set-cdr! (cadr (car store)) (cdr store))          ; Set child of the parent of removed
                     (set-cdr! (cadr store) (cdr (car store)))   ; Set parent of the child of removed
                     (caar store)    ; Return value
                     )
                 (iter (cdr store) (- i 1))
                 )
             )
-        (if (= index 0) (dequeueFront value)
-            (if (= index (- size 1)) (dequeueBack value)
+        (if (= index 0) (dequeueFront)
+            (if (= index (- size 1)) (dequeueBack)
                 (iter front (- size 2))
                 )
             )
