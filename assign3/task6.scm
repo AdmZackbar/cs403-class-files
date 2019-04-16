@@ -51,7 +51,7 @@
 (define (same-stream? s1 s2 n t)
     (define (iter strm1 strm2 x)
         (if (<= x 0) #t
-            (if (>= (- (stream-car strm1) (stream-car strm2)) t) #f
+            (if (>= (abs (- (stream-car strm1) (stream-car strm2))) t) #f
                 (iter (stream-cdr strm1) (stream-cdr strm2) (- x 1))
                 )
             )
