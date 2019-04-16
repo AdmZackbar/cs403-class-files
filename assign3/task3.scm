@@ -4,12 +4,12 @@
     (define size 0)
     (define (enqueueFront value)
         (define store (cons (cons value nil) front))
-        (if (= size 0)
-            (begin
+        (cond
+            ((= size 0)
                 (set! front store)
                 (set! back store)
                 )
-            (begin
+            (else
                 (set-cdr! (car front) store)    ; Set parent pointer of old front
                 (set! front store)
                 )
@@ -18,12 +18,12 @@
         )
     (define (enqueueBack value)
         (define store (cons (cons value nil) nil))
-        (if (= size 0)
-            (begin
+        (cond
+            ((= size 0)
                 (set! front store)
                 (set! back store)
                 )
-            (begin
+            (else
                 (set-cdr! back store)
                 (set-cdr! (car store) back) ; Set parent pointer of new node
                 (set! back store)
@@ -32,13 +32,15 @@
         (set! size (+ size 1))
         )
     (define (enqueueIndex index value)
-        (define (iter store i)
+        (define (iter parent i)
             (if (= i index)
                 (begin
-                    (define node (cons (cons value store) (cdr store)))
-                    (set-cdr! store node)
+                    (define node (cons (cons value parent) (cdr parent)))
+                    (set-cdr! (cadr parent) node)
+                    (set-cdr! parent node)
+                    (set! size (+ size 1))
                     )
-                (iter (cdr store) (+ i 1))
+                (iter (cdr parent) (+ i 1))
                 )
             )
         (if (= index 0) (enqueueFront value)
@@ -46,18 +48,21 @@
                 (iter front 1)
                 )
             )
-        (set! size (+ size 1))
         )
     (define (dequeueFront)
         (define value (caar front))
         (set! front (cdr front))
         (set! size (- size 1))
-        (if (= size 0) (set! back nil))
+        (if (= size 0)
+            (set! back nil)
+            (set-cdr! (car front) nil)
+            )
         value
         )
     (define (dequeueBack)
         (define value (caar back))
         (set! back (cdr (car back)))
+        (set-cdr! back nil)
         (set! size (- size 1))
         (if (= size 0) (set! front nil))
         value
@@ -66,19 +71,19 @@
         (define (iter store i)
             (if (= i index)
                 (begin
-                    (set-cdr! (cadr (car store)) (cdr store))          ; Set child of the parent of removed
-                    (set-cdr! (cadr store) (cdr (car store)))   ; Set parent of the child of removed
+                    (set-cdr! (cadr store) (cdr (car store)))   ; Child - set parent
+                    (set-cdr! (cdr (car store)) (cdr store))   ; Parent - set child
+                    (set! size (- size 1))
                     (caar store)    ; Return value
                     )
-                (iter (cdr store) (- i 1))
+                (iter (cdr (car store)) (- i 1))
                 )
             )
         (if (= index 0) (dequeueFront)
             (if (= index (- size 1)) (dequeueBack)
-                (iter front (- size 2))
+                (iter back (- size 1))
                 )
             )
-        (set! size (- size 1))
         )
     (define (display)
         (define (iter x)
@@ -92,6 +97,20 @@
             )
         (print '[)
         (iter front)
+        (print '])
+        )
+    (define (display-backward)
+        (define (iter x)
+            (if (nil? x) nil
+                (begin
+                    (print (caar x))
+                    (if (not (eq? front x)) (print ',))
+                    (iter (cdr (car x)))
+                    )
+                )
+            )
+        (print '[)
+        (iter back)
         (print '])
         )
     (define (peekFront)
