@@ -1,0 +1,22 @@
+
+out 0  New-value = 0
+---------------
+0 AND 0
+---------------
+out 6  New-value = 1
+out 12  New-value = 0
+output is 0
+---------------
+0 AND 1
+---------------
+output is 0
+---------------
+1 AND 1
+---------------
+out 30  New-value = 1
+output is 1
+---------------
+1 AND 0
+---------------
+out 42  New-value = 0
+output is 0

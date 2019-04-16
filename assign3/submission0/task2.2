@@ -1,0 +1,5 @@
+(include "pretty.lib")
+(define (square x) (* x x))
+(replace square (list 'x 'y))
+(pretty square)
+(inspect (square 48))

@@ -1,0 +1,6 @@
+(include "pretty.lib")
+(define (almost-square x) ((lambda (y) (* y y)) (+ x 1)))
+(inspect (almost-square 15))
+(replace almost-square (list '* + '+ *))
+(pretty almost-square)
+(inspect (almost-square 15))

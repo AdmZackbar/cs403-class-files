@@ -1,0 +1,6 @@
+(define (zorp a) (lambda (b) this))
+(define obj ((zorp 5) 8))
+(inspect (scoping 'x obj))
+(inspect (scoping 'a obj))
+(inspect (scoping 'b obj))
+(inspect (scoping 'define obj))

@@ -1,0 +1,5 @@
+(almost-square 15) is 256
+(define (almost-square x)
+    ((lambda (y) (<builtin +(@)> y y)) (<builtin *(@)> x 1))
+    )
+(almost-square 15) is 30

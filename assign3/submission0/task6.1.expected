@@ -1,0 +1,7 @@
+(same-stream? ones ones*f 3 0.0010000000) is #t
+(same-stream? ones ones*f 5 0.0010000000) is #f
+(same-stream? ones ones*f 5 2.0000000000) is #t
+(same-stream? ones ones*f 5 0.2000000000) is #t
+(same-stream? ones ones*f 5 0.1001000000) is #t
+(same-stream? ones ones*f 5 0.1000000000) is #f
+(same-stream? ones ones*f 5 0.0999000000) is #f

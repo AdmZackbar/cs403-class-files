@@ -1,0 +1,17 @@
+(define (add-streams s t)
+    (cons-stream
+        (+ (stream-car s) (stream-car t))
+        (add-streams (stream-cdr s) (stream-cdr t))))
+(define (scale-stream s f)
+    (cons-stream
+        (* (stream-car s) f)
+        (scale-stream (stream-cdr s) f)))
+(define ones (cons-stream 1 ones))
+(define ones*f (cons-stream 1 (cons-stream 1 (cons-stream 1 (scale-stream ones 1.1)))))
+(inspect (same-stream? ones ones*f 3 .001))
+(inspect (same-stream? ones ones*f 5 .001))
+(inspect (same-stream? ones ones*f 5 2.0))
+(inspect (same-stream? ones ones*f 5 0.2))
+(inspect (same-stream? ones ones*f 5 0.1001))
+(inspect (same-stream? ones ones*f 5 0.1))
+(inspect (same-stream? ones ones*f 5 0.0999))

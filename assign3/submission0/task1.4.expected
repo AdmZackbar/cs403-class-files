@@ -1,0 +1,4 @@
+(scoping (quote x) obj) is undefined
+(scoping (quote a) obj) is free
+(scoping (quote b) obj) is bound
+(scoping (quote define) obj) is free
