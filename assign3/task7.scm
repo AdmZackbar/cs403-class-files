@@ -80,7 +80,7 @@
     )
 
 (define (symbolic-mystery)
-    (println "(mystery x) is $\\cosx$")
+    (println "(mystery x) is $\\cos x$")
     )
 
 (define (sdisplay num stream)
