@@ -5,6 +5,7 @@
         (cond
             ((nil? c) nil)
             ((object? c) nil)
+            ((eq? (car c) 'quote) nil)
             ((list? (car c))
                 (iter (car c))
                 (iter (cdr c))
@@ -19,7 +20,8 @@
     (if (nil? exprList) nil
         (begin
             (iter (get 'code block))        ; Handle the code block for the first set of replacements
-            (replace block (cddr exprList)) ; Handle the code block for the next sets of replacements
+            (iter (get 'parameters block))  ; Handle the parameters
+            (replace block (cddr exprList)) ; Handle code for the next sets of replacements
             )
         )
     )
