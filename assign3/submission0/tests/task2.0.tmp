@@ -1,0 +1,1 @@
+(get (quote code) abs) is (begin (if (<builtin <(@)> n 0) (<builtin -(@)> n) n))

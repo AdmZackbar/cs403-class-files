@@ -1,4 +1,0 @@
-(inspect (nand-gate 0 0))
-(inspect (nand-gate 0 1))
-(inspect (nand-gate 1 0))
-(inspect (nand-gate 1 1))

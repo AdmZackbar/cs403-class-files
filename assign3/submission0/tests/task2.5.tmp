@@ -1,0 +1,7 @@
+(quote (lambda (z) (+ (* x y) z))) is (lambda (z) (+ (* x y) z))
+(almost-square 24) is 625
+(define (almost-square x)
+    ((lambda (y) (inspect (quote (lambda (z) (+ (* x y) z)))) (<builtin *(@)> y y)) (<builtin +(@)> x 1))
+    )
+(quote (lambda (z) (+ (* x y) z))) is (lambda (z) (+ (* x y) z))
+(almost-square 24) is 625

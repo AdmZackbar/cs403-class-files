@@ -1,0 +1,205 @@
+#!/bin/bash
+
+echo "-----------------------------------------------------------------------";
+echo "TESTING TASK 1";
+echo "-----------------------------------------------------------------------";
+echo;
+for i in 0 1 2 3 4 5; do
+    echo "Testing task1.scm on task1.$i. . .";
+    echo "------------------------------------";
+    echo "contents of task1.$i:";
+    cat ./tests/task1.$i;
+    echo "------------------------------------";
+    echo "EXPECTED: ";
+    cat ./tests/task1.$i.expected;
+    echo "------------------------------------";
+    echo "YOUR RESULTS: ";
+    scam -r ../task1.scm ./tests/task1.$i > ./tests/task1.$i.tmp;
+    cat ./tests/task1.$i.tmp;
+    echo "------------------------------------";
+    echo "Running diff on the results. . .";
+    diff -s -q ./tests/task1.$i.expected ./tests/task1.$i.tmp;
+    echo;
+    echo;
+done
+
+echo "-----------------------------------------------------------------------";
+echo "TESTING TASK 2";
+echo "-----------------------------------------------------------------------";
+echo;
+for i in 0 1 2 3 4 5 6; do
+    echo "Testing task2.scm on task2.$i. . .";
+    echo "------------------------------------";
+    echo "contents of task2.$i:";
+    cat ./tests/task2.$i;
+    echo "------------------------------------";
+    echo "EXPECTED: ";
+    cat ./tests/task2.$i.expected;
+    echo "------------------------------------";
+    echo "YOUR RESULTS: ";
+    scam -r ../task2.scm ./tests/task2.$i > ./tests/task2.$i.tmp;
+    cat ./tests/task2.$i.tmp;
+    echo "------------------------------------";
+    echo "Running diff on the results. . .";
+    diff -s -q ./tests/task2.$i.expected ./tests/task2.$i.tmp;
+    echo;
+    echo;
+done
+
+echo "-----------------------------------------------------------------------";
+echo "TESTING TASK 3";
+echo "-----------------------------------------------------------------------";
+echo;
+for i in 0 1 2 3 4 5 6 7 8 9; do
+    echo "Testing task3.scm on task3.$i. . .";
+    echo "------------------------------------";
+    echo "contents of task3.$i:";
+    cat ./tests/task3.$i;
+    echo "------------------------------------";
+    echo "EXPECTED: ";
+    cat ./tests/task3.$i.expected;
+    echo "------------------------------------";
+    echo "YOUR RESULTS: ";
+    scam -r ../task3.scm ./tests/task3.$i > ./tests/task3.$i.tmp;
+    cat ./tests/task3.$i.tmp;
+    echo "------------------------------------";
+    echo "Running diff on the results. . .";
+    diff -s -q ./tests/task3.$i.expected ./tests/task3.$i.tmp;
+    echo;
+    echo;
+done
+
+echo "-----------------------------------------------------------------------";
+echo "TESTING TASK 4";
+echo "-----------------------------------------------------------------------";
+echo;
+for i in 0 1 2 3 4 5 6 7 8; do
+    echo "Testing task4.scm on task4.$i. . .";
+    echo "------------------------------------";
+    echo "contents of task4.$i:";
+    cat ./tests/task4.$i;
+    echo "------------------------------------";
+    echo "EXPECTED: ";
+    cat ./tests/task4.$i.expected;
+    echo "------------------------------------";
+    echo "YOUR RESULTS: ";
+    scam -r ../task4.scm ./tests/task4.$i > ./tests/task4.$i.tmp;
+    cat ./tests/task4.$i.tmp;
+    echo "------------------------------------";
+    echo "Running diff on the results. . .";
+    diff -s -q ./tests/task4.$i.expected ./tests/task4.$i.tmp;
+    echo;
+    echo;
+done
+
+for i in 9 10 11 12 13 14 15 16 17; do
+    echo "Testing task4.scm on task4.$i. . .";
+    echo "------------------------------------";
+    echo "contents of task4.$i:";
+    cat ./tests/task4.$i;
+    echo "------------------------------------";
+    echo "EXPECTED: ";
+    cat ./tests/task4.$i.expected;
+    echo "------------------------------------";
+    echo "YOUR RESULTS: ";
+    scam -r ../task4.1.scm ./tests/task4.$i > ./tests/task4.$i.tmp;
+    cat ./tests/task4.$i.tmp;
+    echo "------------------------------------";
+    echo "Running diff on the results. . .";
+    diff -s -q ./tests/task4.$i.expected ./tests/task4.$i.tmp;
+    echo;
+    echo;
+done
+
+echo "-----------------------------------------------------------------------";
+echo "TESTING TASK 5";
+echo "-----------------------------------------------------------------------";
+echo;
+for i in 0 1 2 3 4 5 6 7 8 9; do
+    echo "Testing task5.scm on task5.$i. . .";
+    echo "------------------------------------";
+    echo "contents of task5.$i:";
+    cat ./tests/task5.$i;
+    echo "------------------------------------";
+    echo "EXPECTED: ";
+    cat ./tests/task5.$i.expected;
+    echo "------------------------------------";
+    echo "YOUR RESULTS: ";
+    scam -r ../task5.scm ./tests/task5.$i > ./tests/task5.$i.tmp;
+    cat ./tests/task5.$i.tmp;
+    echo "------------------------------------";
+    echo "Running diff on the results. . .";
+    diff -s -q ./tests/task5.$i.expected ./tests/task5.$i.tmp;
+    echo;
+    echo;
+done
+
+echo "-----------------------------------------------------------------------";
+echo "TESTING TASK 6";
+echo "-----------------------------------------------------------------------";
+echo;
+for i in 0 1 2 3 4 5 6 7 8 9; do
+    echo "Testing task6.scm on task6.$i. . .";
+    echo "------------------------------------";
+    echo "contents of task6.$i:";
+    cat ./tests/task6.$i;
+    echo "------------------------------------";
+    echo "EXPECTED: ";
+    cat ./tests/task6.$i.expected;
+    echo "------------------------------------";
+    echo "YOUR RESULTS: ";
+    scam -r ../task6.scm ./tests/task6.$i > ./tests/task6.$i.tmp;
+    cat ./tests/task6.$i.tmp;
+    echo "------------------------------------";
+    echo "Running diff on the results. . .";
+    diff -s -q ./tests/task6.$i.expected ./tests/task6.$i.tmp;
+    echo;
+    echo;
+done
+
+echo "-----------------------------------------------------------------------";
+echo "TESTING TASK 7";
+echo "-----------------------------------------------------------------------";
+echo;
+for i in 0 1 2 3 4 5 6 7 8 9; do
+    echo "Testing task7.scm on task7.$i. . .";
+    echo "------------------------------------";
+    echo "contents of task7.$i:";
+    cat ./tests/task7.$i;
+    echo "------------------------------------";
+    echo "EXPECTED: ";
+    cat ./tests/task7.$i.expected;
+    echo "------------------------------------";
+    echo "YOUR RESULTS: ";
+    scam -r ../task7.scm ./tests/task7.$i > ./tests/task7.$i.tmp;
+    cat ./tests/task7.$i.tmp;
+    echo "------------------------------------";
+    echo "Running diff on the results. . .";
+    diff -s -q ./tests/task7.$i.expected ./tests/task7.$i.tmp;
+    echo;
+    echo;
+done
+
+echo "-----------------------------------------------------------------------";
+echo "TESTING TASK 8";
+echo "-----------------------------------------------------------------------";
+echo;
+for i in 0 1; do
+    echo "Testing task8.scm on task8.$i. . .";
+    echo "------------------------------------";
+    echo "contents of task8.$i:";
+    cat ./tests/task8.$i;
+    echo "------------------------------------";
+    echo "EXPECTED: ";
+    cat ./tests/task8.$i.expected;
+    echo "------------------------------------";
+    echo "YOUR RESULTS: ";
+    scam -r ../task8.scm ./tests/task8.$i > ./tests/task8.$i.tmp;
+    cat ./tests/task8.$i.tmp;
+    echo "------------------------------------";
+    echo "Running diff on the results. . .";
+    diff -s -q ./tests/task8.$i.expected ./tests/task8.$i.tmp;
+    echo;
+    echo;
+done
+
