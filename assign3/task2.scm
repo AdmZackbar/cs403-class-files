@@ -5,7 +5,10 @@
         (cond
             ((nil? c) nil)
             ((object? c) nil)
-            ((eq? (car c) 'quote) nil)
+            ((eq? (car c) 'quote)
+                (if (eq? old 'quote) (set-car! c new))
+                nil
+                )
             ((list? (car c))
                 (iter (car c))
                 (iter (cdr c))
@@ -18,10 +21,17 @@
             )
         )
     (if (nil? exprList) nil
-        (begin
-            (iter (get 'code block))        ; Handle the code block for the first set of replacements
-            (iter (get 'parameters block))  ; Handle the parameters
-            (replace block (cddr exprList)) ; Handle code for the next sets of replacements
+        (if (eq? (car exprList) 'quote)
+            (begin  ; Delay this expr change
+                (replace block (cddr exprList)) ; Handle code for the next sets of replacements
+                (iter (get 'code block))        ; Handle the code block for the first set of replacements
+                (iter (get 'parameters block))  ; Handle the parameters
+                )
+            (begin  ; Handle this expr change first
+                (iter (get 'code block))        ; Handle the code block for the first set of replacements
+                (iter (get 'parameters block))  ; Handle the parameters
+                (replace block (cddr exprList)) ; Handle code for the next sets of replacements
+                )
             )
         )
     )
