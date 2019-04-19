@@ -26,7 +26,7 @@
 
 (define (nor-gate a1 a2 output)
     (let ((or-output (make-wire)))
-        (nor-gate a1 a2 or-output)
+        (or-gate a1 a2 or-output)
         (inverter or-output output)
         )
     )
