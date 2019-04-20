@@ -1,0 +1,4740 @@
+-----------------------------------------------------------------------
+TESTING TASK 1
+-----------------------------------------------------------------------
+
+Testing task1.scm on task1.0. . .
+------------------------------------
+contents of task1.0:
+(println (scoping 'cs403sucks ((define (zirp x) this) 5)))
+------------------------------------
+EXPECTED: 
+undefined
+------------------------------------
+YOUR RESULTS: 
+undefined
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task1.0.expected and ./tests/task1.0.tmp are identical
+
+
+Testing task1.scm on task1.1. . .
+------------------------------------
+contents of task1.1:
+(println (scoping '* ((define (zirp x) this) 5)))
+------------------------------------
+EXPECTED: 
+free
+------------------------------------
+YOUR RESULTS: 
+free
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task1.1.expected and ./tests/task1.1.tmp are identical
+
+
+Testing task1.scm on task1.2. . .
+------------------------------------
+contents of task1.2:
+(println (scoping 'x ((define (zirp x) this) 5)))
+------------------------------------
+EXPECTED: 
+bound
+------------------------------------
+YOUR RESULTS: 
+bound
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task1.2.expected and ./tests/task1.2.tmp are identical
+
+
+Testing task1.scm on task1.3. . .
+------------------------------------
+contents of task1.3:
+(inspect (scoping 'x this))
+(inspect (scoping 'this this))
+(inspect (scoping 'quote this))
+------------------------------------
+EXPECTED: 
+(scoping (quote x) this) is undefined
+(scoping (quote this) this) is bound
+(scoping (quote quote) this) is free
+------------------------------------
+YOUR RESULTS: 
+(scoping (quote x) this) is undefined
+(scoping (quote this) this) is bound
+(scoping (quote quote) this) is free
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task1.3.expected and ./tests/task1.3.tmp are identical
+
+
+Testing task1.scm on task1.4. . .
+------------------------------------
+contents of task1.4:
+(define (zorp a) (lambda (b) this))
+(define obj ((zorp 5) 8))
+(inspect (scoping 'x obj))
+(inspect (scoping 'a obj))
+(inspect (scoping 'b obj))
+(inspect (scoping 'define obj))
+------------------------------------
+EXPECTED: 
+(scoping (quote x) obj) is undefined
+(scoping (quote a) obj) is free
+(scoping (quote b) obj) is bound
+(scoping (quote define) obj) is free
+------------------------------------
+YOUR RESULTS: 
+(scoping (quote x) obj) is undefined
+(scoping (quote a) obj) is free
+(scoping (quote b) obj) is bound
+(scoping (quote define) obj) is free
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task1.4.expected and ./tests/task1.4.tmp are identical
+
+
+Testing task1.scm on task1.5. . .
+------------------------------------
+contents of task1.5:
+(define (zorp a) (lambda (b) (lambda (c) (define d 3) this)))
+(define obj (((zorp 5) 8) 'x))
+(inspect (scoping 'x obj))
+(inspect (scoping 'a obj))
+(inspect (scoping 'b obj))
+(inspect (scoping 'c obj))
+(inspect (scoping 'd obj))
+(inspect (scoping 'lambda obj))
+------------------------------------
+EXPECTED: 
+(scoping (quote x) obj) is undefined
+(scoping (quote a) obj) is free
+(scoping (quote b) obj) is free
+(scoping (quote c) obj) is bound
+(scoping (quote d) obj) is bound
+(scoping (quote lambda) obj) is free
+------------------------------------
+YOUR RESULTS: 
+(scoping (quote x) obj) is undefined
+(scoping (quote a) obj) is free
+(scoping (quote b) obj) is free
+(scoping (quote c) obj) is bound
+(scoping (quote d) obj) is bound
+(scoping (quote lambda) obj) is free
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task1.5.expected and ./tests/task1.5.tmp are identical
+
+
+-----------------------------------------------------------------------
+TESTING TASK 2
+-----------------------------------------------------------------------
+
+Testing task2.scm on task2.0. . .
+------------------------------------
+contents of task2.0:
+(define (abs n) (if (< n 0) (- n) n))
+(replace abs (list '< < '- -))
+(inspect (get 'code abs))
+------------------------------------
+EXPECTED: 
+(get (quote code) abs) is (begin (if (<builtin <(@)> n 0) (<builtin -(@)> n) n))
+------------------------------------
+YOUR RESULTS: 
+(get (quote code) abs) is (begin (if (<builtin <(@)> n 0) (<builtin -(@)> n) n))
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task2.0.expected and ./tests/task2.0.tmp are identical
+
+
+Testing task2.scm on task2.1. . .
+------------------------------------
+contents of task2.1:
+(define (square x) (* x x))
+(replace square (list '* +))
+(inspect (square 5))
+------------------------------------
+EXPECTED: 
+(square 5) is 10
+------------------------------------
+YOUR RESULTS: 
+(square 5) is 10
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task2.1.expected and ./tests/task2.1.tmp are identical
+
+
+Testing task2.scm on task2.2. . .
+------------------------------------
+contents of task2.2:
+(include "pretty.lib")
+(define (square x) (* x x))
+(replace square (list 'x 'y))
+(pretty square)
+(inspect (square 48))
+------------------------------------
+EXPECTED: 
+(define (square y)
+    (* y y)
+    )
+(square 48) is 2304
+------------------------------------
+YOUR RESULTS: 
+(define (square y)
+    (* y y)
+    )
+(square 48) is 2304
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task2.2.expected and ./tests/task2.2.tmp are identical
+
+
+Testing task2.scm on task2.3. . .
+------------------------------------
+contents of task2.3:
+(include "pretty.lib")
+(define (almost-square x) ((lambda (y) (* y y)) (+ x 1)))
+(inspect (almost-square 8))
+(replace almost-square (list '* * '+ +))
+(pretty almost-square)
+(inspect (almost-square 8))
+------------------------------------
+EXPECTED: 
+(almost-square 8) is 81
+(define (almost-square x)
+    ((lambda (y) (<builtin *(@)> y y)) (<builtin +(@)> x 1))
+    )
+(almost-square 8) is 81
+------------------------------------
+YOUR RESULTS: 
+(almost-square 8) is 81
+(define (almost-square x)
+    ((lambda (y) (<builtin *(@)> y y)) (<builtin +(@)> x 1))
+    )
+(almost-square 8) is 81
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task2.3.expected and ./tests/task2.3.tmp are identical
+
+
+Testing task2.scm on task2.4. . .
+------------------------------------
+contents of task2.4:
+(include "pretty.lib")
+(define (almost-square x) ((lambda (y) (* y y)) (+ x 1)))
+(inspect (almost-square 15))
+(replace almost-square (list '* + '+ *))
+(pretty almost-square)
+(inspect (almost-square 15))
+------------------------------------
+EXPECTED: 
+(almost-square 15) is 256
+(define (almost-square x)
+    ((lambda (y) (<builtin +(@)> y y)) (<builtin *(@)> x 1))
+    )
+(almost-square 15) is 30
+------------------------------------
+YOUR RESULTS: 
+(almost-square 15) is 256
+(define (almost-square x)
+    ((lambda (y) (<builtin +(@)> y y)) (<builtin *(@)> x 1))
+    )
+(almost-square 15) is 30
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task2.4.expected and ./tests/task2.4.tmp are identical
+
+
+Testing task2.scm on task2.5. . .
+------------------------------------
+contents of task2.5:
+(include "pretty.lib")
+(define (almost-square x)
+    ((lambda (y)
+        (inspect (quote (lambda (z) (+ (* x y) z))))
+        (* y y)) (+ x 1)))
+(inspect (almost-square 24))
+(replace almost-square (list 'quote quote '* * '+ +))
+(pretty almost-square)
+(inspect (almost-square 24))
+------------------------------------
+EXPECTED: 
+(quote (lambda (z) (+ (* x y) z))) is (lambda (z) (+ (* x y) z))
+(almost-square 24) is 625
+(define (almost-square x)
+    ((lambda (y) (inspect (<builtin quote($item)> (lambda (z) (+ (* x y) z)))) (<builtin *(@)> y y)) (<builtin +(@)> x 1))
+    )
+(<builtin quote($item)> (lambda (z) (+ (* x y) z))) is (lambda (z) (+ (* x y) z))
+(almost-square 24) is 625
+------------------------------------
+YOUR RESULTS: 
+(quote (lambda (z) (+ (* x y) z))) is (lambda (z) (+ (* x y) z))
+(almost-square 24) is 625
+(define (almost-square x)
+    ((lambda (y) (inspect (<builtin quote($item)> (lambda (z) (+ (* x y) z)))) (<builtin *(@)> y y)) (<builtin +(@)> x 1))
+    )
+(<builtin quote($item)> (lambda (z) (+ (* x y) z))) is (lambda (z) (+ (* x y) z))
+(almost-square 24) is 625
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task2.5.expected and ./tests/task2.5.tmp are identical
+
+
+Testing task2.scm on task2.6. . .
+------------------------------------
+contents of task2.6:
+(include "pretty.lib")
+(define (f x)
+    ((lambda (y)
+        (define z ((lambda (q) (define w (- q q)) this) 5))
+        (inspect (z'w))
+        (* y y)) (+ x 1)))
+(inspect (f 80))
+(replace f (list '* * '+ + '- +))
+(pretty f)
+(inspect (f 80))
+------------------------------------
+EXPECTED: 
+(z (quote w)) is 0
+(f 80) is 6561
+(define (f x)
+    ((lambda (y) (define z ((lambda (q) (define w (<builtin +(@)> q q)) this) 5)) (inspect (z (quote w))) (<builtin *(@)> y y)) (<builtin +(@)> x 1))
+    )
+(z (quote w)) is 10
+(f 80) is 6561
+------------------------------------
+YOUR RESULTS: 
+(z (quote w)) is 0
+(f 80) is 6561
+(define (f x)
+    ((lambda (y) (define z ((lambda (q) (define w (<builtin +(@)> q q)) this) 5)) (inspect (z (quote w))) (<builtin *(@)> y y)) (<builtin +(@)> x 1))
+    )
+(z (quote w)) is 10
+(f 80) is 6561
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task2.6.expected and ./tests/task2.6.tmp are identical
+
+
+-----------------------------------------------------------------------
+TESTING TASK 3
+-----------------------------------------------------------------------
+
+Testing task3.scm on task3.0. . .
+------------------------------------
+contents of task3.0:
+(define dq (deque))
+((dq'enqueueFront) 3)
+((dq'enqueueBack) 5)
+((dq'enqueueIndex) 1 4)
+((dq'display))
+(println)
+------------------------------------
+EXPECTED: 
+[3,4,5]
+------------------------------------
+YOUR RESULTS: 
+[3,4,5]
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task3.0.expected and ./tests/task3.0.tmp are identical
+
+
+Testing task3.scm on task3.1. . .
+------------------------------------
+contents of task3.1:
+(define dq (deque))
+((dq'enqueueIndex) 0 41)
+((dq'enqueueIndex) 1 99)
+((dq'enqueueIndex) 1 93)
+((dq'enqueueIndex) 1 18)
+((dq'enqueueIndex) 2 56)
+((dq'enqueueIndex) 4 81)
+((dq'enqueueIndex) 2 83)
+((dq'enqueueIndex) 1 99)
+((dq'enqueueIndex) 4 51)
+((dq'enqueueIndex) 3 33)
+((dq'display))
+(println)
+------------------------------------
+EXPECTED: 
+[41,99,18,33,83,51,56,93,81,99]
+------------------------------------
+YOUR RESULTS: 
+[41,99,18,33,83,51,56,93,81,99]
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task3.1.expected and ./tests/task3.1.tmp are identical
+
+
+Testing task3.scm on task3.2. . .
+------------------------------------
+contents of task3.2:
+(define dq (deque))
+((dq'enqueueIndex) 0 53)
+((dq'enqueueIndex) 0 73)
+((dq'enqueueIndex) 2 22)
+((dq'enqueueIndex) 0 59)
+((dq'enqueueIndex) 0 88)
+((dq'enqueueIndex) 5 92)
+((dq'enqueueIndex) 2 86)
+((dq'enqueueIndex) 0 19)
+((dq'enqueueIndex) 2 20)
+((dq'enqueueIndex) 8 90)
+((dq'display))
+(println)
+((dq'dequeueIndex) 2)
+((dq'display))
+(println)
+((dq'dequeueIndex) 8)
+((dq'display))
+(println)
+((dq'dequeueIndex) 2)
+((dq'display))
+(println)
+((dq'dequeueIndex) 0)
+((dq'display))
+(println)
+((dq'dequeueIndex) 0)
+((dq'display))
+(println)
+((dq'dequeueIndex) 4)
+((dq'display))
+(println)
+((dq'dequeueIndex) 0)
+((dq'display))
+(println)
+((dq'dequeueIndex) 1)
+((dq'display))
+(println)
+((dq'dequeueIndex) 0)
+((dq'display))
+(println)
+((dq'dequeueIndex) 0)
+((dq'display))
+(println)
+------------------------------------
+EXPECTED: 
+[19,88,20,59,86,73,53,22,90,92]
+[19,88,59,86,73,53,22,90,92]
+[19,88,59,86,73,53,22,90]
+[19,88,86,73,53,22,90]
+[88,86,73,53,22,90]
+[86,73,53,22,90]
+[86,73,53,22]
+[73,53,22]
+[73,22]
+[22]
+[]
+------------------------------------
+YOUR RESULTS: 
+[19,88,20,59,86,73,53,22,90,92]
+[19,88,59,86,73,53,22,90,92]
+[19,88,59,86,73,53,22,90]
+[19,88,86,73,53,22,90]
+[88,86,73,53,22,90]
+[86,73,53,22,90]
+[86,73,53,22]
+[73,53,22]
+[73,22]
+[22]
+[]
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task3.2.expected and ./tests/task3.2.tmp are identical
+
+
+Testing task3.scm on task3.3. . .
+------------------------------------
+contents of task3.3:
+(define dq (deque))
+((dq'enqueueIndex) 0 20)
+((dq'enqueueIndex) 0 46)
+((dq'enqueueIndex) 0 40)
+((dq'enqueueIndex) 2 54)
+((dq'enqueueIndex) 2 74)
+((dq'enqueueIndex) 5 12)
+((dq'enqueueIndex) 6 87)
+((dq'enqueueIndex) 3 27)
+((dq'enqueueIndex) 5 32)
+((dq'enqueueIndex) 7 55)
+((dq'display))
+(println)
+((dq'dequeueIndex) 4)
+((dq'display))
+(println)
+((dq'dequeueIndex) 8)
+((dq'display))
+(println)
+((dq'dequeueIndex) 2)
+((dq'display))
+(println)
+((dq'dequeueIndex) 1)
+((dq'display))
+(println)
+((dq'dequeueIndex) 4)
+((dq'display))
+(println)
+((dq'dequeueIndex) 1)
+((dq'display))
+(println)
+((dq'dequeueIndex) 0)
+((dq'display))
+(println)
+((dq'dequeueIndex) 1)
+((dq'display))
+(println)
+((dq'dequeueIndex) 1)
+((dq'display))
+(println)
+((dq'dequeueIndex) 0)
+((dq'display))
+(println)
+((dq'display))
+(println)
+((dq'enqueueIndex) 0 68)
+((dq'enqueueIndex) 1 85)
+((dq'enqueueIndex) 0 88)
+((dq'enqueueIndex) 0 77)
+((dq'enqueueIndex) 1 78)
+((dq'enqueueIndex) 2 42)
+((dq'enqueueIndex) 5 45)
+((dq'enqueueIndex) 1 35)
+((dq'enqueueIndex) 5 85)
+((dq'enqueueIndex) 5 43)
+((dq'display))
+(println)
+((dq'dequeueIndex) 3)
+((dq'display))
+(println)
+((dq'dequeueIndex) 0)
+((dq'display))
+(println)
+((dq'dequeueIndex) 2)
+((dq'display))
+(println)
+((dq'dequeueIndex) 4)
+((dq'display))
+(println)
+((dq'dequeueIndex) 1)
+((dq'display))
+(println)
+((dq'dequeueIndex) 0)
+((dq'display))
+(println)
+((dq'dequeueIndex) 3)
+((dq'display))
+(println)
+((dq'dequeueIndex) 1)
+((dq'display))
+(println)
+((dq'dequeueIndex) 1)
+((dq'display))
+(println)
+((dq'dequeueIndex) 0)
+((dq'display))
+(println)
+------------------------------------
+EXPECTED: 
+[40,46,74,27,54,32,20,55,12,87]
+[40,46,74,27,32,20,55,12,87]
+[40,46,74,27,32,20,55,12]
+[40,46,27,32,20,55,12]
+[40,27,32,20,55,12]
+[40,27,32,20,12]
+[40,32,20,12]
+[32,20,12]
+[32,12]
+[32]
+[]
+[]
+[77,35,78,42,88,43,85,68,45,85]
+[77,35,78,88,43,85,68,45,85]
+[35,78,88,43,85,68,45,85]
+[35,78,43,85,68,45,85]
+[35,78,43,85,45,85]
+[35,43,85,45,85]
+[43,85,45,85]
+[43,85,45]
+[43,45]
+[43]
+[]
+------------------------------------
+YOUR RESULTS: 
+[40,46,74,27,54,32,20,55,12,87]
+[40,46,74,27,32,20,55,12,87]
+[40,46,74,27,32,20,55,12]
+[40,46,27,32,20,55,12]
+[40,27,32,20,55,12]
+[40,27,32,20,12]
+[40,32,20,12]
+[32,20,12]
+[32,12]
+[32]
+[]
+[]
+[77,35,78,42,88,43,85,68,45,85]
+[77,35,78,88,43,85,68,45,85]
+[35,78,88,43,85,68,45,85]
+[35,78,43,85,68,45,85]
+[35,78,43,85,45,85]
+[35,43,85,45,85]
+[43,85,45,85]
+[43,85,45]
+[43,45]
+[43]
+[]
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task3.3.expected and ./tests/task3.3.tmp are identical
+
+
+Testing task3.scm on task3.4. . .
+------------------------------------
+contents of task3.4:
+(define dq (deque))
+((dq'enqueueIndex) 0 50)
+((dq'enqueueIndex) 0 65)
+((dq'enqueueIndex) 0 36)
+((dq'enqueueIndex) 1 66)
+((dq'enqueueIndex) 2 18)
+((dq'enqueueIndex) 3 95)
+((dq'enqueueIndex) 2 91)
+((dq'enqueueIndex) 2 94)
+((dq'enqueueIndex) 8 72)
+((dq'enqueueIndex) 1 74)
+((dq'enqueueIndex) 5 83)
+((dq'enqueueIndex) 5 17)
+((dq'enqueueIndex) 7 78)
+((dq'enqueueIndex) 11 56)
+((dq'enqueueIndex) 9 60)
+((dq'enqueueIndex) 10 41)
+((dq'enqueueIndex) 0 77)
+((dq'enqueueIndex) 17 15)
+((dq'enqueueIndex) 0 47)
+((dq'enqueueIndex) 13 64)
+((dq'enqueueIndex) 10 40)
+((dq'enqueueIndex) 12 89)
+((dq'enqueueIndex) 5 85)
+((dq'enqueueIndex) 19 21)
+((dq'enqueueIndex) 13 95)
+((dq'enqueueIndex) 21 15)
+((dq'enqueueIndex) 20 33)
+((dq'enqueueIndex) 3 39)
+((dq'enqueueIndex) 0 96)
+((dq'enqueueIndex) 25 67)
+((dq'enqueueIndex) 15 53)
+((dq'enqueueIndex) 31 56)
+((dq'enqueueIndex) 7 96)
+((dq'enqueueIndex) 19 35)
+((dq'enqueueIndex) 13 33)
+((dq'enqueueIndex) 31 90)
+((dq'enqueueIndex) 22 49)
+((dq'enqueueIndex) 29 85)
+((dq'enqueueIndex) 10 63)
+((dq'enqueueIndex) 38 83)
+((dq'enqueueIndex) 22 83)
+((dq'enqueueIndex) 36 37)
+((dq'enqueueIndex) 3 10)
+((dq'enqueueIndex) 27 19)
+((dq'enqueueIndex) 43 52)
+((dq'enqueueIndex) 34 52)
+((dq'enqueueIndex) 44 75)
+((dq'enqueueIndex) 47 26)
+((dq'enqueueIndex) 33 61)
+((dq'enqueueIndex) 23 16)
+((dq'enqueueIndex) 42 42)
+((dq'enqueueIndex) 50 49)
+((dq'enqueueIndex) 42 76)
+((dq'enqueueIndex) 14 16)
+((dq'enqueueIndex) 18 32)
+((dq'enqueueIndex) 49 88)
+((dq'enqueueIndex) 3 78)
+((dq'enqueueIndex) 10 22)
+((dq'enqueueIndex) 45 83)
+((dq'enqueueIndex) 14 76)
+((dq'enqueueIndex) 17 98)
+((dq'enqueueIndex) 13 32)
+((dq'enqueueIndex) 44 28)
+((dq'enqueueIndex) 27 46)
+((dq'enqueueIndex) 50 91)
+((dq'enqueueIndex) 31 65)
+((dq'enqueueIndex) 17 49)
+((dq'enqueueIndex) 4 14)
+((dq'enqueueIndex) 12 40)
+((dq'enqueueIndex) 8 55)
+((dq'enqueueIndex) 41 11)
+((dq'enqueueIndex) 27 67)
+((dq'enqueueIndex) 56 61)
+((dq'enqueueIndex) 57 58)
+((dq'enqueueIndex) 29 12)
+((dq'enqueueIndex) 20 71)
+((dq'enqueueIndex) 0 53)
+((dq'enqueueIndex) 72 74)
+((dq'enqueueIndex) 55 42)
+((dq'enqueueIndex) 9 53)
+((dq'enqueueIndex) 21 63)
+((dq'enqueueIndex) 8 57)
+((dq'enqueueIndex) 2 24)
+((dq'enqueueIndex) 48 28)
+((dq'enqueueIndex) 42 73)
+((dq'enqueueIndex) 61 17)
+((dq'enqueueIndex) 62 19)
+((dq'enqueueIndex) 63 53)
+((dq'enqueueIndex) 60 55)
+((dq'enqueueIndex) 2 16)
+((dq'enqueueIndex) 48 37)
+((dq'enqueueIndex) 69 58)
+((dq'display))
+(println)
+((dq'dequeueIndex) 72)
+((dq'display))
+(println)
+((dq'dequeueIndex) 62)
+((dq'display))
+(println)
+((dq'dequeueIndex) 22)
+((dq'display))
+(println)
+((dq'dequeueIndex) 43)
+((dq'display))
+(println)
+((dq'dequeueIndex) 4)
+((dq'display))
+(println)
+((dq'dequeueIndex) 31)
+((dq'display))
+(println)
+((dq'dequeueIndex) 83)
+((dq'display))
+(println)
+((dq'dequeueIndex) 26)
+((dq'display))
+(println)
+((dq'dequeueIndex) 80)
+((dq'display))
+(println)
+((dq'dequeueIndex) 5)
+((dq'display))
+(println)
+((dq'dequeueIndex) 68)
+((dq'display))
+(println)
+((dq'dequeueIndex) 79)
+((dq'display))
+(println)
+((dq'dequeueIndex) 18)
+((dq'display))
+(println)
+((dq'dequeueIndex) 32)
+((dq'display))
+(println)
+((dq'dequeueIndex) 15)
+((dq'display))
+(println)
+((dq'dequeueIndex) 56)
+((dq'display))
+(println)
+((dq'dequeueIndex) 8)
+((dq'display))
+(println)
+((dq'dequeueIndex) 68)
+((dq'display))
+(println)
+((dq'dequeueIndex) 60)
+((dq'display))
+(println)
+((dq'dequeueIndex) 60)
+((dq'display))
+(println)
+((dq'dequeueIndex) 0)
+((dq'display))
+(println)
+((dq'dequeueIndex) 38)
+((dq'display))
+(println)
+((dq'dequeueIndex) 22)
+((dq'display))
+(println)
+((dq'dequeueIndex) 47)
+((dq'display))
+(println)
+((dq'dequeueIndex) 3)
+((dq'display))
+(println)
+((dq'dequeueIndex) 23)
+((dq'display))
+(println)
+((dq'dequeueIndex) 50)
+((dq'display))
+(println)
+((dq'dequeueIndex) 37)
+((dq'display))
+(println)
+((dq'dequeueIndex) 41)
+((dq'display))
+(println)
+((dq'dequeueIndex) 32)
+((dq'display))
+(println)
+((dq'dequeueIndex) 6)
+((dq'display))
+(println)
+((dq'dequeueIndex) 27)
+((dq'display))
+(println)
+((dq'dequeueIndex) 12)
+((dq'display))
+(println)
+((dq'dequeueIndex) 21)
+((dq'display))
+(println)
+((dq'dequeueIndex) 54)
+((dq'display))
+(println)
+((dq'dequeueIndex) 14)
+((dq'display))
+(println)
+((dq'dequeueIndex) 40)
+((dq'display))
+(println)
+((dq'dequeueIndex) 49)
+((dq'display))
+(println)
+((dq'dequeueIndex) 30)
+((dq'display))
+(println)
+((dq'dequeueIndex) 36)
+((dq'display))
+(println)
+((dq'dequeueIndex) 50)
+((dq'display))
+(println)
+((dq'dequeueIndex) 20)
+((dq'display))
+(println)
+((dq'dequeueIndex) 33)
+((dq'display))
+(println)
+((dq'dequeueIndex) 10)
+((dq'display))
+(println)
+((dq'dequeueIndex) 39)
+((dq'display))
+(println)
+((dq'dequeueIndex) 40)
+((dq'display))
+(println)
+((dq'dequeueIndex) 43)
+((dq'display))
+(println)
+((dq'dequeueIndex) 41)
+((dq'display))
+(println)
+((dq'dequeueIndex) 33)
+((dq'display))
+(println)
+((dq'dequeueIndex) 32)
+((dq'display))
+(println)
+((dq'dequeueIndex) 32)
+((dq'display))
+(println)
+((dq'dequeueIndex) 32)
+((dq'display))
+(println)
+((dq'dequeueIndex) 11)
+((dq'display))
+(println)
+((dq'dequeueIndex) 3)
+((dq'display))
+(println)
+((dq'dequeueIndex) 17)
+((dq'display))
+(println)
+((dq'dequeueIndex) 12)
+((dq'display))
+(println)
+((dq'dequeueIndex) 15)
+((dq'display))
+(println)
+((dq'dequeueIndex) 7)
+((dq'display))
+(println)
+((dq'dequeueIndex) 31)
+((dq'display))
+(println)
+((dq'dequeueIndex) 2)
+((dq'display))
+(println)
+((dq'dequeueIndex) 23)
+((dq'display))
+(println)
+((dq'dequeueIndex) 1)
+((dq'display))
+(println)
+((dq'dequeueIndex) 16)
+((dq'display))
+(println)
+((dq'dequeueIndex) 27)
+((dq'display))
+(println)
+((dq'dequeueIndex) 11)
+((dq'display))
+(println)
+((dq'dequeueIndex) 12)
+((dq'display))
+(println)
+((dq'dequeueIndex) 5)
+((dq'display))
+(println)
+((dq'dequeueIndex) 3)
+((dq'display))
+(println)
+((dq'dequeueIndex) 8)
+((dq'display))
+(println)
+((dq'dequeueIndex) 17)
+((dq'display))
+(println)
+((dq'dequeueIndex) 17)
+((dq'display))
+(println)
+((dq'dequeueIndex) 7)
+((dq'display))
+(println)
+((dq'dequeueIndex) 3)
+((dq'display))
+(println)
+((dq'dequeueIndex) 8)
+((dq'display))
+(println)
+((dq'dequeueIndex) 9)
+((dq'display))
+(println)
+((dq'dequeueIndex) 16)
+((dq'display))
+(println)
+((dq'dequeueIndex) 5)
+((dq'display))
+(println)
+((dq'dequeueIndex) 7)
+((dq'display))
+(println)
+((dq'dequeueIndex) 12)
+((dq'display))
+(println)
+((dq'dequeueIndex) 1)
+((dq'display))
+(println)
+((dq'dequeueIndex) 2)
+((dq'display))
+(println)
+((dq'dequeueIndex) 7)
+((dq'display))
+(println)
+((dq'dequeueIndex) 8)
+((dq'display))
+(println)
+((dq'dequeueIndex) 4)
+((dq'display))
+(println)
+((dq'dequeueIndex) 6)
+((dq'display))
+(println)
+((dq'dequeueIndex) 2)
+((dq'display))
+(println)
+((dq'dequeueIndex) 5)
+((dq'display))
+(println)
+((dq'dequeueIndex) 1)
+((dq'display))
+(println)
+((dq'dequeueIndex) 2)
+((dq'display))
+(println)
+((dq'dequeueIndex) 2)
+((dq'display))
+(println)
+((dq'dequeueIndex) 0)
+((dq'display))
+(println)
+((dq'dequeueIndex) 0)
+((dq'display))
+(println)
+((dq'display))
+(println)
+((dq'enqueueIndex) 0 84)
+((dq'enqueueIndex) 0 32)
+((dq'enqueueIndex) 0 52)
+((dq'enqueueIndex) 1 70)
+((dq'enqueueIndex) 1 25)
+((dq'enqueueIndex) 0 46)
+((dq'enqueueIndex) 4 60)
+((dq'enqueueIndex) 3 98)
+((dq'enqueueIndex) 0 37)
+((dq'enqueueIndex) 0 36)
+((dq'enqueueIndex) 10 98)
+((dq'enqueueIndex) 10 77)
+((dq'enqueueIndex) 4 75)
+((dq'enqueueIndex) 13 93)
+((dq'enqueueIndex) 8 32)
+((dq'enqueueIndex) 4 45)
+((dq'enqueueIndex) 1 58)
+((dq'enqueueIndex) 11 43)
+((dq'enqueueIndex) 0 11)
+((dq'enqueueIndex) 0 32)
+((dq'enqueueIndex) 3 15)
+((dq'enqueueIndex) 14 85)
+((dq'enqueueIndex) 14 14)
+((dq'enqueueIndex) 19 71)
+((dq'enqueueIndex) 8 92)
+((dq'enqueueIndex) 25 40)
+((dq'enqueueIndex) 24 84)
+((dq'enqueueIndex) 2 31)
+((dq'enqueueIndex) 16 14)
+((dq'enqueueIndex) 5 18)
+((dq'enqueueIndex) 9 49)
+((dq'enqueueIndex) 15 44)
+((dq'enqueueIndex) 32 21)
+((dq'enqueueIndex) 25 98)
+((dq'enqueueIndex) 4 82)
+((dq'enqueueIndex) 8 39)
+((dq'enqueueIndex) 32 91)
+((dq'enqueueIndex) 6 54)
+((dq'enqueueIndex) 36 98)
+((dq'enqueueIndex) 6 37)
+((dq'enqueueIndex) 37 23)
+((dq'enqueueIndex) 27 82)
+((dq'enqueueIndex) 42 76)
+((dq'enqueueIndex) 2 57)
+((dq'enqueueIndex) 35 29)
+((dq'enqueueIndex) 28 19)
+((dq'enqueueIndex) 30 20)
+((dq'enqueueIndex) 23 66)
+((dq'enqueueIndex) 11 32)
+((dq'enqueueIndex) 31 43)
+((dq'enqueueIndex) 3 87)
+((dq'enqueueIndex) 36 93)
+((dq'enqueueIndex) 40 88)
+((dq'enqueueIndex) 22 73)
+((dq'enqueueIndex) 47 63)
+((dq'enqueueIndex) 0 78)
+((dq'enqueueIndex) 42 69)
+((dq'enqueueIndex) 32 75)
+((dq'enqueueIndex) 23 65)
+((dq'enqueueIndex) 15 27)
+((dq'enqueueIndex) 50 89)
+((dq'enqueueIndex) 18 53)
+((dq'enqueueIndex) 62 80)
+((dq'enqueueIndex) 7 31)
+((dq'enqueueIndex) 2 76)
+((dq'enqueueIndex) 40 18)
+((dq'enqueueIndex) 40 38)
+((dq'enqueueIndex) 1 42)
+((dq'enqueueIndex) 12 50)
+((dq'enqueueIndex) 5 13)
+((dq'enqueueIndex) 2 17)
+((dq'enqueueIndex) 57 81)
+((dq'enqueueIndex) 54 42)
+((dq'enqueueIndex) 38 22)
+((dq'enqueueIndex) 73 80)
+((dq'enqueueIndex) 25 82)
+((dq'enqueueIndex) 51 67)
+((dq'enqueueIndex) 23 69)
+((dq'enqueueIndex) 33 47)
+((dq'enqueueIndex) 71 51)
+((dq'enqueueIndex) 12 55)
+((dq'enqueueIndex) 45 78)
+((dq'enqueueIndex) 68 62)
+((dq'enqueueIndex) 10 10)
+((dq'enqueueIndex) 1 27)
+((dq'enqueueIndex) 3 15)
+((dq'enqueueIndex) 24 86)
+((dq'enqueueIndex) 75 12)
+((dq'enqueueIndex) 18 43)
+((dq'enqueueIndex) 15 26)
+((dq'enqueueIndex) 14 55)
+((dq'enqueueIndex) 91 83)
+((dq'display))
+(println)
+((dq'dequeueIndex) 12)
+((dq'display))
+(println)
+((dq'dequeueIndex) 26)
+((dq'display))
+(println)
+((dq'dequeueIndex) 42)
+((dq'display))
+(println)
+((dq'dequeueIndex) 49)
+((dq'display))
+(println)
+((dq'dequeueIndex) 62)
+((dq'display))
+(println)
+((dq'dequeueIndex) 32)
+((dq'display))
+(println)
+((dq'dequeueIndex) 1)
+((dq'display))
+(println)
+((dq'dequeueIndex) 73)
+((dq'display))
+(println)
+((dq'dequeueIndex) 73)
+((dq'display))
+(println)
+((dq'dequeueIndex) 47)
+((dq'display))
+(println)
+((dq'dequeueIndex) 51)
+((dq'display))
+(println)
+((dq'dequeueIndex) 56)
+((dq'display))
+(println)
+((dq'dequeueIndex) 11)
+((dq'display))
+(println)
+((dq'dequeueIndex) 59)
+((dq'display))
+(println)
+((dq'dequeueIndex) 54)
+((dq'display))
+(println)
+((dq'dequeueIndex) 12)
+((dq'display))
+(println)
+((dq'dequeueIndex) 72)
+((dq'display))
+(println)
+((dq'dequeueIndex) 55)
+((dq'display))
+(println)
+((dq'dequeueIndex) 17)
+((dq'display))
+(println)
+((dq'dequeueIndex) 16)
+((dq'display))
+(println)
+((dq'dequeueIndex) 42)
+((dq'display))
+(println)
+((dq'dequeueIndex) 6)
+((dq'display))
+(println)
+((dq'dequeueIndex) 18)
+((dq'display))
+(println)
+((dq'dequeueIndex) 54)
+((dq'display))
+(println)
+((dq'dequeueIndex) 31)
+((dq'display))
+(println)
+((dq'dequeueIndex) 28)
+((dq'display))
+(println)
+((dq'dequeueIndex) 64)
+((dq'display))
+(println)
+((dq'dequeueIndex) 40)
+((dq'display))
+(println)
+((dq'dequeueIndex) 59)
+((dq'display))
+(println)
+((dq'dequeueIndex) 61)
+((dq'display))
+(println)
+((dq'dequeueIndex) 26)
+((dq'display))
+(println)
+((dq'dequeueIndex) 3)
+((dq'display))
+(println)
+((dq'dequeueIndex) 16)
+((dq'display))
+(println)
+((dq'dequeueIndex) 53)
+((dq'display))
+(println)
+((dq'dequeueIndex) 35)
+((dq'display))
+(println)
+((dq'dequeueIndex) 56)
+((dq'display))
+(println)
+((dq'dequeueIndex) 15)
+((dq'display))
+(println)
+((dq'dequeueIndex) 34)
+((dq'display))
+(println)
+((dq'dequeueIndex) 46)
+((dq'display))
+(println)
+((dq'dequeueIndex) 8)
+((dq'display))
+(println)
+((dq'dequeueIndex) 10)
+((dq'display))
+(println)
+((dq'dequeueIndex) 24)
+((dq'display))
+(println)
+((dq'dequeueIndex) 42)
+((dq'display))
+(println)
+((dq'dequeueIndex) 17)
+((dq'display))
+(println)
+((dq'dequeueIndex) 11)
+((dq'display))
+(println)
+((dq'dequeueIndex) 25)
+((dq'display))
+(println)
+((dq'dequeueIndex) 23)
+((dq'display))
+(println)
+((dq'dequeueIndex) 8)
+((dq'display))
+(println)
+((dq'dequeueIndex) 12)
+((dq'display))
+(println)
+((dq'dequeueIndex) 32)
+((dq'display))
+(println)
+((dq'dequeueIndex) 17)
+((dq'display))
+(println)
+((dq'dequeueIndex) 35)
+((dq'display))
+(println)
+((dq'dequeueIndex) 33)
+((dq'display))
+(println)
+((dq'dequeueIndex) 26)
+((dq'display))
+(println)
+((dq'dequeueIndex) 25)
+((dq'display))
+(println)
+((dq'dequeueIndex) 11)
+((dq'display))
+(println)
+((dq'dequeueIndex) 3)
+((dq'display))
+(println)
+((dq'dequeueIndex) 22)
+((dq'display))
+(println)
+((dq'dequeueIndex) 31)
+((dq'display))
+(println)
+((dq'dequeueIndex) 0)
+((dq'display))
+(println)
+((dq'dequeueIndex) 20)
+((dq'display))
+(println)
+((dq'dequeueIndex) 10)
+((dq'display))
+(println)
+((dq'dequeueIndex) 2)
+((dq'display))
+(println)
+((dq'dequeueIndex) 26)
+((dq'display))
+(println)
+((dq'dequeueIndex) 7)
+((dq'display))
+(println)
+((dq'dequeueIndex) 19)
+((dq'display))
+(println)
+((dq'dequeueIndex) 23)
+((dq'display))
+(println)
+((dq'dequeueIndex) 13)
+((dq'display))
+(println)
+((dq'dequeueIndex) 8)
+((dq'display))
+(println)
+((dq'dequeueIndex) 17)
+((dq'display))
+(println)
+((dq'dequeueIndex) 15)
+((dq'display))
+(println)
+((dq'dequeueIndex) 11)
+((dq'display))
+(println)
+((dq'dequeueIndex) 4)
+((dq'display))
+(println)
+((dq'dequeueIndex) 10)
+((dq'display))
+(println)
+((dq'dequeueIndex) 16)
+((dq'display))
+(println)
+((dq'dequeueIndex) 7)
+((dq'display))
+(println)
+((dq'dequeueIndex) 1)
+((dq'display))
+(println)
+((dq'dequeueIndex) 6)
+((dq'display))
+(println)
+((dq'dequeueIndex) 8)
+((dq'display))
+(println)
+((dq'dequeueIndex) 4)
+((dq'display))
+(println)
+((dq'dequeueIndex) 1)
+((dq'display))
+(println)
+((dq'dequeueIndex) 0)
+((dq'display))
+(println)
+((dq'dequeueIndex) 2)
+((dq'display))
+(println)
+((dq'dequeueIndex) 8)
+((dq'display))
+(println)
+((dq'dequeueIndex) 5)
+((dq'display))
+(println)
+((dq'dequeueIndex) 6)
+((dq'display))
+(println)
+((dq'dequeueIndex) 1)
+((dq'display))
+(println)
+((dq'dequeueIndex) 4)
+((dq'display))
+(println)
+((dq'dequeueIndex) 2)
+((dq'display))
+(println)
+((dq'dequeueIndex) 0)
+((dq'display))
+(println)
+((dq'dequeueIndex) 1)
+((dq'display))
+(println)
+((dq'dequeueIndex) 0)
+((dq'display))
+(println)
+------------------------------------
+EXPECTED: 
+[53,96,16,24,47,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,63,76,63,91,71,49,17,98,16,83,33,78,67,32,12,40,18,53,46,95,89,73,35,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,55,52,17,19,53,42,28,58,15,67,56,61,58,90,91,83,37,76,42,50,72,15,88,83,74,75,52,56,49,26]
+[53,96,16,24,47,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,63,76,63,91,71,49,17,98,16,83,33,78,67,32,12,40,18,53,46,95,89,73,35,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,55,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,75,52,56,49,26]
+[53,96,16,24,47,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,63,76,63,91,71,49,17,98,16,83,33,78,67,32,12,40,18,53,46,95,89,73,35,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,75,52,56,49,26]
+[53,96,16,24,47,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,17,98,16,83,33,78,67,32,12,40,18,53,46,95,89,73,35,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,75,52,56,49,26]
+[53,96,16,24,47,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,17,98,16,83,33,78,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,75,52,56,49,26]
+[53,96,16,24,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,17,98,16,83,33,78,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,75,52,56,49,26]
+[53,96,16,24,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,17,98,16,83,33,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,75,52,56,49,26]
+[53,96,16,24,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,17,98,16,83,33,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,75,52,49,26]
+[53,96,16,24,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,98,16,83,33,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,75,52,49,26]
+[53,96,16,24,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,98,16,83,33,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,52,49,26]
+[53,96,16,24,77,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,98,16,83,33,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,52,49,26]
+[53,96,16,24,77,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,98,16,83,33,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,83,37,76,42,50,72,15,88,83,74,52,49,26]
+[53,96,16,24,77,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,98,16,83,33,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,83,37,76,42,50,72,15,88,83,74,52,26]
+[53,96,16,24,77,14,10,36,57,39,53,55,74,66,96,22,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,83,37,76,42,50,72,15,88,83,74,52,26]
+[53,96,16,24,77,14,10,36,57,39,53,55,74,66,96,22,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,83,37,76,42,50,72,15,88,83,74,52,26]
+[53,96,16,24,77,14,10,36,57,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,83,37,76,42,50,72,15,88,83,74,52,26]
+[53,96,16,24,77,14,10,36,57,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,42,28,58,15,67,61,58,90,83,37,76,42,50,72,15,88,83,74,52,26]
+[53,96,16,24,77,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,42,28,58,15,67,61,58,90,83,37,76,42,50,72,15,88,83,74,52,26]
+[53,96,16,24,77,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,42,28,58,15,67,61,58,90,83,37,76,42,50,15,88,83,74,52,26]
+[53,96,16,24,77,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,42,28,58,15,67,58,90,83,37,76,42,50,15,88,83,74,52,26]
+[53,96,16,24,77,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,42,28,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,77,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,42,28,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,77,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,42,28,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,77,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,42,28,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,77,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,49,28,41,11,19,64,95,65,33,21,85,52,17,19,42,28,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,49,28,41,11,19,64,95,65,33,21,85,52,17,19,42,28,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,32,12,40,53,46,95,89,73,65,16,83,37,49,28,41,11,19,64,95,65,33,21,85,52,17,19,42,28,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,32,12,40,53,46,95,89,73,65,16,83,37,49,28,41,11,19,64,95,65,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,32,12,40,53,46,95,89,73,65,16,83,37,49,28,11,19,64,95,65,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,32,12,40,53,46,95,89,73,65,16,83,37,49,28,11,19,64,95,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,32,12,40,53,46,95,89,73,65,83,37,49,28,11,19,64,95,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,32,12,40,53,46,95,89,73,65,83,37,49,28,11,19,64,95,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,32,12,40,53,46,89,73,65,83,37,49,28,11,19,64,95,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,63,91,71,49,98,83,33,32,12,40,53,46,89,73,65,83,37,49,28,11,19,64,95,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,63,91,71,49,98,83,33,12,40,53,46,89,73,65,83,37,49,28,11,19,64,95,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,63,91,71,49,98,83,33,12,40,53,46,89,73,65,83,37,49,28,11,19,64,95,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,91,71,49,98,83,33,12,40,53,46,89,73,65,83,37,49,28,11,19,64,95,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,91,71,49,98,83,33,12,40,53,46,89,73,65,83,37,49,28,11,19,64,95,33,21,85,52,17,42,58,15,67,90,83,37,76,42,50,15,88,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,91,71,49,98,83,33,12,40,53,46,89,73,65,83,37,49,28,11,19,64,95,33,21,85,52,17,42,58,15,67,90,83,37,76,42,15,88,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,91,71,49,98,83,33,12,40,53,46,89,73,65,83,37,49,11,19,64,95,33,21,85,52,17,42,58,15,67,90,83,37,76,42,15,88,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,91,71,49,98,83,33,12,40,53,46,89,73,65,83,37,49,11,19,64,95,33,21,52,17,42,58,15,67,90,83,37,76,42,15,88,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,91,71,49,98,83,33,12,40,53,46,89,73,65,83,37,49,11,19,64,95,33,21,52,17,42,58,15,67,90,83,37,76,42,15,88,74,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,33,21,52,17,42,58,15,67,90,83,37,76,42,15,88,74,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,21,52,17,42,58,15,67,90,83,37,76,42,15,88,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,21,52,17,42,58,15,67,90,83,37,76,42,15,88,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,21,52,17,42,58,15,67,83,37,76,42,15,88,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,21,52,17,42,58,15,67,83,76,42,15,88,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,21,52,17,42,58,15,67,83,76,42,15,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,21,52,17,42,58,15,67,83,76,15,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,21,17,42,58,15,67,83,76,15,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,17,42,58,15,67,83,76,15,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,42,58,15,67,83,76,15,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,58,15,67,83,76,15,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,58,15,67,83,76,15,74,26]
+[96,16,24,10,36,53,55,74,66,40,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,58,15,67,83,76,15,74,26]
+[96,16,24,10,36,53,55,74,66,40,76,91,71,49,98,83,33,53,46,89,73,65,83,37,49,11,19,64,95,58,15,67,83,76,15,74,26]
+[96,16,24,10,36,53,55,74,66,40,76,91,49,98,83,33,53,46,89,73,65,83,37,49,11,19,64,95,58,15,67,83,76,15,74,26]
+[96,16,24,10,36,53,55,74,66,40,76,91,49,98,83,53,46,89,73,65,83,37,49,11,19,64,95,58,15,67,83,76,15,74,26]
+[96,16,24,10,36,53,55,66,40,76,91,49,98,83,53,46,89,73,65,83,37,49,11,19,64,95,58,15,67,83,76,15,74,26]
+[96,16,24,10,36,53,55,66,40,76,91,49,98,83,53,46,89,73,65,83,37,49,11,19,64,95,58,15,67,83,76,74,26]
+[96,16,10,36,53,55,66,40,76,91,49,98,83,53,46,89,73,65,83,37,49,11,19,64,95,58,15,67,83,76,74,26]
+[96,16,10,36,53,55,66,40,76,91,49,98,83,53,46,89,73,65,83,37,49,11,19,95,58,15,67,83,76,74,26]
+[96,10,36,53,55,66,40,76,91,49,98,83,53,46,89,73,65,83,37,49,11,19,95,58,15,67,83,76,74,26]
+[96,10,36,53,55,66,40,76,91,49,98,83,53,46,89,73,83,37,49,11,19,95,58,15,67,83,76,74,26]
+[96,10,36,53,55,66,40,76,91,49,98,83,53,46,89,73,83,37,49,11,19,95,58,15,67,83,76,26]
+[96,10,36,53,55,66,40,76,91,49,98,53,46,89,73,83,37,49,11,19,95,58,15,67,83,76,26]
+[96,10,36,53,55,66,40,76,91,49,98,53,89,73,83,37,49,11,19,95,58,15,67,83,76,26]
+[96,10,36,53,55,40,76,91,49,98,53,89,73,83,37,49,11,19,95,58,15,67,83,76,26]
+[96,10,36,55,40,76,91,49,98,53,89,73,83,37,49,11,19,95,58,15,67,83,76,26]
+[96,10,36,55,40,76,91,49,53,89,73,83,37,49,11,19,95,58,15,67,83,76,26]
+[96,10,36,55,40,76,91,49,53,89,73,83,37,49,11,19,95,15,67,83,76,26]
+[96,10,36,55,40,76,91,49,53,89,73,83,37,49,11,19,95,67,83,76,26]
+[96,10,36,55,40,76,91,53,89,73,83,37,49,11,19,95,67,83,76,26]
+[96,10,36,40,76,91,53,89,73,83,37,49,11,19,95,67,83,76,26]
+[96,10,36,40,76,91,53,89,83,37,49,11,19,95,67,83,76,26]
+[96,10,36,40,76,91,53,89,83,49,11,19,95,67,83,76,26]
+[96,10,36,40,76,91,53,89,83,49,11,19,95,67,83,76]
+[96,10,36,40,76,53,89,83,49,11,19,95,67,83,76]
+[96,10,36,40,76,53,89,49,11,19,95,67,83,76]
+[96,10,36,40,76,53,89,49,11,19,95,67,76]
+[96,36,40,76,53,89,49,11,19,95,67,76]
+[96,36,76,53,89,49,11,19,95,67,76]
+[96,36,76,53,89,49,11,95,67,76]
+[96,36,76,53,89,49,11,95,76]
+[96,36,76,53,49,11,95,76]
+[96,36,76,53,49,11,76]
+[96,36,53,49,11,76]
+[96,36,53,49,11]
+[96,53,49,11]
+[96,53,11]
+[96,53]
+[53]
+[]
+[]
+[78,27,42,15,17,32,76,11,13,57,87,31,10,36,55,31,26,55,82,15,43,50,37,54,18,58,32,86,39,27,37,69,46,53,82,49,52,92,45,75,25,47,65,73,44,98,70,66,32,22,14,14,78,85,75,43,19,38,18,43,82,20,67,60,93,32,98,71,42,69,88,84,81,77,29,62,89,98,12,91,63,84,51,93,23,98,40,21,76,80,80,83]
+[78,27,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,86,39,27,37,69,46,53,82,49,52,92,45,75,25,47,65,73,44,98,70,66,32,22,14,14,78,85,75,43,19,38,18,43,82,20,67,60,93,32,98,71,42,69,88,84,81,77,29,62,89,98,12,91,63,84,51,93,23,98,40,21,76,80,80,83]
+[78,27,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,82,49,52,92,45,75,25,47,65,73,44,98,70,66,32,22,14,14,78,85,75,43,19,38,18,43,82,20,67,60,93,32,98,71,42,69,88,84,81,77,29,62,89,98,12,91,63,84,51,93,23,98,40,21,76,80,80,83]
+[78,27,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,82,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,78,85,75,43,19,38,18,43,82,20,67,60,93,32,98,71,42,69,88,84,81,77,29,62,89,98,12,91,63,84,51,93,23,98,40,21,76,80,80,83]
+[78,27,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,82,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,85,75,43,19,38,18,43,82,20,67,60,93,32,98,71,42,69,88,84,81,77,29,62,89,98,12,91,63,84,51,93,23,98,40,21,76,80,80,83]
+[78,27,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,82,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,85,75,43,19,38,18,43,82,20,67,60,93,32,71,42,69,88,84,81,77,29,62,89,98,12,91,63,84,51,93,23,98,40,21,76,80,80,83]
+[78,27,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,85,75,43,19,38,18,43,82,20,67,60,93,32,71,42,69,88,84,81,77,29,62,89,98,12,91,63,84,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,85,75,43,19,38,18,43,82,20,67,60,93,32,71,42,69,88,84,81,77,29,62,89,98,12,91,63,84,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,85,75,43,19,38,18,43,82,20,67,60,93,32,71,42,69,88,84,81,77,29,62,89,98,12,91,84,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,85,75,43,19,38,18,43,82,20,67,60,93,32,71,42,69,88,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,18,43,82,20,67,60,93,32,71,42,69,88,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,60,93,32,71,42,69,88,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,60,32,71,42,69,88,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,60,32,71,42,69,88,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,60,32,71,42,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,32,71,42,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,55,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,32,71,42,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,55,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,32,71,42,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,55,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,55,26,55,82,15,43,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,55,26,55,82,15,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,55,26,55,82,15,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,52,92,45,75,25,65,73,98,70,66,32,22,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,52,92,75,25,65,73,98,70,66,32,22,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,52,92,75,25,65,73,98,70,66,32,22,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,98,40,21,80,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,52,92,75,25,65,73,98,70,66,32,22,14,75,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,98,40,21,80,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,52,92,75,25,65,73,98,70,66,32,22,14,75,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,40,21,80,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,52,92,75,25,65,73,98,70,66,32,22,14,75,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,40,21,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,75,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,40,21,83]
+[78,42,15,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,75,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,40,21,83]
+[78,42,15,32,76,13,57,87,31,55,26,55,82,15,37,54,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,75,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,40,21,83]
+[78,42,15,32,76,13,57,87,31,55,26,55,82,15,37,54,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,75,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,93,23,40,21,83]
+[78,42,15,32,76,13,57,87,31,55,26,55,82,15,37,54,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,93,23,40,21,83]
+[78,42,15,32,76,13,57,87,31,55,26,55,82,15,37,54,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,31,55,26,55,82,15,37,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,31,55,26,55,82,15,37,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,31,55,26,55,82,15,37,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,38,43,82,20,67,32,71,69,84,81,77,62,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,55,26,55,82,15,37,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,38,43,82,20,67,32,71,69,84,81,77,62,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,55,26,82,15,37,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,38,43,82,20,67,32,71,69,84,81,77,62,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,55,26,82,15,37,32,39,27,37,69,46,53,49,92,75,25,73,98,70,66,32,22,14,38,43,82,20,67,32,71,69,84,81,77,62,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,55,26,82,15,37,32,39,27,37,69,46,53,49,92,75,25,73,98,70,66,32,22,14,38,43,82,20,67,32,71,69,84,81,77,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,55,26,82,15,37,32,39,27,37,46,53,49,92,75,25,73,98,70,66,32,22,14,38,43,82,20,67,32,71,69,84,81,77,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,55,26,82,37,32,39,27,37,46,53,49,92,75,25,73,98,70,66,32,22,14,38,43,82,20,67,32,71,69,84,81,77,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,55,26,82,37,32,39,27,37,46,53,49,92,75,25,73,98,70,32,22,14,38,43,82,20,67,32,71,69,84,81,77,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,55,26,82,37,32,39,27,37,46,53,49,92,75,25,73,70,32,22,14,38,43,82,20,67,32,71,69,84,81,77,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,26,82,37,32,39,27,37,46,53,49,92,75,25,73,70,32,22,14,38,43,82,20,67,32,71,69,84,81,77,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,26,82,37,32,27,37,46,53,49,92,75,25,73,70,32,22,14,38,43,82,20,67,32,71,69,84,81,77,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,26,82,37,32,27,37,46,53,49,92,75,25,73,70,32,22,14,38,43,82,20,67,32,71,84,81,77,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,26,82,37,32,27,37,46,53,49,75,25,73,70,32,22,14,38,43,82,20,67,32,71,84,81,77,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,26,82,37,32,27,37,46,53,49,75,25,73,70,32,22,14,38,43,82,20,67,32,71,84,81,77,98,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,26,82,37,32,27,37,46,53,49,75,25,73,70,32,22,14,38,43,82,20,67,32,71,84,81,98,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,26,82,37,32,27,37,46,53,49,75,25,73,70,32,22,14,38,43,20,67,32,71,84,81,98,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,26,82,37,32,27,37,46,53,49,75,25,73,70,32,22,14,38,20,67,32,71,84,81,98,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,26,82,37,27,37,46,53,49,75,25,73,70,32,22,14,38,20,67,32,71,84,81,98,91,93,23,40,21]
+[78,42,15,76,13,57,87,26,82,37,27,37,46,53,49,75,25,73,70,32,22,14,38,20,67,32,71,84,81,98,91,93,23,40,21]
+[78,42,15,76,13,57,87,26,82,37,27,37,46,53,49,75,25,73,70,32,22,14,20,67,32,71,84,81,98,91,93,23,40,21]
+[78,42,15,76,13,57,87,26,82,37,27,37,46,53,49,75,25,73,70,32,22,14,20,67,32,71,84,81,98,91,93,40,21]
+[42,15,76,13,57,87,26,82,37,27,37,46,53,49,75,25,73,70,32,22,14,20,67,32,71,84,81,98,91,93,40,21]
+[42,15,76,13,57,87,26,82,37,27,37,46,53,49,75,25,73,70,32,22,20,67,32,71,84,81,98,91,93,40,21]
+[42,15,76,13,57,87,26,82,37,27,46,53,49,75,25,73,70,32,22,20,67,32,71,84,81,98,91,93,40,21]
+[42,15,13,57,87,26,82,37,27,46,53,49,75,25,73,70,32,22,20,67,32,71,84,81,98,91,93,40,21]
+[42,15,13,57,87,26,82,37,27,46,53,49,75,25,73,70,32,22,20,67,32,71,84,81,98,91,40,21]
+[42,15,13,57,87,26,82,27,46,53,49,75,25,73,70,32,22,20,67,32,71,84,81,98,91,40,21]
+[42,15,13,57,87,26,82,27,46,53,49,75,25,73,70,32,22,20,67,71,84,81,98,91,40,21]
+[42,15,13,57,87,26,82,27,46,53,49,75,25,73,70,32,22,20,67,71,84,81,98,40,21]
+[42,15,13,57,87,26,82,27,46,53,49,75,25,70,32,22,20,67,71,84,81,98,40,21]
+[42,15,13,57,87,26,82,27,53,49,75,25,70,32,22,20,67,71,84,81,98,40,21]
+[42,15,13,57,87,26,82,27,53,49,75,25,70,32,22,20,67,84,81,98,40,21]
+[42,15,13,57,87,26,82,27,53,49,75,25,70,32,22,67,84,81,98,40,21]
+[42,15,13,57,87,26,82,27,53,49,75,70,32,22,67,84,81,98,40,21]
+[42,15,13,57,26,82,27,53,49,75,70,32,22,67,84,81,98,40,21]
+[42,15,13,57,26,82,27,53,49,75,32,22,67,84,81,98,40,21]
+[42,15,13,57,26,82,27,53,49,75,32,22,67,84,81,98,21]
+[42,15,13,57,26,82,27,49,75,32,22,67,84,81,98,21]
+[42,13,57,26,82,27,49,75,32,22,67,84,81,98,21]
+[42,13,57,26,82,27,75,32,22,67,84,81,98,21]
+[42,13,57,26,82,27,75,32,67,84,81,98,21]
+[42,13,57,26,27,75,32,67,84,81,98,21]
+[42,57,26,27,75,32,67,84,81,98,21]
+[57,26,27,75,32,67,84,81,98,21]
+[57,26,75,32,67,84,81,98,21]
+[57,26,75,32,67,84,81,98]
+[57,26,75,32,67,81,98]
+[57,26,75,32,67,81]
+[57,75,32,67,81]
+[57,75,32,67]
+[57,75,67]
+[75,67]
+[75]
+[]
+------------------------------------
+YOUR RESULTS: 
+[53,96,16,24,47,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,63,76,63,91,71,49,17,98,16,83,33,78,67,32,12,40,18,53,46,95,89,73,35,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,55,52,17,19,53,42,28,58,15,67,56,61,58,90,91,83,37,76,42,50,72,15,88,83,74,75,52,56,49,26]
+[53,96,16,24,47,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,63,76,63,91,71,49,17,98,16,83,33,78,67,32,12,40,18,53,46,95,89,73,35,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,55,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,75,52,56,49,26]
+[53,96,16,24,47,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,63,76,63,91,71,49,17,98,16,83,33,78,67,32,12,40,18,53,46,95,89,73,35,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,75,52,56,49,26]
+[53,96,16,24,47,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,17,98,16,83,33,78,67,32,12,40,18,53,46,95,89,73,35,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,75,52,56,49,26]
+[53,96,16,24,47,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,17,98,16,83,33,78,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,75,52,56,49,26]
+[53,96,16,24,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,17,98,16,83,33,78,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,75,52,56,49,26]
+[53,96,16,24,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,17,98,16,83,33,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,75,52,56,49,26]
+[53,96,16,24,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,17,98,16,83,33,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,75,52,49,26]
+[53,96,16,24,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,98,16,83,33,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,75,52,49,26]
+[53,96,16,24,77,78,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,98,16,83,33,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,52,49,26]
+[53,96,16,24,77,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,98,16,83,33,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,91,83,37,76,42,50,72,15,88,83,74,52,49,26]
+[53,96,16,24,77,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,98,16,83,33,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,83,37,76,42,50,72,15,88,83,74,52,49,26]
+[53,96,16,24,77,14,10,36,57,39,53,55,74,66,96,22,40,85,94,32,76,63,91,71,49,98,16,83,33,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,83,37,76,42,50,72,15,88,83,74,52,26]
+[53,96,16,24,77,14,10,36,57,39,53,55,74,66,96,22,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,18,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,83,37,76,42,50,72,15,88,83,74,52,26]
+[53,96,16,24,77,14,10,36,57,39,53,55,74,66,96,22,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,83,37,76,42,50,72,15,88,83,74,52,26]
+[53,96,16,24,77,14,10,36,57,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,53,42,28,58,15,67,61,58,90,83,37,76,42,50,72,15,88,83,74,52,26]
+[53,96,16,24,77,14,10,36,57,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,42,28,58,15,67,61,58,90,83,37,76,42,50,72,15,88,83,74,52,26]
+[53,96,16,24,77,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,42,28,58,15,67,61,58,90,83,37,76,42,50,72,15,88,83,74,52,26]
+[53,96,16,24,77,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,42,28,58,15,67,61,58,90,83,37,76,42,50,15,88,83,74,52,26]
+[53,96,16,24,77,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,42,28,58,15,67,58,90,83,37,76,42,50,15,88,83,74,52,26]
+[53,96,16,24,77,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,42,28,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,77,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,60,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,42,28,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,77,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,16,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,42,28,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,77,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,49,28,41,11,19,64,95,65,33,21,61,85,52,17,19,42,28,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,77,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,49,28,41,11,19,64,95,65,33,21,85,52,17,19,42,28,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,67,32,12,40,53,46,95,89,73,65,16,83,37,49,28,41,11,19,64,95,65,33,21,85,52,17,19,42,28,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,32,12,40,53,46,95,89,73,65,16,83,37,49,28,41,11,19,64,95,65,33,21,85,52,17,19,42,28,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,32,12,40,53,46,95,89,73,65,16,83,37,49,28,41,11,19,64,95,65,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,32,12,40,53,46,95,89,73,65,16,83,37,49,28,11,19,64,95,65,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,32,12,40,53,46,95,89,73,65,16,83,37,49,28,11,19,64,95,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,39,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,32,12,40,53,46,95,89,73,65,83,37,49,28,11,19,64,95,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,32,12,40,53,46,95,89,73,65,83,37,49,28,11,19,64,95,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,85,32,76,63,91,71,49,98,83,33,32,12,40,53,46,89,73,65,83,37,49,28,11,19,64,95,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,63,91,71,49,98,83,33,32,12,40,53,46,89,73,65,83,37,49,28,11,19,64,95,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,63,91,71,49,98,83,33,12,40,53,46,89,73,65,83,37,49,28,11,19,64,95,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,83,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,63,91,71,49,98,83,33,12,40,53,46,89,73,65,83,37,49,28,11,19,64,95,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,91,71,49,98,83,33,12,40,53,46,89,73,65,83,37,49,28,11,19,64,95,33,21,85,52,17,19,42,58,15,67,90,83,37,76,42,50,15,88,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,91,71,49,98,83,33,12,40,53,46,89,73,65,83,37,49,28,11,19,64,95,33,21,85,52,17,42,58,15,67,90,83,37,76,42,50,15,88,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,91,71,49,98,83,33,12,40,53,46,89,73,65,83,37,49,28,11,19,64,95,33,21,85,52,17,42,58,15,67,90,83,37,76,42,15,88,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,91,71,49,98,83,33,12,40,53,46,89,73,65,83,37,49,11,19,64,95,33,21,85,52,17,42,58,15,67,90,83,37,76,42,15,88,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,91,71,49,98,83,33,12,40,53,46,89,73,65,83,37,49,11,19,64,95,33,21,52,17,42,58,15,67,90,83,37,76,42,15,88,74,52,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,91,71,49,98,83,33,12,40,53,46,89,73,65,83,37,49,11,19,64,95,33,21,52,17,42,58,15,67,90,83,37,76,42,15,88,74,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,33,21,52,17,42,58,15,67,90,83,37,76,42,15,88,74,26]
+[96,16,24,14,10,36,53,55,74,66,96,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,21,52,17,42,58,15,67,90,83,37,76,42,15,88,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,21,52,17,42,58,15,67,90,83,37,76,42,15,88,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,21,52,17,42,58,15,67,83,37,76,42,15,88,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,21,52,17,42,58,15,67,83,76,42,15,88,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,21,52,17,42,58,15,67,83,76,42,15,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,21,52,17,42,58,15,67,83,76,15,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,21,17,42,58,15,67,83,76,15,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,17,42,58,15,67,83,76,15,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,42,58,15,67,83,76,15,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,32,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,58,15,67,83,76,15,74,26]
+[96,16,24,14,10,36,53,55,74,66,40,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,58,15,67,83,76,15,74,26]
+[96,16,24,10,36,53,55,74,66,40,76,91,71,49,98,83,33,40,53,46,89,73,65,83,37,49,11,19,64,95,58,15,67,83,76,15,74,26]
+[96,16,24,10,36,53,55,74,66,40,76,91,71,49,98,83,33,53,46,89,73,65,83,37,49,11,19,64,95,58,15,67,83,76,15,74,26]
+[96,16,24,10,36,53,55,74,66,40,76,91,49,98,83,33,53,46,89,73,65,83,37,49,11,19,64,95,58,15,67,83,76,15,74,26]
+[96,16,24,10,36,53,55,74,66,40,76,91,49,98,83,53,46,89,73,65,83,37,49,11,19,64,95,58,15,67,83,76,15,74,26]
+[96,16,24,10,36,53,55,66,40,76,91,49,98,83,53,46,89,73,65,83,37,49,11,19,64,95,58,15,67,83,76,15,74,26]
+[96,16,24,10,36,53,55,66,40,76,91,49,98,83,53,46,89,73,65,83,37,49,11,19,64,95,58,15,67,83,76,74,26]
+[96,16,10,36,53,55,66,40,76,91,49,98,83,53,46,89,73,65,83,37,49,11,19,64,95,58,15,67,83,76,74,26]
+[96,16,10,36,53,55,66,40,76,91,49,98,83,53,46,89,73,65,83,37,49,11,19,95,58,15,67,83,76,74,26]
+[96,10,36,53,55,66,40,76,91,49,98,83,53,46,89,73,65,83,37,49,11,19,95,58,15,67,83,76,74,26]
+[96,10,36,53,55,66,40,76,91,49,98,83,53,46,89,73,83,37,49,11,19,95,58,15,67,83,76,74,26]
+[96,10,36,53,55,66,40,76,91,49,98,83,53,46,89,73,83,37,49,11,19,95,58,15,67,83,76,26]
+[96,10,36,53,55,66,40,76,91,49,98,53,46,89,73,83,37,49,11,19,95,58,15,67,83,76,26]
+[96,10,36,53,55,66,40,76,91,49,98,53,89,73,83,37,49,11,19,95,58,15,67,83,76,26]
+[96,10,36,53,55,40,76,91,49,98,53,89,73,83,37,49,11,19,95,58,15,67,83,76,26]
+[96,10,36,55,40,76,91,49,98,53,89,73,83,37,49,11,19,95,58,15,67,83,76,26]
+[96,10,36,55,40,76,91,49,53,89,73,83,37,49,11,19,95,58,15,67,83,76,26]
+[96,10,36,55,40,76,91,49,53,89,73,83,37,49,11,19,95,15,67,83,76,26]
+[96,10,36,55,40,76,91,49,53,89,73,83,37,49,11,19,95,67,83,76,26]
+[96,10,36,55,40,76,91,53,89,73,83,37,49,11,19,95,67,83,76,26]
+[96,10,36,40,76,91,53,89,73,83,37,49,11,19,95,67,83,76,26]
+[96,10,36,40,76,91,53,89,83,37,49,11,19,95,67,83,76,26]
+[96,10,36,40,76,91,53,89,83,49,11,19,95,67,83,76,26]
+[96,10,36,40,76,91,53,89,83,49,11,19,95,67,83,76]
+[96,10,36,40,76,53,89,83,49,11,19,95,67,83,76]
+[96,10,36,40,76,53,89,49,11,19,95,67,83,76]
+[96,10,36,40,76,53,89,49,11,19,95,67,76]
+[96,36,40,76,53,89,49,11,19,95,67,76]
+[96,36,76,53,89,49,11,19,95,67,76]
+[96,36,76,53,89,49,11,95,67,76]
+[96,36,76,53,89,49,11,95,76]
+[96,36,76,53,49,11,95,76]
+[96,36,76,53,49,11,76]
+[96,36,53,49,11,76]
+[96,36,53,49,11]
+[96,53,49,11]
+[96,53,11]
+[96,53]
+[53]
+[]
+[]
+[78,27,42,15,17,32,76,11,13,57,87,31,10,36,55,31,26,55,82,15,43,50,37,54,18,58,32,86,39,27,37,69,46,53,82,49,52,92,45,75,25,47,65,73,44,98,70,66,32,22,14,14,78,85,75,43,19,38,18,43,82,20,67,60,93,32,98,71,42,69,88,84,81,77,29,62,89,98,12,91,63,84,51,93,23,98,40,21,76,80,80,83]
+[78,27,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,86,39,27,37,69,46,53,82,49,52,92,45,75,25,47,65,73,44,98,70,66,32,22,14,14,78,85,75,43,19,38,18,43,82,20,67,60,93,32,98,71,42,69,88,84,81,77,29,62,89,98,12,91,63,84,51,93,23,98,40,21,76,80,80,83]
+[78,27,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,82,49,52,92,45,75,25,47,65,73,44,98,70,66,32,22,14,14,78,85,75,43,19,38,18,43,82,20,67,60,93,32,98,71,42,69,88,84,81,77,29,62,89,98,12,91,63,84,51,93,23,98,40,21,76,80,80,83]
+[78,27,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,82,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,78,85,75,43,19,38,18,43,82,20,67,60,93,32,98,71,42,69,88,84,81,77,29,62,89,98,12,91,63,84,51,93,23,98,40,21,76,80,80,83]
+[78,27,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,82,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,85,75,43,19,38,18,43,82,20,67,60,93,32,98,71,42,69,88,84,81,77,29,62,89,98,12,91,63,84,51,93,23,98,40,21,76,80,80,83]
+[78,27,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,82,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,85,75,43,19,38,18,43,82,20,67,60,93,32,71,42,69,88,84,81,77,29,62,89,98,12,91,63,84,51,93,23,98,40,21,76,80,80,83]
+[78,27,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,85,75,43,19,38,18,43,82,20,67,60,93,32,71,42,69,88,84,81,77,29,62,89,98,12,91,63,84,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,85,75,43,19,38,18,43,82,20,67,60,93,32,71,42,69,88,84,81,77,29,62,89,98,12,91,63,84,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,85,75,43,19,38,18,43,82,20,67,60,93,32,71,42,69,88,84,81,77,29,62,89,98,12,91,84,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,85,75,43,19,38,18,43,82,20,67,60,93,32,71,42,69,88,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,18,43,82,20,67,60,93,32,71,42,69,88,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,60,93,32,71,42,69,88,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,36,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,60,32,71,42,69,88,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,60,32,71,42,69,88,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,60,32,71,42,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,55,31,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,32,71,42,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,55,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,32,71,42,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,76,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,55,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,32,71,42,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,55,26,55,82,15,43,50,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,55,26,55,82,15,43,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,55,26,55,82,15,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,11,13,57,87,31,55,26,55,82,15,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,58,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,29,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,52,92,45,75,25,47,65,73,98,70,66,32,22,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,52,92,45,75,25,65,73,98,70,66,32,22,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,52,92,75,25,65,73,98,70,66,32,22,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,98,40,21,80,80,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,52,92,75,25,65,73,98,70,66,32,22,14,75,43,19,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,98,40,21,80,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,52,92,75,25,65,73,98,70,66,32,22,14,75,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,98,40,21,80,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,52,92,75,25,65,73,98,70,66,32,22,14,75,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,40,21,80,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,52,92,75,25,65,73,98,70,66,32,22,14,75,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,40,21,83]
+[78,42,15,17,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,75,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,40,21,83]
+[78,42,15,32,76,13,57,87,31,55,26,55,82,15,37,54,18,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,75,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,40,21,83]
+[78,42,15,32,76,13,57,87,31,55,26,55,82,15,37,54,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,75,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,51,93,23,40,21,83]
+[78,42,15,32,76,13,57,87,31,55,26,55,82,15,37,54,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,75,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,93,23,40,21,83]
+[78,42,15,32,76,13,57,87,31,55,26,55,82,15,37,54,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,93,23,40,21,83]
+[78,42,15,32,76,13,57,87,31,55,26,55,82,15,37,54,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,31,55,26,55,82,15,37,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,43,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,31,55,26,55,82,15,37,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,38,43,82,20,67,32,71,69,84,81,77,62,89,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,31,55,26,55,82,15,37,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,38,43,82,20,67,32,71,69,84,81,77,62,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,55,26,55,82,15,37,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,38,43,82,20,67,32,71,69,84,81,77,62,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,55,26,82,15,37,32,39,27,37,69,46,53,49,92,75,25,65,73,98,70,66,32,22,14,38,43,82,20,67,32,71,69,84,81,77,62,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,55,26,82,15,37,32,39,27,37,69,46,53,49,92,75,25,73,98,70,66,32,22,14,38,43,82,20,67,32,71,69,84,81,77,62,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,55,26,82,15,37,32,39,27,37,69,46,53,49,92,75,25,73,98,70,66,32,22,14,38,43,82,20,67,32,71,69,84,81,77,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,55,26,82,15,37,32,39,27,37,46,53,49,92,75,25,73,98,70,66,32,22,14,38,43,82,20,67,32,71,69,84,81,77,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,55,26,82,37,32,39,27,37,46,53,49,92,75,25,73,98,70,66,32,22,14,38,43,82,20,67,32,71,69,84,81,77,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,55,26,82,37,32,39,27,37,46,53,49,92,75,25,73,98,70,32,22,14,38,43,82,20,67,32,71,69,84,81,77,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,55,26,82,37,32,39,27,37,46,53,49,92,75,25,73,70,32,22,14,38,43,82,20,67,32,71,69,84,81,77,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,26,82,37,32,39,27,37,46,53,49,92,75,25,73,70,32,22,14,38,43,82,20,67,32,71,69,84,81,77,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,26,82,37,32,27,37,46,53,49,92,75,25,73,70,32,22,14,38,43,82,20,67,32,71,69,84,81,77,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,26,82,37,32,27,37,46,53,49,92,75,25,73,70,32,22,14,38,43,82,20,67,32,71,84,81,77,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,26,82,37,32,27,37,46,53,49,75,25,73,70,32,22,14,38,43,82,20,67,32,71,84,81,77,98,12,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,26,82,37,32,27,37,46,53,49,75,25,73,70,32,22,14,38,43,82,20,67,32,71,84,81,77,98,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,26,82,37,32,27,37,46,53,49,75,25,73,70,32,22,14,38,43,82,20,67,32,71,84,81,98,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,26,82,37,32,27,37,46,53,49,75,25,73,70,32,22,14,38,43,20,67,32,71,84,81,98,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,26,82,37,32,27,37,46,53,49,75,25,73,70,32,22,14,38,20,67,32,71,84,81,98,91,93,23,40,21]
+[78,42,15,32,76,13,57,87,26,82,37,27,37,46,53,49,75,25,73,70,32,22,14,38,20,67,32,71,84,81,98,91,93,23,40,21]
+[78,42,15,76,13,57,87,26,82,37,27,37,46,53,49,75,25,73,70,32,22,14,38,20,67,32,71,84,81,98,91,93,23,40,21]
+[78,42,15,76,13,57,87,26,82,37,27,37,46,53,49,75,25,73,70,32,22,14,20,67,32,71,84,81,98,91,93,23,40,21]
+[78,42,15,76,13,57,87,26,82,37,27,37,46,53,49,75,25,73,70,32,22,14,20,67,32,71,84,81,98,91,93,40,21]
+[42,15,76,13,57,87,26,82,37,27,37,46,53,49,75,25,73,70,32,22,14,20,67,32,71,84,81,98,91,93,40,21]
+[42,15,76,13,57,87,26,82,37,27,37,46,53,49,75,25,73,70,32,22,20,67,32,71,84,81,98,91,93,40,21]
+[42,15,76,13,57,87,26,82,37,27,46,53,49,75,25,73,70,32,22,20,67,32,71,84,81,98,91,93,40,21]
+[42,15,13,57,87,26,82,37,27,46,53,49,75,25,73,70,32,22,20,67,32,71,84,81,98,91,93,40,21]
+[42,15,13,57,87,26,82,37,27,46,53,49,75,25,73,70,32,22,20,67,32,71,84,81,98,91,40,21]
+[42,15,13,57,87,26,82,27,46,53,49,75,25,73,70,32,22,20,67,32,71,84,81,98,91,40,21]
+[42,15,13,57,87,26,82,27,46,53,49,75,25,73,70,32,22,20,67,71,84,81,98,91,40,21]
+[42,15,13,57,87,26,82,27,46,53,49,75,25,73,70,32,22,20,67,71,84,81,98,40,21]
+[42,15,13,57,87,26,82,27,46,53,49,75,25,70,32,22,20,67,71,84,81,98,40,21]
+[42,15,13,57,87,26,82,27,53,49,75,25,70,32,22,20,67,71,84,81,98,40,21]
+[42,15,13,57,87,26,82,27,53,49,75,25,70,32,22,20,67,84,81,98,40,21]
+[42,15,13,57,87,26,82,27,53,49,75,25,70,32,22,67,84,81,98,40,21]
+[42,15,13,57,87,26,82,27,53,49,75,70,32,22,67,84,81,98,40,21]
+[42,15,13,57,26,82,27,53,49,75,70,32,22,67,84,81,98,40,21]
+[42,15,13,57,26,82,27,53,49,75,32,22,67,84,81,98,40,21]
+[42,15,13,57,26,82,27,53,49,75,32,22,67,84,81,98,21]
+[42,15,13,57,26,82,27,49,75,32,22,67,84,81,98,21]
+[42,13,57,26,82,27,49,75,32,22,67,84,81,98,21]
+[42,13,57,26,82,27,75,32,22,67,84,81,98,21]
+[42,13,57,26,82,27,75,32,67,84,81,98,21]
+[42,13,57,26,27,75,32,67,84,81,98,21]
+[42,57,26,27,75,32,67,84,81,98,21]
+[57,26,27,75,32,67,84,81,98,21]
+[57,26,75,32,67,84,81,98,21]
+[57,26,75,32,67,84,81,98]
+[57,26,75,32,67,81,98]
+[57,26,75,32,67,81]
+[57,75,32,67,81]
+[57,75,32,67]
+[57,75,67]
+[75,67]
+[75]
+[]
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task3.4.expected and ./tests/task3.4.tmp are identical
+
+
+Testing task3.scm on task3.5. . .
+------------------------------------
+contents of task3.5:
+(include "random.lib")
+(randomSeed 76)
+(define dq (deque))
+(define (upfront dq n)
+    (define value (randomRange 10 100))
+    (cond
+        ((= n 0)
+            ((dq'enqueueFront) value)
+            )
+        ((< (dq'size) 10)
+            ((dq'enqueueFront) value)
+            (upfront dq (- n 1))
+            )
+        (else
+            ((dq'enqueueIndex) (randomRange 2 10) value)
+            (upfront dq (- n 1))
+            )
+        )
+    )
+(define (frontback dq n)
+    (define (remove x mode)
+        (cond
+            ((= x n) (println "...]"))
+            (else
+                (print ((dq mode)) ",")
+                (remove (+ x 1) mode)
+                )
+            )
+        )
+    ;((dq'display)) (println)
+    (print "[")
+    (remove 0 'dequeueFront)
+    (print "[")
+    (remove 0 'dequeueBack)
+    )
+(upfront dq 3037)
+(frontback dq 20)
+------------------------------------
+EXPECTED: 
+[74,91,26,27,50,56,78,67,97,68,98,24,26,78,11,74,68,33,53,78,...]
+[29,43,51,53,82,51,78,78,38,26,42,95,47,22,45,44,97,86,47,96,...]
+------------------------------------
+YOUR RESULTS: 
+[74,91,26,27,50,56,78,67,97,68,98,24,26,78,11,74,68,33,53,78,...]
+[29,43,51,53,82,51,78,78,38,26,42,95,47,22,45,44,97,86,47,96,...]
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task3.5.expected and ./tests/task3.5.tmp are identical
+
+
+Testing task3.scm on task3.6. . .
+------------------------------------
+contents of task3.6:
+(include "random.lib")
+(randomSeed 86)
+(define dq (deque))
+(define (upback dq n)
+    (define value (randomRange 10 100))
+    (cond
+        ((= n 0)
+            ((dq'enqueueBack) value)
+            )
+        (else
+            ((dq'enqueueBack) value)
+            (upback dq (- n 1))
+            )
+        )
+    )
+(define (frontback dq n)
+    (define (remove x mode)
+        (cond
+            ((= x n) (println "...]"))
+            (else
+                (print ((dq mode)) ",")
+                (remove (+ x 1) mode)
+                )
+            )
+        )
+    ;((dq'display)) (println)
+    (print "[")
+    (remove 0 'dequeueFront)
+    (print "[")
+    (remove 0 'dequeueBack)
+    )
+(upback dq 3000)
+(frontback dq 20)
+------------------------------------
+EXPECTED: 
+[81,10,55,10,36,51,56,85,31,31,34,89,52,91,30,52,60,24,15,41,...]
+[19,83,41,93,13,37,39,85,57,46,74,31,77,17,91,12,79,72,82,17,...]
+------------------------------------
+YOUR RESULTS: 
+[81,10,55,10,36,51,56,85,31,31,34,89,52,91,30,52,60,24,15,41,...]
+[19,83,41,93,13,37,39,85,57,46,74,31,77,17,91,12,79,72,82,17,...]
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task3.6.expected and ./tests/task3.6.tmp are identical
+
+
+Testing task3.scm on task3.7. . .
+------------------------------------
+contents of task3.7:
+(include "random.lib")
+(randomSeed 96)
+(define dq (deque))
+(define (upfront dq n)
+    (define value (randomRange 10 100))
+    (cond
+        ((= n 0)
+            ((dq'enqueueFront) value)
+            )
+        ((< (dq'size) 10)
+            ((dq'enqueueFront) value)
+            (upfront dq (- n 1))
+            )
+        (else
+            ((dq'enqueueIndex) (randomRange 2 10) value)
+            (upfront dq (- n 1))
+            )
+        )
+    )
+(define (upback dq n)
+    (define value (randomRange 10 100))
+    (cond
+        ((= n 0)
+            ((dq'enqueueBack) value)
+            )
+        (else
+            ((dq'enqueueBack) value)
+            (upback dq (- n 1))
+            )
+        )
+    )
+(define (downfront dq n)
+    (cond
+        ((= n 0)
+            ((dq'dequeueFront))
+            )
+        (else
+            ((dq'dequeueFront))
+            (downfront dq (- n 1))
+            )
+        )
+    )
+(upfront dq 2520)
+(upback dq 2564)
+(downfront dq 4950)
+((dq'display)) (println)
+------------------------------------
+EXPECTED: 
+[35,30,72,17,33,99,99,55,89,28,81,20,97,59,38,68,84,28,10,50,45,45,41,89,81,21,48,81,34,88,58,60,18,31,68,41,30,67,87,20,85,69,30,83,28,59,51,13,77,52,53,22,88,85,11,69,96,50,51,31,38,99,82,46,30,50,78,51,18,66,61,94,35,82,77,53,41,29,57,19,72,11,31,60,86,33,29,82,73,71,14,11,71,86,48,92,36,27,43,45,83,95,39,19,77,17,63,19,37,20,28,99,21,50,59,98,74,79,81,47,50,85,49,21,71,88,14,98,16,47,43,89,42,73,99]
+------------------------------------
+YOUR RESULTS: 
+[35,30,72,17,33,99,99,55,89,28,81,20,97,59,38,68,84,28,10,50,45,45,41,89,81,21,48,81,34,88,58,60,18,31,68,41,30,67,87,20,85,69,30,83,28,59,51,13,77,52,53,22,88,85,11,69,96,50,51,31,38,99,82,46,30,50,78,51,18,66,61,94,35,82,77,53,41,29,57,19,72,11,31,60,86,33,29,82,73,71,14,11,71,86,48,92,36,27,43,45,83,95,39,19,77,17,63,19,37,20,28,99,21,50,59,98,74,79,81,47,50,85,49,21,71,88,14,98,16,47,43,89,42,73,99]
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task3.7.expected and ./tests/task3.7.tmp are identical
+
+
+Testing task3.scm on task3.8. . .
+------------------------------------
+contents of task3.8:
+(include "random.lib")
+(randomSeed 106)
+(define dq (deque))
+(define (upback dq n)
+    (define value (randomRange 10 100))
+    (cond
+        ((= n 0)
+            ((dq'enqueueBack) value)
+            )
+        (else
+            ((dq'enqueueBack) value)
+            (upback dq (- n 1))
+            )
+        )
+    )
+(define (upfront dq n)
+    (define value (randomRange 10 100))
+    (cond
+        ((= n 0)
+            ((dq'enqueueFront) value)
+            )
+        ((< (dq'size) 10)
+            ((dq'enqueueFront) value)
+            (upfront dq (- n 1))
+            )
+        (else
+            ((dq'enqueueIndex) (randomRange 2 10) value)
+            (upfront dq (- n 1))
+            )
+        )
+    )
+(define (downback dq n)
+    (cond
+        ((or (= n 0) (< (dq'size) 10))
+            ((dq'dequeueIndex) 0)
+            )
+        (else
+            ((dq'dequeueIndex) (- (dq'size) (randomRange 2 10)))
+            (downback dq (- n 1))
+            )
+        )
+    )
+(upback dq 1270)
+(upfront dq 1299)
+(downback dq 2450)
+((dq'display)) (println)
+------------------------------------
+EXPECTED: 
+[97,78,54,47,48,33,86,57,40,96,54,67,51,20,53,69,16,74,80,90,31,88,15,37,22,97,86,59,84,47,52,20,31,50,24,71,84,39,73,33,48,41,12,79,71,46,40,25,21,24,11,58,71,62,42,11,77,15,94,71,90,62,46,45,85,38,91,26,36,23,15,41,27,95,67,78,87,89,29,50,49,54,87,99,82,54,80,58,33,60,75,28,11,15,44,78,81,34,39,22,79,10,40,69,57,48,39,36,47,49,35,23,47,43,83,61,32,19,69,39]
+------------------------------------
+YOUR RESULTS: 
+[97,78,54,47,48,33,86,57,40,96,54,67,51,20,53,69,16,74,80,90,31,88,15,37,22,97,86,59,84,47,52,20,31,50,24,71,84,39,73,33,48,41,12,79,71,46,40,25,21,24,11,58,71,62,42,11,77,15,94,71,90,62,46,45,85,38,91,26,36,23,15,41,27,95,67,78,87,89,29,50,49,54,87,99,82,54,80,58,33,60,75,28,11,15,44,78,81,34,39,22,79,10,40,69,57,48,39,36,47,49,35,23,47,43,83,61,32,19,69,39]
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task3.8.expected and ./tests/task3.8.tmp are identical
+
+
+Testing task3.scm on task3.9. . .
+------------------------------------
+contents of task3.9:
+(include "random.lib")
+(randomSeed 116)
+(define dq (deque))
+(define (upfront dq n)
+    (define value (randomRange 10 100))
+    (cond
+        ((= n 0)
+            ((dq'enqueueFront) value)
+            )
+        ((< (dq'size) 10)
+            ((dq'enqueueFront) value)
+            (upfront dq (- n 1))
+            )
+        (else
+            ((dq'enqueueIndex) (randomRange 2 10) value)
+            (upfront dq (- n 1))
+            )
+        )
+    )
+(define (upback dq n)
+    (define value (randomRange 10 100))
+    (cond
+        ((= n 0)
+            ((dq'enqueueBack) value)
+            )
+        (else
+            ((dq'enqueueBack) value)
+            (upback dq (- n 1))
+            )
+        )
+    )
+(define (downback dq n)
+    (cond
+        ((or (= n 0) (< (dq'size) 10))
+            ((dq'dequeueIndex) 0)
+            )
+        (else
+            ((dq'dequeueIndex) (- (dq'size) (randomRange 2 10)))
+            (downback dq (- n 1))
+            )
+        )
+    )
+(define (downfront dq n)
+    (cond
+        ((= n 0)
+            ((dq'dequeueFront))
+            )
+        (else
+            ((dq'dequeueFront))
+            (downfront dq (- n 1))
+            )
+        )
+    )
+(upback dq 1266)
+(upfront dq 1254)
+(downback dq 1245)
+(downfront dq 1245)
+((dq'display)) (println)
+------------------------------------
+EXPECTED: 
+[19,28,50,15,36,38,50,93,84,64,39,18,98,90,41,72,46,36,15,32,11,52,53,12,87,30,85,14,25,93]
+------------------------------------
+YOUR RESULTS: 
+[19,28,50,15,36,38,50,93,84,64,39,18,98,90,41,72,46,36,15,32,11,52,53,12,87,30,85,14,25,93]
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task3.9.expected and ./tests/task3.9.tmp are identical
+
+
+-----------------------------------------------------------------------
+TESTING TASK 4
+-----------------------------------------------------------------------
+
+Testing task4.scm on task4.0. . .
+------------------------------------
+contents of task4.0:
+(define input-1 (make-wire))
+(define input-2 (make-wire))
+(define sum (make-wire))
+(define carry (make-wire))
+(probe 'sum sum)
+(probe 'carry carry)
+(half-adder input-1 input-2 sum carry)
+(set-signal! input-1 1)
+(propagate)
+(set-signal! input-2 1)
+(propagate)
+(print "\nsum is " (get-signal sum))
+(print "\ncarry is " (get-signal carry))
+(println)
+------------------------------------
+EXPECTED: 
+
+sum 0  New-value = 0
+carry 0  New-value = 0
+carry 6  New-value = 1
+sum 6  New-value = 1
+carry 12  New-value = 0
+sum 12  New-value = 0
+sum 18  New-value = 1
+sum 24  New-value = 0
+sum 30  New-value = 1
+carry 42  New-value = 1
+sum 60  New-value = 0
+sum is 0
+carry is 1
+------------------------------------
+YOUR RESULTS: 
+
+sum 0  New-value = 0
+carry 0  New-value = 0
+carry 6  New-value = 1
+sum 6  New-value = 1
+carry 12  New-value = 0
+sum 12  New-value = 0
+sum 18  New-value = 1
+sum 24  New-value = 0
+sum 30  New-value = 1
+carry 42  New-value = 1
+sum 60  New-value = 0
+sum is 0
+carry is 1
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task4.0.expected and ./tests/task4.0.tmp are identical
+
+
+Testing task4.scm on task4.1. . .
+------------------------------------
+contents of task4.1:
+(define input-1 (make-wire))
+(define input-2 (make-wire))
+(define sum (make-wire))
+(define carry (make-wire))
+(probe 'sum sum)
+(probe 'carry carry)
+(half-adder input-1 input-2 sum carry)
+(set-signal! input-1 0)
+(propagate)
+(set-signal! input-2 0)
+(propagate)
+(print "\nsum is " (get-signal sum))
+(print "\ncarry is " (get-signal carry))
+(println)
+------------------------------------
+EXPECTED: 
+
+sum 0  New-value = 0
+carry 0  New-value = 0
+carry 6  New-value = 1
+sum 6  New-value = 1
+carry 12  New-value = 0
+sum 12  New-value = 0
+sum 18  New-value = 1
+sum 24  New-value = 0
+sum is 0
+carry is 0
+------------------------------------
+YOUR RESULTS: 
+
+sum 0  New-value = 0
+carry 0  New-value = 0
+carry 6  New-value = 1
+sum 6  New-value = 1
+carry 12  New-value = 0
+sum 12  New-value = 0
+sum 18  New-value = 1
+sum 24  New-value = 0
+sum is 0
+carry is 0
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task4.1.expected and ./tests/task4.1.tmp are identical
+
+
+Testing task4.scm on task4.2. . .
+------------------------------------
+contents of task4.2:
+(define input-1 (make-wire))
+(define input-2 (make-wire))
+(define sum (make-wire))
+(define carry (make-wire))
+(probe 'sum sum)
+(probe 'carry carry)
+(half-adder input-1 input-2 sum carry)
+(set-signal! input-1 0)
+(propagate)
+(set-signal! input-2 1)
+(propagate)
+(print "\nsum is " (get-signal sum))
+(print "\ncarry is " (get-signal carry))
+(println)
+------------------------------------
+EXPECTED: 
+
+sum 0  New-value = 0
+carry 0  New-value = 0
+carry 6  New-value = 1
+sum 6  New-value = 1
+carry 12  New-value = 0
+sum 12  New-value = 0
+sum 18  New-value = 1
+sum 24  New-value = 0
+sum 48  New-value = 1
+sum is 1
+carry is 0
+------------------------------------
+YOUR RESULTS: 
+
+sum 0  New-value = 0
+carry 0  New-value = 0
+carry 6  New-value = 1
+sum 6  New-value = 1
+carry 12  New-value = 0
+sum 12  New-value = 0
+sum 18  New-value = 1
+sum 24  New-value = 0
+sum 48  New-value = 1
+sum is 1
+carry is 0
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task4.2.expected and ./tests/task4.2.tmp are identical
+
+
+Testing task4.scm on task4.3. . .
+------------------------------------
+contents of task4.3:
+(define input-1 (make-wire))
+(define input-2 (make-wire))
+(define sum (make-wire))
+(define carry (make-wire))
+(probe 'sum sum)
+(probe 'carry carry)
+(half-adder input-1 input-2 sum carry)
+(set-signal! input-1 1)
+(propagate)
+(set-signal! input-2 0)
+(propagate)
+(print "\nsum is " (get-signal sum))
+(print "\ncarry is " (get-signal carry))
+(println)
+------------------------------------
+EXPECTED: 
+
+sum 0  New-value = 0
+carry 0  New-value = 0
+carry 6  New-value = 1
+sum 6  New-value = 1
+carry 12  New-value = 0
+sum 12  New-value = 0
+sum 18  New-value = 1
+sum 24  New-value = 0
+sum 30  New-value = 1
+sum is 1
+carry is 0
+------------------------------------
+YOUR RESULTS: 
+
+sum 0  New-value = 0
+carry 0  New-value = 0
+carry 6  New-value = 1
+sum 6  New-value = 1
+carry 12  New-value = 0
+sum 12  New-value = 0
+sum 18  New-value = 1
+sum 24  New-value = 0
+sum 30  New-value = 1
+sum is 1
+carry is 0
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task4.3.expected and ./tests/task4.3.tmp are identical
+
+
+Testing task4.scm on task4.4. . .
+------------------------------------
+contents of task4.4:
+(define a (make-wire))
+(define b (make-wire))
+(define out (make-wire))
+(probe 'out out)
+(and-gate a b out)
+(print "\n---------------")
+(print "\n0 AND 0")
+(print "\n---------------")
+(set-signal! a 0)
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n0 AND 1")
+(print "\n---------------")
+(set-signal! b 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 AND 1")
+(print "\n---------------")
+(set-signal! a 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 AND 0")
+(print "\n---------------")
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(println)
+------------------------------------
+EXPECTED: 
+
+out 0  New-value = 0
+---------------
+0 AND 0
+---------------
+out 6  New-value = 1
+out 12  New-value = 0
+output is 0
+---------------
+0 AND 1
+---------------
+output is 0
+---------------
+1 AND 1
+---------------
+out 30  New-value = 1
+output is 1
+---------------
+1 AND 0
+---------------
+out 42  New-value = 0
+output is 0
+------------------------------------
+YOUR RESULTS: 
+
+out 0  New-value = 0
+---------------
+0 AND 0
+---------------
+out 6  New-value = 1
+out 12  New-value = 0
+output is 0
+---------------
+0 AND 1
+---------------
+output is 0
+---------------
+1 AND 1
+---------------
+out 30  New-value = 1
+output is 1
+---------------
+1 AND 0
+---------------
+out 42  New-value = 0
+output is 0
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task4.4.expected and ./tests/task4.4.tmp are identical
+
+
+Testing task4.scm on task4.5. . .
+------------------------------------
+contents of task4.5:
+(define a (make-wire))
+(define b (make-wire))
+(define out (make-wire))
+(probe 'out out)
+(or-gate a b out)
+(print "\n---------------")
+(print "\n0 OR 0")
+(print "\n---------------")
+(set-signal! a 0)
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n0 OR 1")
+(print "\n---------------")
+(set-signal! b 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 OR 1")
+(print "\n---------------")
+(set-signal! a 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 OR 0")
+(print "\n---------------")
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(println)
+------------------------------------
+EXPECTED: 
+
+out 0  New-value = 0
+---------------
+0 OR 0
+---------------
+out 6  New-value = 1
+out 12  New-value = 0
+output is 0
+---------------
+0 OR 1
+---------------
+out 24  New-value = 1
+output is 1
+---------------
+1 OR 1
+---------------
+output is 1
+---------------
+1 OR 0
+---------------
+output is 1
+------------------------------------
+YOUR RESULTS: 
+
+out 0  New-value = 0
+---------------
+0 OR 0
+---------------
+out 6  New-value = 1
+out 12  New-value = 0
+output is 0
+---------------
+0 OR 1
+---------------
+out 24  New-value = 1
+output is 1
+---------------
+1 OR 1
+---------------
+output is 1
+---------------
+1 OR 0
+---------------
+output is 1
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task4.5.expected and ./tests/task4.5.tmp are identical
+
+
+Testing task4.scm on task4.6. . .
+------------------------------------
+contents of task4.6:
+(define a (make-wire))
+(define b (make-wire))
+(define out (make-wire))
+(probe 'out out)
+(xor-gate a b out)
+(print "\n---------------")
+(print "\n0 XOR 0")
+(print "\n---------------")
+(set-signal! a 0)
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n0 XOR 1")
+(print "\n---------------")
+(set-signal! b 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 XOR 1")
+(print "\n---------------")
+(set-signal! a 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 XOR 0")
+(print "\n---------------")
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(println)
+------------------------------------
+EXPECTED: 
+
+out 0  New-value = 0
+---------------
+0 XOR 0
+---------------
+out 6  New-value = 1
+out 12  New-value = 0
+output is 0
+---------------
+0 XOR 1
+---------------
+out 24  New-value = 1
+output is 1
+---------------
+1 XOR 1
+---------------
+out 42  New-value = 0
+output is 0
+---------------
+1 XOR 0
+---------------
+out 60  New-value = 1
+output is 1
+------------------------------------
+YOUR RESULTS: 
+
+out 0  New-value = 0
+---------------
+0 XOR 0
+---------------
+out 6  New-value = 1
+out 12  New-value = 0
+output is 0
+---------------
+0 XOR 1
+---------------
+out 24  New-value = 1
+output is 1
+---------------
+1 XOR 1
+---------------
+out 42  New-value = 0
+output is 0
+---------------
+1 XOR 0
+---------------
+out 60  New-value = 1
+output is 1
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task4.6.expected and ./tests/task4.6.tmp are identical
+
+
+Testing task4.scm on task4.7. . .
+------------------------------------
+contents of task4.7:
+(define a (make-wire))
+(define b (make-wire))
+(define out (make-wire))
+(probe 'out out)
+(nor-gate a b out)
+(print "\n---------------")
+(print "\n0 NOR 0")
+(print "\n---------------")
+(set-signal! a 0)
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n0 NOR 1")
+(print "\n---------------")
+(set-signal! b 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 NOR 1")
+(print "\n---------------")
+(set-signal! a 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 NOR 0")
+(print "\n---------------")
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(println)
+------------------------------------
+EXPECTED: 
+
+out 0  New-value = 0
+---------------
+0 NOR 0
+---------------
+out 6  New-value = 1
+out 12  New-value = 0
+out 18  New-value = 1
+output is 1
+---------------
+0 NOR 1
+---------------
+out 36  New-value = 0
+output is 0
+---------------
+1 NOR 1
+---------------
+output is 0
+---------------
+1 NOR 0
+---------------
+output is 0
+------------------------------------
+YOUR RESULTS: 
+
+out 0  New-value = 0
+---------------
+0 NOR 0
+---------------
+out 6  New-value = 1
+out 12  New-value = 0
+out 18  New-value = 1
+output is 1
+---------------
+0 NOR 1
+---------------
+out 36  New-value = 0
+output is 0
+---------------
+1 NOR 1
+---------------
+output is 0
+---------------
+1 NOR 0
+---------------
+output is 0
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task4.7.expected and ./tests/task4.7.tmp are identical
+
+
+Testing task4.scm on task4.8. . .
+------------------------------------
+contents of task4.8:
+(define a (make-wire))
+(define b (make-wire))
+(define out (make-wire))
+(probe 'out out)
+(xnor-gate a b out)
+(print "\n---------------")
+(print "\n0 XNOR 0")
+(print "\n---------------")
+(set-signal! a 0)
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n0 XNOR 1")
+(print "\n---------------")
+(set-signal! b 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 XNOR 1")
+(print "\n---------------")
+(set-signal! a 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 XNOR 0")
+(print "\n---------------")
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(println)
+------------------------------------
+EXPECTED: 
+
+out 0  New-value = 0
+---------------
+0 XNOR 0
+---------------
+out 6  New-value = 1
+out 12  New-value = 0
+out 18  New-value = 1
+output is 1
+---------------
+0 XNOR 1
+---------------
+out 36  New-value = 0
+output is 0
+---------------
+1 XNOR 1
+---------------
+out 48  New-value = 1
+output is 1
+---------------
+1 XNOR 0
+---------------
+out 60  New-value = 0
+output is 0
+------------------------------------
+YOUR RESULTS: 
+
+out 0  New-value = 0
+---------------
+0 XNOR 0
+---------------
+out 6  New-value = 1
+out 12  New-value = 0
+out 18  New-value = 1
+output is 1
+---------------
+0 XNOR 1
+---------------
+out 36  New-value = 0
+output is 0
+---------------
+1 XNOR 1
+---------------
+out 48  New-value = 1
+output is 1
+---------------
+1 XNOR 0
+---------------
+out 60  New-value = 0
+output is 0
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task4.8.expected and ./tests/task4.8.tmp are identical
+
+
+Testing task4.scm on task4.9. . .
+------------------------------------
+contents of task4.9:
+(define input-1 (make-wire))
+(define input-2 (make-wire))
+(define sum (make-wire))
+(define carry (make-wire))
+(probe 'sum sum)
+(probe 'carry carry)
+(half-adder input-1 input-2 sum carry)
+(set-signal! input-1 1)
+(propagate)
+(set-signal! input-2 1)
+(propagate)
+(print "\nsum is " (get-signal sum))
+(print "\ncarry is " (get-signal carry))
+(println)
+------------------------------------
+EXPECTED: 
+
+sum 0  New-value = 0
+carry 0  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 12  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 12  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 18  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+sum 24  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+sum 30  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 42  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 60  New-value = 0
+NAND active!
+sum is 0
+carry is 1
+------------------------------------
+YOUR RESULTS: 
+
+sum 0  New-value = 0
+carry 0  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 12  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 12  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 18  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+sum 24  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+sum 30  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 42  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 60  New-value = 0
+NAND active!
+sum is 0
+carry is 1
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task4.9.expected and ./tests/task4.9.tmp are identical
+
+
+Testing task4.scm on task4.10. . .
+------------------------------------
+contents of task4.10:
+(define input-1 (make-wire))
+(define input-2 (make-wire))
+(define sum (make-wire))
+(define carry (make-wire))
+(probe 'sum sum)
+(probe 'carry carry)
+(half-adder input-1 input-2 sum carry)
+(set-signal! input-1 0)
+(propagate)
+(set-signal! input-2 0)
+(propagate)
+(print "\nsum is " (get-signal sum))
+(print "\ncarry is " (get-signal carry))
+(println)
+------------------------------------
+EXPECTED: 
+
+sum 0  New-value = 0
+carry 0  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 12  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 12  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 18  New-value = 1
+NAND active!
+NAND active!
+sum 24  New-value = 0
+NAND active!
+NAND active!
+sum is 0
+carry is 0
+------------------------------------
+YOUR RESULTS: 
+
+sum 0  New-value = 0
+carry 0  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 12  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 12  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 18  New-value = 1
+NAND active!
+NAND active!
+sum 24  New-value = 0
+NAND active!
+NAND active!
+sum is 0
+carry is 0
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task4.10.expected and ./tests/task4.10.tmp are identical
+
+
+Testing task4.scm on task4.11. . .
+------------------------------------
+contents of task4.11:
+(define input-1 (make-wire))
+(define input-2 (make-wire))
+(define sum (make-wire))
+(define carry (make-wire))
+(probe 'sum sum)
+(probe 'carry carry)
+(half-adder input-1 input-2 sum carry)
+(set-signal! input-1 0)
+(propagate)
+(set-signal! input-2 1)
+(propagate)
+(print "\nsum is " (get-signal sum))
+(print "\ncarry is " (get-signal carry))
+(println)
+------------------------------------
+EXPECTED: 
+
+sum 0  New-value = 0
+carry 0  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 12  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 12  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 18  New-value = 1
+NAND active!
+NAND active!
+sum 24  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 48  New-value = 1
+NAND active!
+sum is 1
+carry is 0
+------------------------------------
+YOUR RESULTS: 
+
+sum 0  New-value = 0
+carry 0  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 12  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 12  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 18  New-value = 1
+NAND active!
+NAND active!
+sum 24  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 48  New-value = 1
+NAND active!
+sum is 1
+carry is 0
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task4.11.expected and ./tests/task4.11.tmp are identical
+
+
+Testing task4.scm on task4.12. . .
+------------------------------------
+contents of task4.12:
+(define input-1 (make-wire))
+(define input-2 (make-wire))
+(define sum (make-wire))
+(define carry (make-wire))
+(probe 'sum sum)
+(probe 'carry carry)
+(half-adder input-1 input-2 sum carry)
+(set-signal! input-1 1)
+(propagate)
+(set-signal! input-2 0)
+(propagate)
+(print "\nsum is " (get-signal sum))
+(print "\ncarry is " (get-signal carry))
+(println)
+------------------------------------
+EXPECTED: 
+
+sum 0  New-value = 0
+carry 0  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 12  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 12  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 18  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+sum 24  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+sum 30  New-value = 1
+NAND active!
+sum is 1
+carry is 0
+------------------------------------
+YOUR RESULTS: 
+
+sum 0  New-value = 0
+carry 0  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 12  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 12  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 18  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+sum 24  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+sum 30  New-value = 1
+NAND active!
+sum is 1
+carry is 0
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task4.12.expected and ./tests/task4.12.tmp are identical
+
+
+Testing task4.scm on task4.13. . .
+------------------------------------
+contents of task4.13:
+(define a (make-wire))
+(define b (make-wire))
+(define out (make-wire))
+(probe 'out out)
+(and-gate a b out)
+(print "\n---------------")
+(print "\n0 AND 0")
+(print "\n---------------")
+(set-signal! a 0)
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n0 AND 1")
+(print "\n---------------")
+(set-signal! b 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 AND 1")
+(print "\n---------------")
+(set-signal! a 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 AND 0")
+(print "\n---------------")
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(println)
+------------------------------------
+EXPECTED: 
+
+out 0  New-value = 0
+---------------
+0 AND 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+out 6  New-value = 1
+NAND active!
+NAND active!
+out 12  New-value = 0
+NAND active!
+output is 0
+---------------
+0 AND 1
+---------------
+NAND active!
+output is 0
+---------------
+1 AND 1
+---------------
+NAND active!
+NAND active!
+out 30  New-value = 1
+NAND active!
+output is 1
+---------------
+1 AND 0
+---------------
+NAND active!
+NAND active!
+out 42  New-value = 0
+NAND active!
+output is 0
+------------------------------------
+YOUR RESULTS: 
+
+out 0  New-value = 0
+---------------
+0 AND 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+out 6  New-value = 1
+NAND active!
+NAND active!
+out 12  New-value = 0
+NAND active!
+output is 0
+---------------
+0 AND 1
+---------------
+NAND active!
+output is 0
+---------------
+1 AND 1
+---------------
+NAND active!
+NAND active!
+out 30  New-value = 1
+NAND active!
+output is 1
+---------------
+1 AND 0
+---------------
+NAND active!
+NAND active!
+out 42  New-value = 0
+NAND active!
+output is 0
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task4.13.expected and ./tests/task4.13.tmp are identical
+
+
+Testing task4.scm on task4.14. . .
+------------------------------------
+contents of task4.14:
+(define a (make-wire))
+(define b (make-wire))
+(define out (make-wire))
+(probe 'out out)
+(or-gate a b out)
+(print "\n---------------")
+(print "\n0 OR 0")
+(print "\n---------------")
+(set-signal! a 0)
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n0 OR 1")
+(print "\n---------------")
+(set-signal! b 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 OR 1")
+(print "\n---------------")
+(set-signal! a 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 OR 0")
+(print "\n---------------")
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(println)
+------------------------------------
+EXPECTED: 
+
+out 0  New-value = 0
+---------------
+0 OR 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+out 12  New-value = 0
+output is 0
+---------------
+0 OR 1
+---------------
+NAND active!
+NAND active!
+NAND active!
+out 24  New-value = 1
+output is 1
+---------------
+1 OR 1
+---------------
+NAND active!
+NAND active!
+NAND active!
+output is 1
+---------------
+1 OR 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+output is 1
+------------------------------------
+YOUR RESULTS: 
+
+out 0  New-value = 0
+---------------
+0 OR 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+out 12  New-value = 0
+output is 0
+---------------
+0 OR 1
+---------------
+NAND active!
+NAND active!
+NAND active!
+out 24  New-value = 1
+output is 1
+---------------
+1 OR 1
+---------------
+NAND active!
+NAND active!
+NAND active!
+output is 1
+---------------
+1 OR 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+output is 1
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task4.14.expected and ./tests/task4.14.tmp are identical
+
+
+Testing task4.scm on task4.15. . .
+------------------------------------
+contents of task4.15:
+(define a (make-wire))
+(define b (make-wire))
+(define out (make-wire))
+(probe 'out out)
+(xor-gate a b out)
+(print "\n---------------")
+(print "\n0 XOR 0")
+(print "\n---------------")
+(set-signal! a 0)
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n0 XOR 1")
+(print "\n---------------")
+(set-signal! b 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 XOR 1")
+(print "\n---------------")
+(set-signal! a 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 XOR 0")
+(print "\n---------------")
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(println)
+------------------------------------
+EXPECTED: 
+
+out 0  New-value = 0
+---------------
+0 XOR 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 12  New-value = 0
+output is 0
+---------------
+0 XOR 1
+---------------
+NAND active!
+NAND active!
+NAND active!
+out 24  New-value = 1
+output is 1
+---------------
+1 XOR 1
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 42  New-value = 0
+output is 0
+---------------
+1 XOR 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 60  New-value = 1
+output is 1
+------------------------------------
+YOUR RESULTS: 
+
+out 0  New-value = 0
+---------------
+0 XOR 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 12  New-value = 0
+output is 0
+---------------
+0 XOR 1
+---------------
+NAND active!
+NAND active!
+NAND active!
+out 24  New-value = 1
+output is 1
+---------------
+1 XOR 1
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 42  New-value = 0
+output is 0
+---------------
+1 XOR 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 60  New-value = 1
+output is 1
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task4.15.expected and ./tests/task4.15.tmp are identical
+
+
+Testing task4.scm on task4.16. . .
+------------------------------------
+contents of task4.16:
+(define a (make-wire))
+(define b (make-wire))
+(define out (make-wire))
+(probe 'out out)
+(nor-gate a b out)
+(print "\n---------------")
+(print "\n0 NOR 0")
+(print "\n---------------")
+(set-signal! a 0)
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n0 NOR 1")
+(print "\n---------------")
+(set-signal! b 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 NOR 1")
+(print "\n---------------")
+(set-signal! a 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 NOR 0")
+(print "\n---------------")
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(println)
+------------------------------------
+EXPECTED: 
+
+out 0  New-value = 0
+---------------
+0 NOR 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 12  New-value = 0
+NAND active!
+NAND active!
+out 18  New-value = 1
+NAND active!
+output is 1
+---------------
+0 NOR 1
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 36  New-value = 0
+NAND active!
+output is 0
+---------------
+1 NOR 1
+---------------
+NAND active!
+NAND active!
+NAND active!
+output is 0
+---------------
+1 NOR 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+output is 0
+------------------------------------
+YOUR RESULTS: 
+
+out 0  New-value = 0
+---------------
+0 NOR 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 12  New-value = 0
+NAND active!
+NAND active!
+out 18  New-value = 1
+NAND active!
+output is 1
+---------------
+0 NOR 1
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 36  New-value = 0
+NAND active!
+output is 0
+---------------
+1 NOR 1
+---------------
+NAND active!
+NAND active!
+NAND active!
+output is 0
+---------------
+1 NOR 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+output is 0
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task4.16.expected and ./tests/task4.16.tmp are identical
+
+
+Testing task4.scm on task4.17. . .
+------------------------------------
+contents of task4.17:
+(define a (make-wire))
+(define b (make-wire))
+(define out (make-wire))
+(probe 'out out)
+(xnor-gate a b out)
+(print "\n---------------")
+(print "\n0 XNOR 0")
+(print "\n---------------")
+(set-signal! a 0)
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n0 XNOR 1")
+(print "\n---------------")
+(set-signal! b 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 XNOR 1")
+(print "\n---------------")
+(set-signal! a 1)
+(propagate)
+(print "\noutput is " (get-signal out))
+(print "\n---------------")
+(print "\n1 XNOR 0")
+(print "\n---------------")
+(set-signal! b 0)
+(propagate)
+(print "\noutput is " (get-signal out))
+(println)
+------------------------------------
+EXPECTED: 
+
+out 0  New-value = 0
+---------------
+0 XNOR 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 12  New-value = 0
+NAND active!
+out 18  New-value = 1
+output is 1
+---------------
+0 XNOR 1
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 36  New-value = 0
+output is 0
+---------------
+1 XNOR 1
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 48  New-value = 1
+NAND active!
+output is 1
+---------------
+1 XNOR 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 60  New-value = 0
+NAND active!
+output is 0
+------------------------------------
+YOUR RESULTS: 
+
+out 0  New-value = 0
+---------------
+0 XNOR 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 12  New-value = 0
+NAND active!
+out 18  New-value = 1
+output is 1
+---------------
+0 XNOR 1
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 36  New-value = 0
+output is 0
+---------------
+1 XNOR 1
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 48  New-value = 1
+NAND active!
+output is 1
+---------------
+1 XNOR 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 60  New-value = 0
+NAND active!
+output is 0
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task4.17.expected and ./tests/task4.17.tmp are identical
+
+
+-----------------------------------------------------------------------
+TESTING TASK 5
+-----------------------------------------------------------------------
+
+Testing task5.scm on task5.0. . .
+------------------------------------
+contents of task5.0:
+(define ones (cons-stream 1 ones))
+(sdisplay 12 (smush ones +))
+(println)
+------------------------------------
+EXPECTED: 
+(0,1,1,1,1,2,2,1,3,3,1,4,...)
+------------------------------------
+YOUR RESULTS: 
+(0,1,1,1,1,2,2,1,3,3,1,4,...)
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task5.0.expected and ./tests/task5.0.tmp are identical
+
+
+Testing task5.scm on task5.1. . .
+------------------------------------
+contents of task5.1:
+(include "random.lib")
+(randomSeed 36)
+(define (rs) (cons-stream (randomRange -99 100) (rs)))
+(define s (rs))
+(define op (getElement (list + - *) (randomRange 0 3)))
+(inspect op)
+(define t (smush s op))
+(sdisplay 12 s) (println)
+(sdisplay 12 t) (println)
+------------------------------------
+EXPECTED: 
+op is <builtin -(@)>
+(-24,74,99,20,84,-6,-82,-7,3,61,58,-19,...)
+(0,-24,-24,1,74,-98,2,99,-197,3,20,-217,...)
+------------------------------------
+YOUR RESULTS: 
+op is <builtin -(@)>
+(-24,74,99,20,84,-6,-82,-7,3,61,58,-19,...)
+(0,-24,-24,1,74,-98,2,99,-197,3,20,-217,...)
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task5.1.expected and ./tests/task5.1.tmp are identical
+
+
+Testing task5.scm on task5.2. . .
+------------------------------------
+contents of task5.2:
+(include "random.lib")
+(randomSeed 46)
+(define (rs) (cons-stream (randomRange -99 100) (rs)))
+(define s (rs))
+(define op (getElement (list + - *) (randomRange 0 3)))
+(inspect op)
+(define t (smush s op))
+(sdisplay 12 s) (println)
+(sdisplay 12 t) (println)
+------------------------------------
+EXPECTED: 
+op is <builtin -(@)>
+(-6,-19,41,89,-72,-83,10,-94,73,81,83,-14,...)
+(0,-6,-6,1,-19,13,2,41,-28,3,89,-117,...)
+------------------------------------
+YOUR RESULTS: 
+op is <builtin -(@)>
+(-6,-19,41,89,-72,-83,10,-94,73,81,83,-14,...)
+(0,-6,-6,1,-19,13,2,41,-28,3,89,-117,...)
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task5.2.expected and ./tests/task5.2.tmp are identical
+
+
+Testing task5.scm on task5.3. . .
+------------------------------------
+contents of task5.3:
+(include "random.lib")
+(randomSeed 56)
+(define (rs) (cons-stream (randomRange -99 100) (rs)))
+(define s (rs))
+(define op (getElement (list + - *) (randomRange 0 3)))
+(inspect op)
+(define t (smush s op))
+(sdisplay 12 s) (println)
+(sdisplay 12 t) (println)
+------------------------------------
+EXPECTED: 
+op is <builtin +(@)>
+(-89,-14,-19,-43,-31,38,-1,16,42,99,-93,87,...)
+(0,-89,-89,1,-14,-103,2,-19,-122,3,-43,-165,...)
+------------------------------------
+YOUR RESULTS: 
+op is <builtin +(@)>
+(-89,-14,-19,-43,-31,38,-1,16,42,99,-93,87,...)
+(0,-89,-89,1,-14,-103,2,-19,-122,3,-43,-165,...)
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task5.3.expected and ./tests/task5.3.tmp are identical
+
+
+Testing task5.scm on task5.4. . .
+------------------------------------
+contents of task5.4:
+(include "random.lib")
+(randomSeed 66)
+(define (rs) (cons-stream (randomRange -99 100) (rs)))
+(define s (rs))
+(define op (getElement (list + - *) (randomRange 0 3)))
+(inspect op)
+(define t (smush s op))
+(sdisplay 12 s) (println)
+(sdisplay 12 t) (println)
+------------------------------------
+EXPECTED: 
+op is <builtin *(@)>
+(-73,-9,-79,24,-90,-40,-11,26,11,-82,30,89,...)
+(0,-73,-73,1,-9,657,2,-79,-51903,3,24,-1245672,...)
+------------------------------------
+YOUR RESULTS: 
+op is <builtin *(@)>
+(-73,-9,-79,24,-90,-40,-11,26,11,-82,30,89,...)
+(0,-73,-73,1,-9,657,2,-79,-51903,3,24,-1245672,...)
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task5.4.expected and ./tests/task5.4.tmp are identical
+
+
+Testing task5.scm on task5.5. . .
+------------------------------------
+contents of task5.5:
+(include "random.lib")
+(randomSeed 76)
+(define (rs) (cons-stream (randomRange -99 100) (rs)))
+(define s (rs))
+(define op (getElement (list + - *) (randomRange 0 3)))
+(inspect op)
+(define t (smush s op))
+(sdisplay 12 s) (println)
+(sdisplay 12 t) (println)
+------------------------------------
+EXPECTED: 
+op is <builtin -(@)>
+(-56,-4,61,-7,51,-18,-21,-62,80,-62,-46,-7,...)
+(0,-56,-56,1,-4,-52,2,61,-113,3,-7,-106,...)
+------------------------------------
+YOUR RESULTS: 
+op is <builtin -(@)>
+(-56,-4,61,-7,51,-18,-21,-62,80,-62,-46,-7,...)
+(0,-56,-56,1,-4,-52,2,61,-113,3,-7,-106,...)
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task5.5.expected and ./tests/task5.5.tmp are identical
+
+
+Testing task5.scm on task5.6. . .
+------------------------------------
+contents of task5.6:
+(include "random.lib")
+(randomSeed 86)
+(define (rs) (cons-stream (randomRange -99 100) (rs)))
+(define s (rs))
+(define op (getElement (list + - *) (randomRange 0 3)))
+(inspect op)
+(define t (smush s op))
+(sdisplay 12 s) (println)
+(sdisplay 12 t) (println)
+------------------------------------
+EXPECTED: 
+op is <builtin +(@)>
+(59,0,-99,-40,-8,3,67,-53,-51,-45,75,-7,...)
+(0,59,59,1,0,59,2,-99,-40,3,-40,-80,...)
+------------------------------------
+YOUR RESULTS: 
+op is <builtin +(@)>
+(59,0,-99,-40,-8,3,67,-53,-51,-45,75,-7,...)
+(0,59,59,1,0,59,2,-99,-40,3,-40,-80,...)
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task5.6.expected and ./tests/task5.6.tmp are identical
+
+
+Testing task5.scm on task5.7. . .
+------------------------------------
+contents of task5.7:
+(include "random.lib")
+(randomSeed 96)
+(define (rs) (cons-stream (randomRange -99 100) (rs)))
+(define s (rs))
+(define op (getElement (list + - *) (randomRange 0 3)))
+(inspect op)
+(define t (smush s op))
+(sdisplay 12 s) (println)
+(sdisplay 12 t) (println)
+------------------------------------
+EXPECTED: 
+op is <builtin -(@)>
+(-23,-93,-58,29,35,-73,-41,60,-80,75,-98,98,...)
+(0,-23,-23,1,-93,70,2,-58,128,3,29,99,...)
+------------------------------------
+YOUR RESULTS: 
+op is <builtin -(@)>
+(-23,-93,-58,29,35,-73,-41,60,-80,75,-98,98,...)
+(0,-23,-23,1,-93,70,2,-58,128,3,29,99,...)
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task5.7.expected and ./tests/task5.7.tmp are identical
+
+
+Testing task5.scm on task5.8. . .
+------------------------------------
+contents of task5.8:
+(include "random.lib")
+(randomSeed 106)
+(define (rs) (cons-stream (randomRange -99 100) (rs)))
+(define s (rs))
+(define op (getElement (list + - *) (randomRange 0 3)))
+(inspect op)
+(define t (smush s op))
+(sdisplay 12 s) (println)
+(sdisplay 12 t) (println)
+------------------------------------
+EXPECTED: 
+op is <builtin *(@)>
+(94,12,-18,96,76,-51,-51,-29,-11,-6,25,1,...)
+(0,94,94,1,12,1128,2,-18,-20304,3,96,-1949184,...)
+------------------------------------
+YOUR RESULTS: 
+op is <builtin *(@)>
+(94,12,-18,96,76,-51,-51,-29,-11,-6,25,1,...)
+(0,94,94,1,12,1128,2,-18,-20304,3,96,-1949184,...)
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task5.8.expected and ./tests/task5.8.tmp are identical
+
+
+Testing task5.scm on task5.9. . .
+------------------------------------
+contents of task5.9:
+(include "random.lib")
+(randomSeed 116)
+(define (rs) (cons-stream (randomRange -99 100) (rs)))
+(define s (rs))
+(define op (getElement (list + - *) (randomRange 0 3)))
+(inspect op)
+(define t (smush s op))
+(sdisplay 12 s) (println)
+(sdisplay 12 t) (println)
+------------------------------------
+EXPECTED: 
+op is <builtin *(@)>
+(-89,-83,22,-35,-82,-30,39,-19,-42,-86,-51,-97,...)
+(0,-89,-89,1,-83,7387,2,22,162514,3,-35,-5687990,...)
+------------------------------------
+YOUR RESULTS: 
+op is <builtin *(@)>
+(-89,-83,22,-35,-82,-30,39,-19,-42,-86,-51,-97,...)
+(0,-89,-89,1,-83,7387,2,22,162514,3,-35,-5687990,...)
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task5.9.expected and ./tests/task5.9.tmp are identical
+
+
+-----------------------------------------------------------------------
+TESTING TASK 6
+-----------------------------------------------------------------------
+
+Testing task6.scm on task6.0. . .
+------------------------------------
+contents of task6.0:
+(define qs (quad 1 0 0 1))
+(define is (integrate qs 1))
+(define ds (derivate is 1 (stream-car qs)))
+(sdisplay 5 qs) (println)
+(sdisplay 5 is) (println)
+(sdisplay 5 ds) (println)
+(inspect (same-stream? qs ds 10 .001))
+------------------------------------
+EXPECTED: 
+(0.000000e+00,1.0000000000,4.0000000000,9.0000000000,16.000000000,...)
+(0.000000e+00,0.5000000000,3.0000000000,9.5000000000,22.000000000,...)
+(0.000000e+00,1.0000000000,4.0000000000,9.0000000000,16.000000000,...)
+(same-stream? qs ds 10 0.0010000000) is #t
+------------------------------------
+YOUR RESULTS: 
+(0.000000e+00,1.0000000000,4.0000000000,9.0000000000,16.000000000,...)
+(0.000000e+00,0.5000000000,3.0000000000,9.5000000000,22.000000000,...)
+(0.000000e+00,1.0000000000,4.0000000000,9.0000000000,16.000000000,...)
+(same-stream? qs ds 10 0.0010000000) is #t
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task6.0.expected and ./tests/task6.0.tmp are identical
+
+
+Testing task6.scm on task6.1. . .
+------------------------------------
+contents of task6.1:
+(define (add-streams s t)
+    (cons-stream
+        (+ (stream-car s) (stream-car t))
+        (add-streams (stream-cdr s) (stream-cdr t))))
+(define (scale-stream s f)
+    (cons-stream
+        (* (stream-car s) f)
+        (scale-stream (stream-cdr s) f)))
+(define ones (cons-stream 1 ones))
+(define ones*f (cons-stream 1 (cons-stream 1 (cons-stream 1 (scale-stream ones 1.1)))))
+(inspect (same-stream? ones ones*f 3 .001))
+(inspect (same-stream? ones ones*f 5 .001))
+(inspect (same-stream? ones ones*f 5 2.0))
+(inspect (same-stream? ones ones*f 5 0.2))
+(inspect (same-stream? ones ones*f 5 0.1001))
+(inspect (same-stream? ones ones*f 5 0.1))
+(inspect (same-stream? ones ones*f 5 0.0999))
+------------------------------------
+EXPECTED: 
+(same-stream? ones ones*f 3 0.0010000000) is #t
+(same-stream? ones ones*f 5 0.0010000000) is #f
+(same-stream? ones ones*f 5 2.0000000000) is #t
+(same-stream? ones ones*f 5 0.2000000000) is #t
+(same-stream? ones ones*f 5 0.1001000000) is #t
+(same-stream? ones ones*f 5 0.1000000000) is #f
+(same-stream? ones ones*f 5 0.0999000000) is #f
+------------------------------------
+YOUR RESULTS: 
+(same-stream? ones ones*f 3 0.0010000000) is #t
+(same-stream? ones ones*f 5 0.0010000000) is #f
+(same-stream? ones ones*f 5 2.0000000000) is #t
+(same-stream? ones ones*f 5 0.2000000000) is #t
+(same-stream? ones ones*f 5 0.1001000000) is #t
+(same-stream? ones ones*f 5 0.1000000000) is #f
+(same-stream? ones ones*f 5 0.0999000000) is #f
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task6.1.expected and ./tests/task6.1.tmp are identical
+
+
+Testing task6.scm on task6.2. . .
+------------------------------------
+contents of task6.2:
+(define qs (quad -1 -1 -1 0.0142857143))
+(define is (integrate qs 0.0142857143))
+(define ds (derivate is 0.0142857143 (stream-car qs)))
+(sdisplay 5 qs) (println)
+(sdisplay 5 is) (println)
+(sdisplay 5 ds) (println)
+(inspect (same-stream? qs ds 10 .001))
+------------------------------------
+EXPECTED: 
+(-1.0000000000,-1.0144897959,-1.0293877551,-1.0446938776,-1.0604081633,...)
+(0.000000e+00,-0.0143892128,-0.0289883382,-0.0438032070,-0.0588396502,...)
+(-1.0000000000,-1.0144897959,-1.0293877551,-1.0446938776,-1.0604081633,...)
+(same-stream? qs ds 10 0.0010000000) is #t
+------------------------------------
+YOUR RESULTS: 
+(-1.0000000000,-1.0144897959,-1.0293877551,-1.0446938776,-1.0604081633,...)
+(0.000000e+00,-0.0143892128,-0.0289883382,-0.0438032070,-0.0588396502,...)
+(-1.0000000000,-1.0144897959,-1.0293877551,-1.0446938776,-1.0604081633,...)
+(same-stream? qs ds 10 0.0010000000) is #t
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task6.2.expected and ./tests/task6.2.tmp are identical
+
+
+Testing task6.scm on task6.3. . .
+------------------------------------
+contents of task6.3:
+(define qs (quad -2 -3 -1 0.0243902439))
+(define is (integrate qs 0.0243902439))
+(define ds (derivate is 0.0243902439 (stream-car qs)))
+(sdisplay 5 qs) (println)
+(sdisplay 5 is) (println)
+(sdisplay 5 ds) (println)
+(inspect (same-stream? qs ds 10 .001))
+------------------------------------
+EXPECTED: 
+(-1.0000000000,-1.0743604997,-1.1511005354,-1.2302201071,-1.3117192147,...)
+(0.000000e+00,-0.0252970793,-0.0524368480,-0.0814773436,-0.1124766036,...)
+(-1.0000000000,-1.0743604997,-1.1511005354,-1.2302201071,-1.3117192147,...)
+(same-stream? qs ds 10 0.0010000000) is #t
+------------------------------------
+YOUR RESULTS: 
+(-1.0000000000,-1.0743604997,-1.1511005354,-1.2302201071,-1.3117192147,...)
+(0.000000e+00,-0.0252970793,-0.0524368480,-0.0814773436,-0.1124766036,...)
+(-1.0000000000,-1.0743604997,-1.1511005354,-1.2302201071,-1.3117192147,...)
+(same-stream? qs ds 10 0.0010000000) is #t
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task6.3.expected and ./tests/task6.3.tmp are identical
+
+
+Testing task6.scm on task6.4. . .
+------------------------------------
+contents of task6.4:
+(define qs (quad 1 3 2 0.0909090909))
+(define is (integrate qs 0.0909090909))
+(define ds (derivate is 0.0909090909 (stream-car qs)))
+(sdisplay 5 qs) (println)
+(sdisplay 5 is) (println)
+(sdisplay 5 ds) (println)
+(inspect (same-stream? qs ds 10 .001))
+------------------------------------
+EXPECTED: 
+(2.0000000000,2.2809917355,2.5785123966,2.8925619834,3.2231404957,...)
+(0.000000e+00,0.1945905334,0.4154770849,0.6641622839,0.9421487602,...)
+(2.0000000000,2.2809917355,2.5785123966,2.8925619834,3.2231404957,...)
+(same-stream? qs ds 10 0.0010000000) is #t
+------------------------------------
+YOUR RESULTS: 
+(2.0000000000,2.2809917355,2.5785123966,2.8925619834,3.2231404957,...)
+(0.000000e+00,0.1945905334,0.4154770849,0.6641622839,0.9421487602,...)
+(2.0000000000,2.2809917355,2.5785123966,2.8925619834,3.2231404957,...)
+(same-stream? qs ds 10 0.0010000000) is #t
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task6.4.expected and ./tests/task6.4.tmp are identical
+
+
+Testing task6.scm on task6.5. . .
+------------------------------------
+contents of task6.5:
+(define qs (quad 1 2 2 0.0125000000))
+(define is (integrate qs 0.0125000000))
+(define ds (derivate is 0.0125000000 (stream-car qs)))
+(sdisplay 5 qs) (println)
+(sdisplay 5 is) (println)
+(sdisplay 5 ds) (println)
+(inspect (same-stream? qs ds 10 .001))
+------------------------------------
+EXPECTED: 
+(2.0000000000,2.0251562500,2.0506250000,2.0764062500,2.1025000000,...)
+(0.000000e+00,0.0251572266,0.0506308594,0.0764248047,0.1025429688,...)
+(2.0000000000,2.0251562500,2.0506250000,2.0764062500,2.1025000000,...)
+(same-stream? qs ds 10 0.0010000000) is #t
+------------------------------------
+YOUR RESULTS: 
+(2.0000000000,2.0251562500,2.0506250000,2.0764062500,2.1025000000,...)
+(0.000000e+00,0.0251572266,0.0506308594,0.0764248047,0.1025429688,...)
+(2.0000000000,2.0251562500,2.0506250000,2.0764062500,2.1025000000,...)
+(same-stream? qs ds 10 0.0010000000) is #t
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task6.5.expected and ./tests/task6.5.tmp are identical
+
+
+Testing task6.scm on task6.6. . .
+------------------------------------
+contents of task6.6:
+(define qs (quad 1 -3 0 1.0000000000))
+(define is (integrate qs 1.0000000000))
+(define ds (derivate is 1.0000000000 (stream-car qs)))
+(sdisplay 5 qs) (println)
+(sdisplay 5 is) (println)
+(sdisplay 5 ds) (println)
+(inspect (same-stream? qs ds 10 .001))
+------------------------------------
+EXPECTED: 
+(0.000000e+00,-2.0000000000,-2.0000000000,0.000000e+00,4.0000000000,...)
+(0.000000e+00,-1.0000000000,-3.0000000000,-4.0000000000,-2.0000000000,...)
+(0.000000e+00,-2.0000000000,-2.0000000000,0.000000e+00,4.0000000000,...)
+(same-stream? qs ds 10 0.0010000000) is #t
+------------------------------------
+YOUR RESULTS: 
+(0.000000e+00,-2.0000000000,-2.0000000000,0.000000e+00,4.0000000000,...)
+(0.000000e+00,-1.0000000000,-3.0000000000,-4.0000000000,-2.0000000000,...)
+(0.000000e+00,-2.0000000000,-2.0000000000,0.000000e+00,4.0000000000,...)
+(same-stream? qs ds 10 0.0010000000) is #t
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task6.6.expected and ./tests/task6.6.tmp are identical
+
+
+Testing task6.scm on task6.7. . .
+------------------------------------
+contents of task6.7:
+(define qs (quad -1 0 -4 0.0476190476))
+(define is (integrate qs 0.0476190476))
+(define ds (derivate is 0.0476190476 (stream-car qs)))
+(sdisplay 5 qs) (println)
+(sdisplay 5 is) (println)
+(sdisplay 5 ds) (println)
+(inspect (same-stream? qs ds 10 .001))
+------------------------------------
+EXPECTED: 
+(-4.0000000000,-4.0022675737,-4.0090702948,-4.0204081632,-4.0362811791,...)
+(0.000000e+00,-0.1905301802,-0.3812763199,-0.5724543783,-0.7642803150,...)
+(-4.0000000000,-4.0022675737,-4.0090702948,-4.0204081632,-4.0362811791,...)
+(same-stream? qs ds 10 0.0010000000) is #t
+------------------------------------
+YOUR RESULTS: 
+(-4.0000000000,-4.0022675737,-4.0090702948,-4.0204081632,-4.0362811791,...)
+(0.000000e+00,-0.1905301802,-0.3812763199,-0.5724543783,-0.7642803150,...)
+(-4.0000000000,-4.0022675737,-4.0090702948,-4.0204081632,-4.0362811791,...)
+(same-stream? qs ds 10 0.0010000000) is #t
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task6.7.expected and ./tests/task6.7.tmp are identical
+
+
+Testing task6.scm on task6.8. . .
+------------------------------------
+contents of task6.8:
+(define qs (quad 2 3 3 0.0243902439))
+(define is (integrate qs 0.0243902439))
+(define ds (derivate is 0.0243902439 (stream-car qs)))
+(sdisplay 5 qs) (println)
+(sdisplay 5 is) (println)
+(sdisplay 5 ds) (println)
+(inspect (same-stream? qs ds 10 .001))
+------------------------------------
+EXPECTED: 
+(3.0000000000,3.0743604997,3.1511005354,3.2302201071,3.3117192147,...)
+(0.000000e+00,0.0740775671,0.1499978236,0.2278188070,0.3075985548,...)
+(3.0000000000,3.0743604997,3.1511005354,3.2302201071,3.3117192147,...)
+(same-stream? qs ds 10 0.0010000000) is #t
+------------------------------------
+YOUR RESULTS: 
+(3.0000000000,3.0743604997,3.1511005354,3.2302201071,3.3117192147,...)
+(0.000000e+00,0.0740775671,0.1499978236,0.2278188070,0.3075985548,...)
+(3.0000000000,3.0743604997,3.1511005354,3.2302201071,3.3117192147,...)
+(same-stream? qs ds 10 0.0010000000) is #t
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task6.8.expected and ./tests/task6.8.tmp are identical
+
+
+Testing task6.scm on task6.9. . .
+------------------------------------
+contents of task6.9:
+(define qs (quad 1 3 1 0.0163934426))
+(define is (integrate qs 0.0163934426))
+(define ds (derivate is 0.0163934426 (stream-car qs)))
+(sdisplay 5 qs) (println)
+(sdisplay 5 is) (println)
+(sdisplay 5 ds) (println)
+(inspect (same-stream? qs ds 10 .001))
+------------------------------------
+EXPECTED: 
+(1.0000000000,1.0494490728,1.0994356354,1.1499596880,1.2010212306,...)
+(0.000000e+00,0.0167987629,0.0344125719,0.0528502385,0.0721205739,...)
+(1.0000000000,1.0494490728,1.0994356354,1.1499596880,1.2010212306,...)
+(same-stream? qs ds 10 0.0010000000) is #t
+------------------------------------
+YOUR RESULTS: 
+(1.0000000000,1.0494490728,1.0994356354,1.1499596880,1.2010212306,...)
+(0.000000e+00,0.0167987629,0.0344125719,0.0528502385,0.0721205739,...)
+(1.0000000000,1.0494490728,1.0994356354,1.1499596880,1.2010212306,...)
+(same-stream? qs ds 10 0.0010000000) is #t
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task6.9.expected and ./tests/task6.9.tmp are identical
+
+
+-----------------------------------------------------------------------
+TESTING TASK 7
+-----------------------------------------------------------------------
+
+Testing task7.scm on task7.0. . .
+------------------------------------
+contents of task7.0:
+(define x 0.1)
+(sdisplay 5 (mystery x)) (println)
+(sdisplay 5 (ps-mystery x)) (println)
+(sdisplay 5 (acc-mystery x)) (println)
+(sdisplay 5 (super-mystery x)) (println)
+(symbolic-mystery)
+------------------------------------
+EXPECTED: 
+(1.0000000000,-0.0050000000,4.166667e-06,-1.388889e-09,2.480159e-13,...)
+(1.0000000000,0.9950000000,0.9950041667,0.9950041653,0.9950041653,...)
+(0.9950041632,0.9950041653,0.9950041653,0.9950041653,0.9950041653,...)
+(1.0000000000,0.9950041632,0.9950041653,0.9950041653,0.9950041653,...)
+(mystery x) is $\cos x$
+------------------------------------
+YOUR RESULTS: 
+(1.0000000000,-0.0050000000,4.166667e-06,-1.388889e-09,2.480159e-13,...)
+(1.0000000000,0.9950000000,0.9950041667,0.9950041653,0.9950041653,...)
+(0.9950041632,0.9950041653,0.9950041653,0.9950041653,0.9950041653,...)
+(1.0000000000,0.9950041632,0.9950041653,0.9950041653,0.9950041653,...)
+(mystery x) is $\cos x$
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task7.0.expected and ./tests/task7.0.tmp are identical
+
+
+Testing task7.scm on task7.1. . .
+------------------------------------
+contents of task7.1:
+(define x -2)
+(sdisplay 5 (mystery x)) (println)
+(sdisplay 5 (ps-mystery x)) (println)
+(sdisplay 5 (acc-mystery x)) (println)
+(sdisplay 5 (super-mystery x)) (println)
+(symbolic-mystery)
+------------------------------------
+EXPECTED: 
+(1.0000000000,-2.0000000000,0.6666666667,-0.0888888889,0.0063492063,...)
+(1.0000000000,-1.0000000000,-0.3333333333,-0.4222222222,-0.4158730159,...)
+(-0.5000000000,-0.4117647059,-0.4162962963,-0.4161431949,-0.4161469032,...)
+(1.0000000000,-0.5000000000,-0.4160749316,-0.4161468411,-0.4161468365,...)
+(mystery x) is $\cos x$
+------------------------------------
+YOUR RESULTS: 
+(1.0000000000,-2.0000000000,0.6666666667,-0.0888888889,0.0063492063,...)
+(1.0000000000,-1.0000000000,-0.3333333333,-0.4222222222,-0.4158730159,...)
+(-0.5000000000,-0.4117647059,-0.4162962963,-0.4161431949,-0.4161469032,...)
+(1.0000000000,-0.5000000000,-0.4160749316,-0.4161468411,-0.4161468365,...)
+(mystery x) is $\cos x$
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task7.1.expected and ./tests/task7.1.tmp are identical
+
+
+Testing task7.scm on task7.2. . .
+------------------------------------
+contents of task7.2:
+(define x 0)
+(sdisplay 5 (mystery x)) (println)
+(sdisplay 5 (ps-mystery x)) (println)
+(sdisplay 5 (acc-mystery x)) (println)
+(sdisplay 5 (super-mystery x)) (println)
+(symbolic-mystery)
+------------------------------------
+EXPECTED: 
+(1.0000000000,-0.000000e+00,0.000000e+00,-0.000000e+00,0.000000e+00,...)
+(1.0000000000,1.0000000000,1.0000000000,1.0000000000,1.0000000000,...)
+(1.0000000000,1.0000000000,1.0000000000,1.0000000000,1.0000000000,...)
+(1.0000000000,1.0000000000,1.0000000000,1.0000000000,1.0000000000,...)
+(mystery x) is $\cos x$
+------------------------------------
+YOUR RESULTS: 
+(1.0000000000,-0.000000e+00,0.000000e+00,-0.000000e+00,0.000000e+00,...)
+(1.0000000000,1.0000000000,1.0000000000,1.0000000000,1.0000000000,...)
+(1.0000000000,1.0000000000,1.0000000000,1.0000000000,1.0000000000,...)
+(1.0000000000,1.0000000000,1.0000000000,1.0000000000,1.0000000000,...)
+(mystery x) is $\cos x$
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task7.2.expected and ./tests/task7.2.tmp are identical
+
+
+Testing task7.scm on task7.3. . .
+------------------------------------
+contents of task7.3:
+(define x -8)
+(sdisplay 5 (mystery x)) (println)
+(sdisplay 5 (ps-mystery x)) (println)
+(sdisplay 5 (acc-mystery x)) (println)
+(sdisplay 5 (super-mystery x)) (println)
+(symbolic-mystery)
+------------------------------------
+EXPECTED: 
+(1.0000000000,-32.000000000,170.66666667,-364.08888889,416.10158730,...)
+(1.0000000000,-31.000000000,139.66666667,-224.42222222,191.67936508,...)
+(-4.0526315789,23.468085106,-30.241481481,18.754030097,-7.5964971385,...)
+(1.0000000000,-4.0526315789,5.2713522403,-0.7938346722,-0.1418431299,...)
+(mystery x) is $\cos x$
+------------------------------------
+YOUR RESULTS: 
+(1.0000000000,-32.000000000,170.66666667,-364.08888889,416.10158730,...)
+(1.0000000000,-31.000000000,139.66666667,-224.42222222,191.67936508,...)
+(-4.0526315789,23.468085106,-30.241481481,18.754030097,-7.5964971385,...)
+(1.0000000000,-4.0526315789,5.2713522403,-0.7938346722,-0.1418431299,...)
+(mystery x) is $\cos x$
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task7.3.expected and ./tests/task7.3.tmp are identical
+
+
+Testing task7.scm on task7.4. . .
+------------------------------------
+contents of task7.4:
+(define x -7)
+(sdisplay 5 (mystery x)) (println)
+(sdisplay 5 (ps-mystery x)) (println)
+(sdisplay 5 (acc-mystery x)) (println)
+(sdisplay 5 (super-mystery x)) (println)
+(symbolic-mystery)
+------------------------------------
+EXPECTED: 
+(1.0000000000,-24.500000000,100.04166667,-163.40138889,142.97621528,...)
+(1.0000000000,-23.500000000,76.541666667,-86.859722222,56.116493056,...)
+(-3.8196721311,14.490506329,-10.605740741,5.7148056555,-0.6527003402,...)
+(1.0000000000,-3.8196721311,3.9041298441,0.6050525734,0.7541159532,...)
+(mystery x) is $\cos x$
+------------------------------------
+YOUR RESULTS: 
+(1.0000000000,-24.500000000,100.04166667,-163.40138889,142.97621528,...)
+(1.0000000000,-23.500000000,76.541666667,-86.859722222,56.116493056,...)
+(-3.8196721311,14.490506329,-10.605740741,5.7148056555,-0.6527003402,...)
+(1.0000000000,-3.8196721311,3.9041298441,0.6050525734,0.7541159532,...)
+(mystery x) is $\cos x$
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task7.4.expected and ./tests/task7.4.tmp are identical
+
+
+Testing task7.scm on task7.5. . .
+------------------------------------
+contents of task7.5:
+(define x -5)
+(sdisplay 5 (mystery x)) (println)
+(sdisplay 5 (ps-mystery x)) (println)
+(sdisplay 5 (acc-mystery x)) (println)
+(sdisplay 5 (super-mystery x)) (println)
+(symbolic-mystery)
+------------------------------------
+EXPECTED: 
+(1.0000000000,-12.500000000,26.041666667,-21.701388889,9.6881200397,...)
+(1.0000000000,-11.500000000,14.541666667,-7.1597222222,2.5283978175,...)
+(-3.0540540541,2.7045454545,-0.4617626886,0.4222847654,0.2657795492,...)
+(1.0000000000,-3.0540540541,0.6615550698,0.2820074381,0.2836625838,...)
+(mystery x) is $\cos x$
+------------------------------------
+YOUR RESULTS: 
+(1.0000000000,-12.500000000,26.041666667,-21.701388889,9.6881200397,...)
+(1.0000000000,-11.500000000,14.541666667,-7.1597222222,2.5283978175,...)
+(-3.0540540541,2.7045454545,-0.4617626886,0.4222847654,0.2657795492,...)
+(1.0000000000,-3.0540540541,0.6615550698,0.2820074381,0.2836625838,...)
+(mystery x) is $\cos x$
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task7.5.expected and ./tests/task7.5.tmp are identical
+
+
+Testing task7.scm on task7.6. . .
+------------------------------------
+contents of task7.6:
+(define x 5)
+(sdisplay 5 (mystery x)) (println)
+(sdisplay 5 (ps-mystery x)) (println)
+(sdisplay 5 (acc-mystery x)) (println)
+(sdisplay 5 (super-mystery x)) (println)
+(symbolic-mystery)
+------------------------------------
+EXPECTED: 
+(1.0000000000,-12.500000000,26.041666667,-21.701388889,9.6881200397,...)
+(1.0000000000,-11.500000000,14.541666667,-7.1597222222,2.5283978175,...)
+(-3.0540540541,2.7045454545,-0.4617626886,0.4222847654,0.2657795492,...)
+(1.0000000000,-3.0540540541,0.6615550698,0.2820074381,0.2836625838,...)
+(mystery x) is $\cos x$
+------------------------------------
+YOUR RESULTS: 
+(1.0000000000,-12.500000000,26.041666667,-21.701388889,9.6881200397,...)
+(1.0000000000,-11.500000000,14.541666667,-7.1597222222,2.5283978175,...)
+(-3.0540540541,2.7045454545,-0.4617626886,0.4222847654,0.2657795492,...)
+(1.0000000000,-3.0540540541,0.6615550698,0.2820074381,0.2836625838,...)
+(mystery x) is $\cos x$
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task7.6.expected and ./tests/task7.6.tmp are identical
+
+
+Testing task7.scm on task7.7. . .
+------------------------------------
+contents of task7.7:
+(define x -2)
+(sdisplay 5 (mystery x)) (println)
+(sdisplay 5 (ps-mystery x)) (println)
+(sdisplay 5 (acc-mystery x)) (println)
+(sdisplay 5 (super-mystery x)) (println)
+(symbolic-mystery)
+------------------------------------
+EXPECTED: 
+(1.0000000000,-2.0000000000,0.6666666667,-0.0888888889,0.0063492063,...)
+(1.0000000000,-1.0000000000,-0.3333333333,-0.4222222222,-0.4158730159,...)
+(-0.5000000000,-0.4117647059,-0.4162962963,-0.4161431949,-0.4161469032,...)
+(1.0000000000,-0.5000000000,-0.4160749316,-0.4161468411,-0.4161468365,...)
+(mystery x) is $\cos x$
+------------------------------------
+YOUR RESULTS: 
+(1.0000000000,-2.0000000000,0.6666666667,-0.0888888889,0.0063492063,...)
+(1.0000000000,-1.0000000000,-0.3333333333,-0.4222222222,-0.4158730159,...)
+(-0.5000000000,-0.4117647059,-0.4162962963,-0.4161431949,-0.4161469032,...)
+(1.0000000000,-0.5000000000,-0.4160749316,-0.4161468411,-0.4161468365,...)
+(mystery x) is $\cos x$
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task7.7.expected and ./tests/task7.7.tmp are identical
+
+
+Testing task7.scm on task7.8. . .
+------------------------------------
+contents of task7.8:
+(define x 9)
+(sdisplay 5 (mystery x)) (println)
+(sdisplay 5 (ps-mystery x)) (println)
+(sdisplay 5 (acc-mystery x)) (println)
+(sdisplay 5 (super-mystery x)) (println)
+(symbolic-mystery)
+------------------------------------
+EXPECTED: 
+(1.0000000000,-40.500000000,273.37500000,-738.11250000,1067.6270089,...)
+(1.0000000000,-39.500000000,233.87500000,-504.23750000,563.38950893,...)
+(-4.2258064516,34.385135135,-67.835218978,57.671452068,-32.075696051,...)
+(1.0000000000,-4.2258064516,6.3599429928,-2.8310492056,-0.8770491617,...)
+(mystery x) is $\cos x$
+------------------------------------
+YOUR RESULTS: 
+(1.0000000000,-40.500000000,273.37500000,-738.11250000,1067.6270089,...)
+(1.0000000000,-39.500000000,233.87500000,-504.23750000,563.38950893,...)
+(-4.2258064516,34.385135135,-67.835218978,57.671452068,-32.075696051,...)
+(1.0000000000,-4.2258064516,6.3599429928,-2.8310492056,-0.8770491617,...)
+(mystery x) is $\cos x$
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task7.8.expected and ./tests/task7.8.tmp are identical
+
+
+Testing task7.scm on task7.9. . .
+------------------------------------
+contents of task7.9:
+(define x -8)
+(sdisplay 5 (mystery x)) (println)
+(sdisplay 5 (ps-mystery x)) (println)
+(sdisplay 5 (acc-mystery x)) (println)
+(sdisplay 5 (super-mystery x)) (println)
+(symbolic-mystery)
+------------------------------------
+EXPECTED: 
+(1.0000000000,-32.000000000,170.66666667,-364.08888889,416.10158730,...)
+(1.0000000000,-31.000000000,139.66666667,-224.42222222,191.67936508,...)
+(-4.0526315789,23.468085106,-30.241481481,18.754030097,-7.5964971385,...)
+(1.0000000000,-4.0526315789,5.2713522403,-0.7938346722,-0.1418431299,...)
+(mystery x) is $\cos x$
+------------------------------------
+YOUR RESULTS: 
+(1.0000000000,-32.000000000,170.66666667,-364.08888889,416.10158730,...)
+(1.0000000000,-31.000000000,139.66666667,-224.42222222,191.67936508,...)
+(-4.0526315789,23.468085106,-30.241481481,18.754030097,-7.5964971385,...)
+(1.0000000000,-4.0526315789,5.2713522403,-0.7938346722,-0.1418431299,...)
+(mystery x) is $\cos x$
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task7.9.expected and ./tests/task7.9.tmp are identical
+
+
+-----------------------------------------------------------------------
+TESTING TASK 8
+-----------------------------------------------------------------------
+
+Testing task8.scm on task8.0. . .
+------------------------------------
+contents of task8.0:
+(sdisplay 1 (ramanujan)) (println)
+------------------------------------
+EXPECTED: 
+(1729,...)
+------------------------------------
+YOUR RESULTS: 
+(1729,...)
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task8.0.expected and ./tests/task8.0.tmp are identical
+
+
+Testing task8.scm on task8.1. . .
+------------------------------------
+contents of task8.1:
+(sdisplay 6 (ramanujan)) (println)
+------------------------------------
+EXPECTED: 
+(1729,4104,13832,20683,32832,39312,...)
+------------------------------------
+YOUR RESULTS: 
+(1729,4104,13832,20683,32832,39312,...)
+------------------------------------
+Running diff on the results. . .
+Files ./tests/task8.1.expected and ./tests/task8.1.tmp are identical
+
+

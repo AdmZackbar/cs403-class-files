@@ -1,0 +1,4 @@
+(define (square y)
+    (* y y)
+    )
+(square 48) is 2304

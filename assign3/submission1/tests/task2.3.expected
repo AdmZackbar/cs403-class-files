@@ -1,0 +1,5 @@
+(almost-square 8) is 81
+(define (almost-square x)
+    ((lambda (y) (<builtin *(@)> y y)) (<builtin +(@)> x 1))
+    )
+(almost-square 8) is 81

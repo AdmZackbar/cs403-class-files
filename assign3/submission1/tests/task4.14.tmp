@@ -1,0 +1,38 @@
+
+out 0  New-value = 0
+---------------
+0 OR 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+out 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+out 12  New-value = 0
+output is 0
+---------------
+0 OR 1
+---------------
+NAND active!
+NAND active!
+NAND active!
+out 24  New-value = 1
+output is 1
+---------------
+1 OR 1
+---------------
+NAND active!
+NAND active!
+NAND active!
+output is 1
+---------------
+1 OR 0
+---------------
+NAND active!
+NAND active!
+NAND active!
+output is 1

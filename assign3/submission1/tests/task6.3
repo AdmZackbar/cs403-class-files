@@ -1,0 +1,7 @@
+(define qs (quad -2 -3 -1 0.0243902439))
+(define is (integrate qs 0.0243902439))
+(define ds (derivate is 0.0243902439 (stream-car qs)))
+(sdisplay 5 qs) (println)
+(sdisplay 5 is) (println)
+(sdisplay 5 ds) (println)
+(inspect (same-stream? qs ds 10 .001))

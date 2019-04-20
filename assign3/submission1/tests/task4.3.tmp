@@ -1,0 +1,12 @@
+
+sum 0  New-value = 0
+carry 0  New-value = 0
+carry 6  New-value = 1
+sum 6  New-value = 1
+carry 12  New-value = 0
+sum 12  New-value = 0
+sum 18  New-value = 1
+sum 24  New-value = 0
+sum 30  New-value = 1
+sum is 1
+carry is 0

@@ -1,0 +1,7 @@
+(z (quote w)) is 0
+(f 80) is 6561
+(define (f x)
+    ((lambda (y) (define z ((lambda (q) (define w (<builtin +(@)> q q)) this) 5)) (inspect (z (quote w))) (<builtin *(@)> y y)) (<builtin +(@)> x 1))
+    )
+(z (quote w)) is 10
+(f 80) is 6561

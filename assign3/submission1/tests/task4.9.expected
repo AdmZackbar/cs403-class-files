@@ -1,0 +1,67 @@
+
+sum 0  New-value = 0
+carry 0  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 6  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 12  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 12  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 18  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+sum 24  New-value = 0
+NAND active!
+NAND active!
+NAND active!
+sum 30  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+carry 42  New-value = 1
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+NAND active!
+sum 60  New-value = 0
+NAND active!
+sum is 0
+carry is 1

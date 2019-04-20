@@ -1,0 +1,3 @@
+(define (abs n) (if (< n 0) (- n) n))
+(replace abs (list '< < '- -))
+(inspect (get 'code abs))

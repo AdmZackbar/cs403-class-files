@@ -1,0 +1,6 @@
+(define dq (deque))
+((dq'enqueueFront) 3)
+((dq'enqueueBack) 5)
+((dq'enqueueIndex) 1 4)
+((dq'display))
+(println)

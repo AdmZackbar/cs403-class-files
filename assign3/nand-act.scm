@@ -3,7 +3,7 @@
         (let ((new-value (logical-not (logical-and (get-signal a1) (get-signal a2)))))
             (after-delay nand-gate-delay
                 (lambda ()
-                    (print "\nNAND activated!")
+                    (print "\nNAND active!")
                     (set-signal! output new-value)
                     )
                 )

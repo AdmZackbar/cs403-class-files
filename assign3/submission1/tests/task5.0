@@ -1,0 +1,3 @@
+(define ones (cons-stream 1 ones))
+(sdisplay 12 (smush ones +))
+(println)

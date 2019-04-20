@@ -1,6 +1,6 @@
 (include "../queue.scm")
 (include "../gates.scm")
-(include "../nand-act.scm")
+(include "../nand.scm")
 
 (define the-agenda (make-agenda))
 
